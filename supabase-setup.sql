@@ -9,7 +9,67 @@ create table if not exists public.projects (
 alter table public.projects
   add column if not exists project_type text not null default 'model' check (project_type in ('model', 'presentation', 'gallery')),
   add column if not exists section text not null default 'Engineering',
+  add column if not exists collection text not null default '',
+  add column if not exists document_html text not null default '<h1></h1>',
+  add column if not exists document_line_height text not null default '1.65' check (document_line_height in ('1.4', '1.65', '1.9')),
   add column if not exists theme jsonb not null default '{"accent":"#bdff71","background":"#fbfbf9"}'::jsonb;
+
+alter table public.projects drop constraint if exists projects_project_type_check;
+alter table public.projects add constraint projects_project_type_check
+  check (project_type in ('model', 'presentation', 'gallery', 'document'));
+
+create table if not exists public.project_sections (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique check (char_length(btrim(name)) between 1 and 50),
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.project_collections (
+  id uuid primary key default gen_random_uuid(),
+  section_name text not null references public.project_sections(name) on delete cascade,
+  name text not null check (char_length(btrim(name)) between 1 and 60),
+  created_at timestamptz not null default now(),
+  unique (section_name, name)
+);
+
+insert into public.project_sections (name)
+select distinct btrim(section)
+from public.projects
+where btrim(section) <> ''
+on conflict (name) do nothing;
+
+insert into public.project_collections (section_name, name)
+select distinct btrim(section), btrim(collection)
+from public.projects
+where btrim(section) <> '' and btrim(collection) <> ''
+on conflict (section_name, name) do nothing;
+
+alter table public.project_sections enable row level security;
+alter table public.project_collections enable row level security;
+grant select on public.project_sections, public.project_collections to anon, authenticated;
+grant insert on public.project_sections, public.project_collections to authenticated;
+
+drop policy if exists "Anyone can read project sections" on public.project_sections;
+drop policy if exists "Only the verified manager can add project sections" on public.project_sections;
+drop policy if exists "Anyone can read project collections" on public.project_collections;
+drop policy if exists "Only the verified manager can add project collections" on public.project_collections;
+
+create policy "Anyone can read project sections"
+  on public.project_sections for select using (true);
+create policy "Only the verified manager can add project sections"
+  on public.project_sections for insert to authenticated
+  with check (
+    lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
+    and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
+  );
+create policy "Anyone can read project collections"
+  on public.project_collections for select using (true);
+create policy "Only the verified manager can add project collections"
+  on public.project_collections for insert to authenticated
+  with check (
+    lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
+    and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
+  );
 
 alter table public.projects enable row level security;
 

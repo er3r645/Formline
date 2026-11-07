@@ -16,7 +16,8 @@
         "imports": {
           "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
           "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
-          "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
+          "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2",
+          "dompurify": "https://esm.sh/dompurify@3.2.6"
         }
       }
     </script>
@@ -40,7 +41,7 @@
       button, input, textarea { font: inherit; }
       button { color: inherit; }
       .app { display: none; grid-template-rows: 68px minmax(0, 1fr); height: 100vh; min-height: 620px; }
-      .app.open { display: grid; grid-template-rows: 68px minmax(620px, 1fr) auto; height: auto; min-height: 100vh; }
+      .app.open { display: grid; grid-template-rows: 68px auto minmax(620px, 1fr) auto; height: auto; min-height: 100vh; }
       .topbar {
         display: flex; align-items: center; justify-content: space-between;
         padding: 0 28px; background: var(--paper); border-bottom: 1px solid var(--line);
@@ -55,7 +56,20 @@
       .mode-switch button { border: 0; background: transparent; padding: 7px 13px; border-radius: 7px; color: #777972; font-size: 12px; cursor: pointer; }
       .mode-switch button.active { background: white; color: var(--ink); box-shadow: 0 1px 3px #20231d13; }
       .share-button { border: 0; border-radius: 9px; background: var(--deep); color: white; padding: 10px 15px; font-size: 12px; font-weight: 600; cursor: pointer; }
-      .workspace { min-height: 0; display: grid; grid-template-columns: 252px minmax(360px, 1fr) 294px; }
+      .editor-ribbon { display: flex; flex-direction: column; background: white; border-bottom: 1px solid var(--line); }
+      .editor-tabs { display: flex; align-items: center; gap: 5px; min-height: 38px; padding: 0 20px; border-bottom: 1px solid #f0f0ec; }
+      .editor-tabs button { height: 30px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; color: #777972; font-size: 11px; cursor: pointer; }
+      .editor-tabs button[aria-selected="true"] { background: #f0f1ec; color: var(--ink); font-weight: 700; }
+      .ribbon-panels { min-height: 48px; display: flex; align-items: center; padding: 6px 16px; }
+      .ribbon-panel { width: 100%; }
+      .ribbon-panel[hidden] { display: none; }
+      .ribbon-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+      .ribbon-tools button { min-width: 32px; height: 30px; border: 1px solid var(--line); border-radius: 6px; background: white; cursor: pointer; }
+      .workspace { min-height: 0; display: grid; grid-template-columns: 46px 206px minmax(360px, 1fr) 294px; }
+      .side-tabs { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 12px 4px; background: #f7f7f4; border-right: 1px solid var(--line); }
+      .side-tab { width: 36px; min-height: 54px; display: grid; justify-items: center; align-content: center; gap: 3px; border: 0; border-radius: 7px; background: transparent; color: #74766f; font-size: 9px; cursor: pointer; }
+      .side-tab span:first-child { font-size: 16px; }
+      .side-tab[aria-current="page"] { background: white; color: #39462d; box-shadow: 0 1px 3px #20231d13; }
       .sidebar, .inspector { min-height: 0; background: var(--paper); }
       .sidebar { display: flex; flex-direction: column; border-right: 1px solid var(--line); }
       .side-heading { padding: 27px 19px 16px; }
@@ -82,6 +96,11 @@
       .storage-label { display: flex; align-items: center; gap: 7px; }
       .storage-label svg { width: 13px; height: 13px; }
       .stage-column { display: flex; min-width: 0; min-height: 0; flex-direction: column; padding: 20px; }
+      .stage-column.page-mode { align-items: center; background: #eeeFEa; }
+      .stage-column.page-mode .stage-toolbar { width: 100%; max-width: 1020px; }
+      .stage-column.page-mode .stage { width: min(100%, 1020px); min-height: min(700px, 72vh); flex: 0 0 min(700px, 72vh); background-color: white; background-image: none; border-color: #e2e2dc; border-radius: 3px; box-shadow: 0 5px 22px #20231d12; }
+      .stage-column.page-mode .stage-bottom { right: 24px; bottom: 20px; left: 24px; }
+      .stage-column.page-mode .step-caption { max-width: 72%; padding: 10px 14px; }
       .stage-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 1px 2px 15px; }
       .stage-location { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 11px; }
       .stage-location strong { color: #43443f; font-weight: 600; }
@@ -163,12 +182,12 @@
       .delete-step:hover { color: #8f4b42; }
       .toast { position: fixed; z-index: 10; bottom: 24px; left: 50%; transform: translate(-50%, 12px); padding: 10px 14px; border-radius: 8px; background: var(--deep); color: white; font-size: 11px; opacity: 0; pointer-events: none; transition: .2s ease; }
       .toast.show { transform: translate(-50%, 0); opacity: 1; }
-      .viewer-mode .workspace { grid-template-columns: 252px minmax(0, 1fr); }
+      .viewer-mode .workspace { grid-template-columns: 46px 206px minmax(0, 1fr); }
       .viewer-mode .inspector { display: none; }
       .viewer-mode .stage { background-color: #fdfdfb; }
       .dedicated-viewer .mode-switch, .dedicated-viewer #present-button, .dedicated-viewer .sidebar-bottom, .dedicated-viewer .add-step { display: none; }
-      .dedicated-viewer .workspace { grid-template-columns: 220px minmax(0, 1fr); }
-      .dedicated-viewer .viewer-mode .workspace { grid-template-columns: 220px minmax(0, 1fr); }
+      .dedicated-viewer .workspace { grid-template-columns: 46px 180px minmax(0, 1fr); }
+      .dedicated-viewer .viewer-mode .workspace { grid-template-columns: 46px 180px minmax(0, 1fr); }
       .placement-cursor { cursor: crosshair !important; }
       .loading { position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; background: #fbfbf9d9; color: #666860; font-size: 11px; }
       .loading[hidden] { display: none; }
@@ -227,6 +246,42 @@
       .comment-form { display: grid; grid-template-columns: minmax(140px, 220px) 1fr auto; gap: 8px; align-items: start; }
       .comment-form textarea { min-height: 40px; max-height: 140px; padding: 10px; resize: vertical; }
       .comment-empty { color: var(--muted); font-size: 12px; }
+      .document-pane { display: flex; min-height: 60vh; flex-direction: column; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: #f5f5f1; }
+      .document-page { display: flex; flex: 1; justify-content: center; padding: 22px 12px 24px; overflow: auto; }
+      .document-mode .workspace { grid-template-columns: 46px minmax(0, 1fr) 294px; }
+      .document-mode .sidebar, .document-mode .stage-column { display: none; }
+      .document-mode .document-pane { grid-column: 2; grid-row: 1; min-height: calc(100vh - 200px); margin: 24px auto; width: min(860px, calc(100% - 48px)); background: #f7f7f4; border: 0; border-radius: 2px; box-shadow: 0 5px 22px #20231d12; }
+      .document-mode .inspector { grid-column: 3; grid-row: 1; }
+      .document-mode .inspector #step-settings, .document-mode .inspector #model-section, .document-mode .inspector #video-section, .document-mode .inspector #text-section, .document-mode .inspector #images-upload-section, .document-mode .inspector #hotspots-section, .document-mode .inspector #delete-step { display: none; }
+      .collection-heading { grid-column: 1 / -1; margin: 14px 0 0; padding: 10px 0 4px; border-bottom: 1px solid var(--line); font: 700 14px Manrope, sans-serif; }
+      .collection-heading:first-child { margin-top: 0; }
+      .shortcut-dialog { width: min(460px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--line); border-radius: 10px; background: white; color: var(--ink); box-shadow: 0 20px 70px #20231d30; }
+      .shortcut-row { display: grid; grid-template-columns: 1fr 120px; align-items: center; gap: 10px; margin-top: 12px; color: #55574f; font-size: 12px; }
+      .shortcut-row input { height: 34px; padding: 0 8px; border: 1px solid var(--line); border-radius: 6px; }
+      .document-toolbar, .drawing-toolbar, .text-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 9px; border-bottom: 1px solid var(--line); background: #fcfcfa; }
+      .document-toolbar button, .drawing-toolbar button, .text-tools button { min-width: 32px; height: 30px; border: 1px solid var(--line); border-radius: 6px; background: white; cursor: pointer; }
+      .document-toolbar select, .text-tools select { height: 30px; border: 1px solid var(--line); border-radius: 6px; background: white; font-size: 11px; }
+      .document-editor { width: min(100%, 760px); min-height: 900px; height: auto; padding: clamp(24px, 4vw, 52px) clamp(20px, 4vw, 58px); border: 1px solid var(--line); border-radius: 18px; background: white; box-shadow: 0 6px 18px rgba(28, 31, 25, 0.04); outline: none; font-size: 16px; line-height: 1.65; cursor: text; }
+      .document-editor:empty::before { color: #a0a19b; content: "Start writing your document…"; }
+      .document-editor:focus { border-color: #c3cfb7; box-shadow: 0 0 0 3px rgba(138, 176, 99, 0.12), 0 6px 18px rgba(28, 31, 25, 0.04); }
+      .drawing-toolbar, .text-tools { max-width: 100%; border: 1px solid var(--line); border-radius: 8px; }
+      .drawing-toolbar input[type="color"], .text-tools input[type="color"] { width: 30px; height: 30px; padding: 2px; border: 1px solid var(--line); border-radius: 6px; }
+      .drawing-toolbar input[type="number"] { width: 58px; height: 30px; border: 1px solid var(--line); border-radius: 6px; }
+      .drawing-layer { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+      .drawing-layer.active { pointer-events: auto; cursor: crosshair; }
+      .drawing-layer .shape { pointer-events: visiblePainted; cursor: move; }
+      .floating-text-layer { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+      .floating-text { position: absolute; min-width: 70px; max-width: 70%; min-height: 28px; padding: 4px 7px; transform: translate(-50%, -50%); outline: none; color: #242522; font-size: 18px; white-space: pre-wrap; overflow-wrap: anywhere; pointer-events: auto; }
+      .text-drag-handle { position: absolute; top: -23px; left: 0; height: 20px; padding: 0 6px; border: 1px solid var(--line); border-radius: 5px; background: white; color: #62655c; font-size: 9px; cursor: grab; }
+      .floating-text-content { min-width: 30px; min-height: 24px; outline: none; }
+      .floating-text-content:focus { outline: 1px dashed #b6c3a6; }
+      .floating-text.floating { cursor: move; }
+      .floating-text.fixed { cursor: text; }
+      .floating-text.selected { outline: 1px dashed #689847; outline-offset: 3px; }
+      .settings-dialog { width: min(460px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--line); border-radius: 10px; background: white; color: var(--ink); box-shadow: 0 20px 70px #20231d30; }
+      .shortcut-row { display: grid; grid-template-columns: 1fr 120px; align-items: center; gap: 10px; margin-top: 12px; color: #55574f; font-size: 12px; }
+      .shortcut-row input { height: 34px; padding: 0 8px; border: 1px solid var(--line); border-radius: 6px; }
+      .section-heading { grid-column: 1 / -1; margin: 20px 0 0; font: 700 14px Manrope, sans-serif; }
       .project-title-input { width: min(250px, 42vw); border: 1px solid transparent; background: transparent; font: 700 16px Manrope, sans-serif; outline: none; }
       .project-title-input:focus { border-bottom-color: #bdc3b4; }
       .image-control { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: #fcfcfa; }
@@ -245,18 +300,22 @@
 
       @media (max-width: 1020px) {
         .workspace { grid-template-columns: 210px minmax(300px, 1fr) 265px; }
-        .viewer-mode .workspace { grid-template-columns: 210px minmax(0, 1fr); }
+        .viewer-mode .workspace { grid-template-columns: 36px 190px minmax(0, 1fr); }
         .sidebar .side-heading, .timeline-head { padding-right: 14px; padding-left: 14px; }
       }
       @media (max-width: 760px) {
         .app { height: auto; min-height: 100vh; grid-template-rows: 60px minmax(0, 1fr); }
-        .app.open { grid-template-rows: 60px minmax(520px, 1fr) auto; }
+        .app.open { grid-template-rows: 60px auto minmax(520px, 1fr) auto; }
         .topbar { padding: 0 14px; }
         .top-center { display: none; }
         .brand { font-size: 15px; }
         .share-button { padding: 9px 11px; }
         .mode-switch button { padding: 7px 9px; }
-        .workspace, .viewer-mode .workspace { min-height: calc(100vh - 60px); grid-template-columns: 1fr; grid-template-rows: auto minmax(450px, 62vh) auto; }
+        .workspace, .viewer-mode .workspace { min-height: calc(100vh - 110px); grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: auto auto; }
+        .side-tabs { grid-column: 1; grid-row: 1 / span 2; }
+        .sidebar { grid-column: 2; grid-row: 1; }
+        .stage-column, .document-pane { grid-column: 2; grid-row: 2; }
+        .inspector { grid-column: 2; grid-row: 3; }
         .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
         .side-heading { display: none; }
         .timeline-head { padding: 13px 15px 8px; }
@@ -274,6 +333,11 @@
         .gallery-filters { align-items: stretch; flex-direction: column; }
         .gallery-search, .gallery-section-filter { width: 100%; }
         .comment-form { grid-template-columns: 1fr; }
+        .document-mode .workspace { grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: auto auto; }
+        .document-mode .document-pane, .document-mode .inspector { grid-column: 2; }
+        .document-mode .document-pane { grid-row: 1; width: calc(100% - 20px); margin: 10px; }
+        .document-mode .inspector { grid-row: 2; }
+        .document-editor { min-height: 50vh; }
       }
     </style>
   </head>
@@ -295,10 +359,14 @@
           <p>Browse model walkthroughs, slide presentations, and image galleries.</p>
         </div>
         <div class="project-gallery">
-          <div class="gallery-toolbar"><h2>Projects</h2><div class="gallery-actions"><span class="project-meta" id="gallery-status">Loading projects…</span><button type="button" class="upload-button" id="create-project" hidden>＋ New project</button></div></div>
+          <div class="gallery-toolbar">
+            <h2>Library</h2>
+            <div class="gallery-actions"><span class="project-meta" id="gallery-status">Loading projects…</span><button type="button" class="auth-button" id="create-section" hidden>＋ New section</button><button type="button" class="auth-button" id="create-collection" hidden>＋ New collection</button><button type="button" class="upload-button" id="create-project" hidden>＋ New project</button></div>
+          </div>
           <div class="gallery-filters">
             <input id="project-search" class="gallery-search" type="search" placeholder="Search projects by name" aria-label="Search projects by name" />
             <select id="section-filter" class="gallery-section-filter" aria-label="Filter by section"><option value="">All sections</option></select>
+            <select id="collection-filter" class="gallery-section-filter" aria-label="Filter by collection" hidden><option value="">All collections</option></select>
           </div>
           <div class="project-grid" id="project-grid"></div>
         </div>
@@ -314,14 +382,48 @@
           <option value="model">Model project</option>
           <option value="presentation">Presentation project</option>
           <option value="gallery">Gallery project</option>
+          <option value="document">Document project</option>
         </select>
         <label class="field-label" for="new-project-section">Section</label>
         <input class="field-control" id="new-project-section" maxlength="50" list="known-sections" value="Engineering" />
+        <label class="field-label" for="new-project-collection">Collection (optional)</label>
+        <input class="field-control" id="new-project-collection" maxlength="60" list="known-collections" placeholder="e.g. Minihouse" />
         <datalist id="known-sections"></datalist>
+        <datalist id="known-collections"></datalist>
         <div class="dialog-actions">
           <button class="auth-button" type="button" id="cancel-project">Cancel</button>
           <button class="upload-button" type="submit">Create project</button>
         </div>
+      </form>
+    </dialog>
+    <dialog class="project-dialog" id="section-dialog">
+      <form class="dialog-body" id="section-form">
+        <h2>New section</h2>
+        <p>Sections are the top-level divisions in your library.</p>
+        <label class="field-label" for="section-name">Section name</label>
+        <input class="field-control" id="section-name" maxlength="50" placeholder="Engineering" required />
+        <div class="dialog-actions"><button type="button" class="auth-button" id="cancel-section">Cancel</button><button type="submit" class="upload-button">Create section</button></div>
+      </form>
+    </dialog>
+    <dialog class="project-dialog" id="collection-dialog">
+      <form class="dialog-body" id="collection-form">
+        <h2>New collection</h2>
+        <p>Collections group related projects inside a section.</p>
+        <label class="field-label" for="collection-name">Collection name</label>
+        <input class="field-control" id="collection-name" maxlength="60" placeholder="Minihouse" required />
+        <div class="dialog-actions"><button type="button" class="auth-button" id="cancel-collection">Cancel</button><button type="submit" class="upload-button">Create collection</button></div>
+      </form>
+    </dialog>
+    <dialog class="shortcut-dialog" id="shortcut-dialog">
+      <form class="dialog-body" id="shortcut-form">
+        <h2>Editor shortcuts</h2>
+        <p>Use a key or modifier combo such as Ctrl+S. Shortcuts pause while you type in a field.</p>
+        <label class="shortcut-row">Save project<input id="shortcut-save" value="Ctrl+S" /></label>
+        <label class="shortcut-row">Add text<input id="shortcut-text" value="T" /></label>
+        <label class="shortcut-row">Add item<input id="shortcut-item" value="N" /></label>
+        <label class="shortcut-row">Previous item<input id="shortcut-previous" value="ArrowLeft" /></label>
+        <label class="shortcut-row">Next item<input id="shortcut-next" value="ArrowRight" /></label>
+        <div class="dialog-actions"><button type="button" class="auth-button" id="cancel-shortcuts">Cancel</button><button type="submit" class="upload-button">Save shortcuts</button></div>
       </form>
     </dialog>
     <div class="app" id="app">
@@ -343,7 +445,80 @@
           <button type="button" class="share-button" id="present-button">View project&nbsp; ↗</button>
         </div>
       </header>
+      <section class="editor-ribbon" id="editor-ribbon" hidden>
+        <nav class="editor-tabs" role="tablist" aria-label="Editor tools">
+          <button type="button" role="tab" data-ribbon-tab="Edit" aria-selected="true">Edit</button>
+          <button type="button" role="tab" data-ribbon-tab="Insert" aria-selected="false">Insert</button>
+          <button type="button" role="tab" data-ribbon-tab="Format" aria-selected="false">Format</button>
+          <button type="button" role="tab" data-ribbon-tab="Tools" aria-selected="false">Tools</button>
+        </nav>
+        <div class="ribbon-panels">
+          <div class="ribbon-panel ribbon-tools" data-ribbon-panel="Edit">
+            <button type="button" id="ribbon-undo" title="Undo">↶</button>
+            <button type="button" id="ribbon-redo" title="Redo">↷</button>
+            <button type="button" id="ribbon-save" title="Save project">Save</button>
+          </div>
+          <div class="ribbon-panel ribbon-tools" data-ribbon-panel="Insert" hidden>
+            <button type="button" id="add-text">＋ Text</button>
+            <div class="drawing-toolbar" id="drawing-toolbar" role="toolbar" aria-label="Drawing tools">
+              <button type="button" data-shape-tool="select" title="Select and move">↖</button>
+              <button type="button" data-shape-tool="line" title="Draw line">╱</button>
+              <button type="button" data-shape-tool="rect" title="Draw rectangle">□</button>
+              <button type="button" data-shape-tool="circle" title="Draw ellipse">◯</button>
+              <button type="button" data-shape-tool="polygon" title="Draw polygon">⬡</button>
+              <input type="color" id="shape-stroke" value="#242522" aria-label="Line color" />
+              <input type="number" id="shape-width" min="1" max="20" value="3" aria-label="Line width" />
+              <input type="color" id="shape-fill" value="#bdff71" aria-label="Fill color" />
+              <label><input type="checkbox" id="shape-filled" /> Fill</label>
+              <button type="button" id="remove-shape" title="Remove selected shape">Remove</button>
+              <button type="button" id="finish-polygon" hidden>Finish polygon</button>
+            </div>
+          </div>
+            <div class="ribbon-panel ribbon-tools" data-ribbon-panel="Format" hidden>
+            <div class="text-tools" id="text-tools" role="toolbar" aria-label="Text tools">
+              <button type="button" data-format="bold" title="Bold"><strong>B</strong></button>
+              <button type="button" data-format="italic" title="Italic"><em>I</em></button>
+              <button type="button" data-format="underline" title="Underline"><u>U</u></button>
+              <select id="text-size" aria-label="Text size"><option value="14">14</option><option value="18" selected>18</option><option value="24">24</option><option value="32">32</option><option value="48">48</option></select>
+              <select id="text-font" aria-label="Font"><option value="DM Sans">DM Sans</option><option value="Manrope">Manrope</option><option value="Georgia">Georgia</option></select>
+              <select id="text-line-height" aria-label="Line spacing"><option value="1.2">Tight</option><option value="1.5" selected>Normal</option><option value="1.8">Loose</option></select>
+              <input type="color" id="text-color" value="#242522" aria-label="Text color" />
+              <select id="text-align" aria-label="Text alignment"><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select>
+              <button type="button" id="remove-text" title="Remove selected text">Remove</button>
+            </div>
+            <div class="document-toolbar" id="document-toolbar" role="toolbar" aria-label="Document formatting">
+              <button type="button" data-document-format="undo" title="Undo">↶</button>
+              <button type="button" data-document-format="redo" title="Redo">↷</button>
+              <button type="button" data-document-format="bold" title="Bold"><strong>B</strong></button>
+              <button type="button" data-document-format="italic" title="Italic"><em>I</em></button>
+              <button type="button" data-document-format="underline" title="Underline"><u>U</u></button>
+              <button type="button" data-document-format="justifyLeft" title="Align left">Left</button>
+              <button type="button" data-document-format="justifyCenter" title="Align center">Center</button>
+              <button type="button" data-document-format="justifyRight" title="Align right">Right</button>
+              <button type="button" data-document-format="indent" title="Indent">Indent</button>
+              <button type="button" data-document-format="outdent" title="Outdent">Outdent</button>
+              <select id="document-block" aria-label="Text style"><option value="p">Paragraph</option><option value="h1">Heading 1</option><option value="h2">Heading 2</option><option value="h3">Heading 3</option></select>
+              <button type="button" data-document-format="insertUnorderedList" title="Bulleted list">• List</button>
+              <button type="button" data-document-format="insertOrderedList" title="Numbered list">1. List</button>
+              <input type="color" id="document-color" value="#242522" aria-label="Text color" />
+              <select id="document-font" aria-label="Font"><option value="DM Sans">DM Sans</option><option value="Manrope">Manrope</option><option value="Georgia">Georgia</option></select>
+              <select id="document-size" aria-label="Text size"><option value="3">Small</option><option value="4" selected>Normal</option><option value="5">Large</option><option value="6">Title</option></select>
+              <select id="document-spacing" aria-label="Line spacing"><option value="1.4">Tight spacing</option><option value="1.65" selected>Normal spacing</option><option value="1.9">Loose spacing</option></select>
+            </div>
+          </div>
+          <div class="ribbon-panel ribbon-tools" data-ribbon-panel="Tools" hidden>
+            <button type="button" class="icon-button" id="editor-settings" title="Editor settings" aria-label="Editor settings">⚙</button>
+            <button type="button" class="icon-button" id="ribbon-camera" title="Reset camera" aria-label="Reset camera">⟳</button>
+            <span class="key-hint">Shortcuts pause while you type in a field.</span>
+          </div>
+        </div>
+      </section>
       <main class="workspace">
+        <nav class="side-tabs" id="side-tabs" aria-label="Workspace navigation">
+          <button type="button" class="side-tab" data-side-tab="outline" aria-current="page" title="Outline"><span>☷</span><span>Outline</span></button>
+          <button type="button" class="side-tab" data-side-tab="project" title="Project"><span>▤</span><span>Project</span></button>
+          <button type="button" class="side-tab" data-side-tab="comments" title="Comments"><span>▱</span><span>Comments</span></button>
+        </nav>
         <aside class="sidebar">
           <div class="side-heading">
             <div class="eyebrow">Workspace</div>
@@ -363,11 +538,11 @@
             </div>
           </div>
         </aside>
-        <section class="stage-column">
+        <section class="stage-column" id="stage-column">
           <div class="stage-toolbar">
             <div class="stage-location"><span>Process</span><span> / </span><strong id="stage-step-name">Step 01</strong></div>
             <div class="toolbar-right">
-              <span class="key-hint">Drag to orbit · Scroll to zoom</span>
+              <span class="key-hint" id="stage-hint">Drag to orbit · Scroll to zoom</span>
               <button type="button" class="icon-button" id="reset-camera" title="Reset camera" aria-label="Reset camera">
                 <svg viewBox="0 0 24 24" fill="none"><path d="M4.5 10a7.5 7.5 0 1 1 .8 5.2M4.5 4v6h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
@@ -375,13 +550,15 @@
           </div>
           <div class="stage" id="stage">
             <canvas id="model-canvas" aria-label="Interactive 3D model viewer"></canvas>
+            <svg class="drawing-layer" id="drawing-layer" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="Project drawings"></svg>
+            <div class="floating-text-layer" id="floating-text-layer"></div>
             <div class="stage-label"><span class="mini-dot"></span><span id="model-label">No model loaded</span></div>
             <div class="hotspot-layer" id="hotspot-layer"></div>
             <div class="empty-state" id="empty-state">
               <div class="empty-card">
                 <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="m4.5 7.7 7.5 4.2 7.5-4.2M12 12v9" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
-                <h2>This step is ready for its story</h2>
-                <p>Add a 3D model, an image gallery, or combine models and images in one step.</p>
+                <h2></h2>
+                <p></p>
                 <button type="button" class="upload-button" id="empty-upload">Add a model or image</button>
               </div>
             </div>
@@ -403,6 +580,11 @@
             </div>
           </div>
         </section>
+        <section class="document-pane" id="document-pane" hidden>
+          <div class="document-page">
+            <div id="document-editor" class="document-editor" contenteditable="false" role="textbox" aria-label="Document content" aria-multiline="true" spellcheck="true" tabindex="0"></div>
+          </div>
+        </section>
         <aside class="inspector" id="inspector">
           <div class="inspector-heading">
             <div class="eyebrow">Step settings</div>
@@ -412,12 +594,14 @@
             <div class="section-title"><h2>Project appearance</h2><span id="project-type-label">Model</span></div>
             <label class="field-label" for="project-section-input">Section</label>
             <input class="text-field" id="project-section-input" maxlength="50" list="known-sections" />
+            <label class="field-label" for="project-collection-input">Collection</label>
+            <input class="text-field" id="project-collection-input" maxlength="60" list="known-collections" />
             <div class="theme-fields">
               <label class="color-field">Accent <input type="color" id="theme-accent" value="#bdff71" /></label>
               <label class="color-field">Canvas <input type="color" id="theme-background" value="#fbfbf9" /></label>
             </div>
           </section>
-          <section class="inspector-section">
+          <section class="inspector-section" id="step-settings">
             <div class="section-title"><h2>Step details</h2><span id="detail-number">01</span></div>
             <label class="field-label" for="step-title-input">Title</label>
             <input class="text-field" id="step-title-input" maxlength="70" value="First step" />
@@ -439,7 +623,11 @@
             <div class="model-file" id="video-file-card" hidden><span class="file-info"><div class="file-name" id="video-file-name"></div><div class="file-type">Video attached to this item</div></span><button type="button" class="text-button" id="remove-video">Remove</button></div>
             <p class="format-note">MP4, WebM, or Ogg video. Maximum 100 MB.</p>
           </section>
-          <section class="inspector-section">
+          <section class="inspector-section" id="text-section">
+            <div class="section-title"><h2>Text</h2><span id="text-count">0 objects</span></div>
+            <div class="marker-list" id="text-list"></div>
+          </section>
+          <section class="inspector-section" id="images-upload-section">
             <div class="section-title"><h2>Images</h2><span id="image-count">0 images</span></div>
             <button type="button" class="hotspot-add" id="add-image">＋ Add image to this step</button>
             <p class="format-note">Images can be arranged freely on the stage. Select one to drag, resize, or rotate it.</p>
@@ -450,7 +638,7 @@
               <button type="button" class="text-button" id="delete-image">Remove image</button>
             </div>
           </section>
-          <section class="inspector-section">
+          <section class="inspector-section" id="hotspots-section">
             <div class="section-title"><h2>Hotspots</h2><span id="hotspot-count">0 markers</span></div>
             <button type="button" class="hotspot-add" id="add-hotspot">
               <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -493,6 +681,7 @@
       import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
       import { STLLoader } from "three/addons/loaders/STLLoader.js";
       import { createClient } from "@supabase/supabase-js";
+      import DOMPurify from "dompurify";
       import { MANAGER_EMAIL, MEDIA_BUCKET, SUPABASE_ANON_KEY, SUPABASE_URL } from "./supabase-config.js";
 
       const supabase = SUPABASE_URL.includes("YOUR_PROJECT_ID") || SUPABASE_ANON_KEY.includes("YOUR_SUPABASE")
@@ -504,6 +693,9 @@
       const fileInput = document.querySelector("#file-input");
       const imageInput = document.querySelector("#image-input");
       const videoInput = document.querySelector("#video-input");
+      const documentEditor = document.querySelector("#document-editor");
+      const drawingLayer = document.querySelector("#drawing-layer");
+      const floatingTextLayer = document.querySelector("#floating-text-layer");
       const emptyState = document.querySelector("#empty-state");
       const loading = document.querySelector("#loading");
       const markerLayer = document.querySelector("#hotspot-layer");
@@ -536,6 +728,8 @@
       let modelObject = null;
       let project = null;
       let projectList = [];
+      let sectionList = [];
+      let collectionList = [];
       let currentProjectId = null;
       let managerSession = null;
       let isManager = false;
@@ -547,10 +741,18 @@
       let objectUrl = null;
       let modelLoadToken = 0;
       let saveTimer;
+      let pendingProjectSave = null;
       let pointerStart = null;
       let selectedImageId = null;
       let activeImageDrag = null;
       let imageUploadTarget = "step";
+      let selectedTextId = null;
+      let drawingTool = "select";
+      let drawingStart = null;
+      let drawingPreview = null;
+      let polygonPoints = [];
+      let selectedShapeId = null;
+      let textDrag = null;
       let saveInProgress = Promise.resolve();
 
       function makeId() {
@@ -558,7 +760,7 @@
       }
 
       function newStep(title = "New step") {
-        return { id: makeId(), title, description: "", modelPath: null, modelName: "", videoPath: null, videoUrl: null, videoName: "", images: [], hotspots: [] };
+        return { id: makeId(), title, description: "", modelPath: null, modelName: "", videoPath: null, videoUrl: null, videoName: "", images: [], hotspots: [], texts: [], shapes: [] };
       }
 
       function normalizeProject(row) {
@@ -566,8 +768,11 @@
         return {
           id: row.id,
           title: typeof row.title === "string" ? row.title : "Untitled process",
-          project_type: ["model", "presentation", "gallery"].includes(row.project_type) ? row.project_type : "model",
+          project_type: ["model", "presentation", "gallery", "document"].includes(row.project_type) ? row.project_type : "model",
           section: typeof row.section === "string" && row.section.trim() ? row.section.trim() : "Engineering",
+          collection: typeof row.collection === "string" ? row.collection : "",
+          document_html: typeof row.document_html === "string" ? DOMPurify.sanitize(row.document_html) : "<h1></h1>",
+          document_line_height: ["1.4", "1.65", "1.9"].includes(row.document_line_height) ? row.document_line_height : "1.65",
           theme: {
             accent: /^#[0-9a-f]{6}$/i.test(row.theme?.accent) ? row.theme.accent : "#bdff71",
             background: /^#[0-9a-f]{6}$/i.test(row.theme?.background) ? row.theme.background : "#fbfbf9"
@@ -579,6 +784,8 @@
             title: typeof step.title === "string" ? step.title : "Untitled step",
             description: typeof step.description === "string" ? step.description : "",
             hotspots: Array.isArray(step.hotspots) ? step.hotspots.filter((item) => item && Number.isFinite(item.x) && Number.isFinite(item.y) && Number.isFinite(item.z)).map((item) => ({...item, imagePath: item.imagePath || null, imageUrl: item.imageUrl || null})) : [],
+            texts: Array.isArray(step.texts) ? step.texts.filter((item) => item && typeof item.text === "string").map((item) => ({ ...item, id: item.id || makeId(), x: Number.isFinite(item.x) ? item.x : 50, y: Number.isFinite(item.y) ? item.y : 50, fontSize: Number.isFinite(item.fontSize) ? item.fontSize : 18, color: /^#[0-9a-f]{6}$/i.test(item.color) ? item.color : "#242522", align: ["left", "center", "right"].includes(item.align) ? item.align : "left", kind: item.kind === "fixed" ? "fixed" : "floating" })) : [],
+            shapes: Array.isArray(step.shapes) ? step.shapes.filter((item) => item && ["line", "rect", "circle", "polygon"].includes(item.type) && typeof item.points === "string").map((item) => ({ ...item, id: item.id || makeId() })) : [],
             images: Array.isArray(step.images) ? step.images.filter((item) => item && typeof item.path === "string" && typeof item.url === "string").map((item) => ({
               ...item,
               id: item.id || makeId(),
@@ -627,28 +834,71 @@
         return activeProject();
       }
 
+      function syncProjectCard() {
+        const listedProject = projectList.find((item) => item.id === project?.id);
+        if (!listedProject || !project) return;
+        Object.assign(listedProject, {
+          title: project.title,
+          project_type: project.project_type,
+          section: project.section,
+          collection: project.collection,
+          theme: project.theme,
+          steps: project.steps
+        });
+      }
+
       function persist() {
+        if (!project || !isManager || !supabase) return;
+        pendingProjectSave = {
+          id: project.id,
+          title: project.title,
+          project_type: project.project_type,
+          section: project.section,
+          collection: project.collection,
+          document_html: DOMPurify.sanitize(project.document_html),
+          document_line_height: project.document_line_height,
+          theme: structuredClone(project.theme),
+          steps: structuredClone(project.steps),
+          updated_at: new Date().toISOString()
+        };
         clearTimeout(saveTimer);
         document.querySelector("#save-status").textContent = "Saving…";
-        saveTimer = setTimeout(() => {
-          if (!project || !isManager || !supabase) return;
+        saveTimer = setTimeout(() => { void flushPendingSave(); }, 500);
+      }
+
+      async function flushPendingSave() {
+        clearTimeout(saveTimer);
+        saveTimer = null;
+        while (pendingProjectSave) {
+          const snapshot = pendingProjectSave;
+          pendingProjectSave = null;
           saveInProgress = saveInProgress.then(async () => {
             const { error } = await supabase.from("projects").update({
-              title: project.title,
-              project_type: project.project_type,
-              section: project.section,
-              theme: project.theme,
-              steps: project.steps,
-              updated_at: new Date().toISOString()
-            }).eq("id", project.id);
+              title: snapshot.title,
+              project_type: snapshot.project_type,
+              section: snapshot.section,
+              collection: snapshot.collection,
+              document_html: snapshot.document_html,
+              document_line_height: snapshot.document_line_height,
+              theme: snapshot.theme,
+              steps: snapshot.steps,
+              updated_at: snapshot.updated_at
+            }).eq("id", snapshot.id).select("id").single();
             if (error) throw error;
-            document.querySelector("#save-status").textContent = "Changes saved";
+            if (project?.id === snapshot.id && pendingProjectSave?.id !== snapshot.id) {
+              document.querySelector("#save-status").textContent = "Changes saved";
+            }
+            return true;
           }).catch((error) => {
             console.error("Could not save the project.", error);
-            document.querySelector("#save-status").textContent = "Save failed";
+            if (!pendingProjectSave || pendingProjectSave.id !== snapshot.id) pendingProjectSave = snapshot;
+            if (project?.id === snapshot.id) document.querySelector("#save-status").textContent = "Save failed";
             showToast("Could not save changes. Check the Supabase setup and try again.");
+            return false;
           });
-        }, 500);
+          if (!await saveInProgress) return false;
+        }
+        return await saveInProgress;
       }
 
       function showToast(message) {
@@ -675,10 +925,14 @@
         }
         const query = document.querySelector("#project-search").value.trim().toLocaleLowerCase();
         const selectedSection = document.querySelector("#section-filter").value;
+        const selectedCollection = document.querySelector("#collection-filter").value;
         const filteredProjects = projectList.filter((item) =>
           (!query || item.title.toLocaleLowerCase().includes(query))
           && (!selectedSection || item.section === selectedSection)
-        );
+          && (!selectedCollection || item.collection === selectedCollection)
+        ).sort((left, right) => (left.section || "").localeCompare(right.section || "")
+          || (left.collection || "").localeCompare(right.collection || "")
+          || left.title.localeCompare(right.title));
         if (!filteredProjects.length) {
           status.textContent = projectList.length ? "No matching projects" : "0 projects";
           const empty = document.createElement("div");
@@ -692,7 +946,18 @@
           return;
         }
         status.textContent = `${formatCount(filteredProjects.length, "project")} · ${projectList.length} total`;
+        let lastGroup = null;
         filteredProjects.forEach((item) => {
+          const groupLabel = selectedSection
+            ? item.collection || "Other projects"
+            : `${item.section || "Engineering"} · ${item.collection || "Other projects"}`;
+          if (groupLabel !== lastGroup) {
+            const heading = document.createElement("h3");
+            heading.className = "collection-heading";
+            heading.textContent = groupLabel;
+            grid.append(heading);
+            lastGroup = groupLabel;
+          }
           const card = document.createElement("button");
           card.type = "button";
           card.className = "project-card";
@@ -704,7 +969,7 @@
           title.textContent = item.title || "Untitled process";
           const typeTag = document.createElement("span");
           typeTag.className = "project-tag";
-          typeTag.textContent = `${item.section || "Engineering"} · ${projectTypeName(item.project_type)}`;
+          typeTag.textContent = `${projectTypeName(item.project_type)}${item.collection ? ` · ${item.collection}` : ""}`;
           const date = document.createElement("span");
           date.className = "project-card-date";
           date.textContent = `Created ${new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(item.created_at))}`;
@@ -719,15 +984,15 @@
       }
 
       function projectTypeName(type) {
-        return ({ model: "Model", presentation: "Presentation", gallery: "Gallery" })[type] || "Model";
+        return ({ model: "Model", presentation: "Presentation", gallery: "Gallery", document: "Document" })[type] || "Model";
       }
 
       function projectItemName(type) {
-        return ({ model: "step", presentation: "slide", gallery: "image" })[type] || "step";
+        return ({ model: "step", presentation: "slide", gallery: "image", document: "page" })[type] || "step";
       }
 
       function updateSectionChoices() {
-        const sections = [...new Set(projectList.map((item) => item.section || "Engineering"))].sort((a, b) => a.localeCompare(b));
+        const sections = [...new Set([...sectionList, ...projectList.map((item) => item.section || "Engineering")])].sort((a, b) => a.localeCompare(b));
         const filter = document.querySelector("#section-filter");
         const selected = filter.value;
         filter.replaceChildren(new Option("All sections", ""));
@@ -735,6 +1000,34 @@
         if (sections.includes(selected)) filter.value = selected;
         const datalist = document.querySelector("#known-sections");
         datalist.replaceChildren(...sections.map((section) => Object.assign(document.createElement("option"), { value: section })));
+        const collections = [...new Set([
+          ...collectionList.filter((item) => !selected || item.section_name === selected).map((item) => item.name),
+          ...projectList.filter((item) => !selected || item.section === selected).map((item) => item.collection).filter(Boolean)
+        ])].sort((a, b) => a.localeCompare(b));
+        const collectionFilter = document.querySelector("#collection-filter");
+        collectionFilter.hidden = !selected;
+        const selectedCollection = collectionFilter.value;
+        collectionFilter.replaceChildren(new Option("All collections", ""));
+        collections.forEach((collection) => collectionFilter.add(new Option(collection, collection)));
+        if (collections.includes(selectedCollection)) collectionFilter.value = selectedCollection;
+        document.querySelector("#known-collections").replaceChildren(...collections.map((collection) => Object.assign(document.createElement("option"), { value: collection })));
+        document.querySelector("#create-section").hidden = !isManager;
+        document.querySelector("#create-collection").hidden = !isManager || !selected;
+        document.querySelector("#create-project").hidden = !isManager || !selected;
+      }
+
+      async function refreshSections() {
+        if (!supabase) return;
+        const [sectionsResult, collectionsResult] = await Promise.all([
+          supabase.from("project_sections").select("name").order("name"),
+          supabase.from("project_collections").select("name").order("name")
+        ]);
+        if (sectionsResult.error || collectionsResult.error) {
+          console.error("Could not load section lists.", sectionsResult.error || collectionsResult.error);
+          return;
+        }
+        sectionList = (sectionsResult.data || []).map((item) => item.name);
+        collectionList = collectionsResult.data || [];
       }
 
       async function refreshProjects() {
@@ -744,7 +1037,7 @@
         }
         document.querySelector("#gallery-status").textContent = "Loading projects…";
         const { data, error } = await supabase.from("projects")
-          .select("id,title,project_type,section,theme,steps,created_at,updated_at")
+          .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,created_at,updated_at")
           .order("created_at", { ascending: false });
         if (error) {
           console.error("Could not load the project gallery.", error);
@@ -753,6 +1046,42 @@
           return;
         }
         projectList = data || [];
+        renderGallery();
+      }
+
+      async function createSection() {
+        if (!isManager || !supabase) return;
+        const name = document.querySelector("#section-name").value.trim();
+        if (!name) return;
+        const { error } = await supabase.from("project_sections").upsert({ name }, { onConflict: "name", ignoreDuplicates: true });
+        if (error) {
+          console.error("Could not create section.", error);
+          showToast("Could not create section. Check the manager access policy.");
+          return;
+        }
+        document.querySelector("#section-dialog").close();
+        document.querySelector("#section-name").value = "";
+        await refreshSections();
+        document.querySelector("#section-filter").value = name;
+        renderGallery();
+      }
+
+      async function createCollection() {
+        if (!isManager || !supabase) return;
+        const section = document.querySelector("#section-filter").value;
+        const name = document.querySelector("#collection-name").value.trim();
+        if (!section || !name) return;
+        const { error } = await supabase.from("project_collections").upsert({ section_name: section, name }, { onConflict: "section_name,name", ignoreDuplicates: true });
+        if (error) {
+          console.error("Could not create collection.", error);
+          showToast("Could not create collection. Check the manager access policy.");
+          return;
+        }
+        document.querySelector("#collection-dialog").close();
+        document.querySelector("#collection-name").value = "";
+        await refreshSections();
+        updateSectionChoices();
+        document.querySelector("#collection-filter").value = name;
         renderGallery();
       }
 
@@ -868,6 +1197,7 @@
         document.querySelector("#manager-session").textContent = `${MANAGER_EMAIL} · Projects`;
         document.querySelector(".mode-switch").hidden = !allowed;
         document.querySelector("#present-button").hidden = !allowed;
+        document.querySelector("#editor-ribbon").hidden = !allowed || mode !== "edit";
         document.querySelector("#add-step").hidden = !allowed;
         document.querySelector("#delete-step").hidden = !allowed;
         document.querySelector("#inspector").hidden = !allowed || mode === "view";
@@ -878,6 +1208,7 @@
         document.querySelector("#step-title-input").readOnly = !allowed;
         document.querySelector("#step-description-input").readOnly = !allowed;
         document.querySelector("#project-title-input").readOnly = !allowed;
+        updateEditorChrome();
         if (user && !allowed) {
           showToast(`Only ${MANAGER_EMAIL} can edit projects.`);
           await supabase.auth.signOut();
@@ -889,10 +1220,12 @@
           renderInspector();
           refreshComments();
         }
+        await refreshSections();
         await refreshProjects();
       }
 
       async function openProject(row) {
+        if (!await flushPendingSave()) return;
         project = normalizeProject(row);
         if (!project.steps.length) project.steps.push(newStep("First step"));
         currentProjectId = project.id;
@@ -901,6 +1234,15 @@
         selectedImageId = null;
         gallery.hidden = true;
         app.classList.add("open");
+        app.classList.toggle("document-mode", project.project_type === "document");
+        document.querySelector("#document-pane").hidden = project.project_type !== "document";
+        documentEditor.innerHTML = DOMPurify.sanitize(project.document_html);
+        documentEditor.style.lineHeight = project.document_line_height;
+        documentEditor.contentEditable = String(isManager && mode === "edit" && project.project_type === "document");
+        if (project.project_type === "document" && isManager && mode === "edit") {
+          requestAnimationFrame(() => documentEditor.focus());
+        }
+        document.querySelector("#document-spacing").value = project.document_line_height;
         app.style.setProperty("--accent", project.theme.accent);
         app.style.setProperty("--project-background", project.theme.background);
         document.querySelector("#comments-section").hidden = false;
@@ -913,11 +1255,14 @@
         await loadCurrentModel();
       }
 
-      function showGallery() {
+      async function showGallery() {
+        if (!await flushPendingSave()) return;
         project = null;
         currentProjectId = null;
         currentStepId = null;
         app.classList.remove("open");
+        app.classList.remove("document-mode");
+        document.querySelector("#document-pane").hidden = true;
         document.querySelector("#comments-section").hidden = true;
         gallery.hidden = false;
         history.replaceState({}, "", location.pathname);
@@ -930,11 +1275,24 @@
         const type = document.querySelector("#new-project-type").value;
         const title = document.querySelector("#new-project-title").value.trim() || "Untitled project";
         const section = document.querySelector("#new-project-section").value.trim() || "Engineering";
-        const itemLabel = type === "presentation" ? "Slide 1" : type === "gallery" ? "Image 1" : "First step";
+        const collection = document.querySelector("#new-project-collection").value.trim();
+        const itemLabel = type === "presentation" ? "Slide 1" : type === "gallery" ? "Image 1" : type === "document" ? "Page 1" : "First step";
         const step = newStep(itemLabel);
+        const sectionResult = await supabase.from("project_sections").upsert({ name: section }, { onConflict: "name", ignoreDuplicates: true });
+        if (sectionResult.error) {
+          showToast("Create the section before adding a project.");
+          return;
+        }
+        if (collection) {
+          const collectionResult = await supabase.from("project_collections").upsert({ section_name: section, name: collection }, { onConflict: "section_name,name", ignoreDuplicates: true });
+          if (collectionResult.error) {
+            showToast("Could not add project to that collection.");
+            return;
+          }
+        }
         const { data, error } = await supabase.from("projects")
-          .insert({ title, project_type: type, section, theme: { accent: "#bdff71", background: "#fbfbf9" }, steps: [step] })
-          .select("id,title,project_type,section,theme,steps,created_at,updated_at")
+          .insert({ title, project_type: type, section, collection, document_html: "<h1></h1>", document_line_height: "1.65", theme: { accent: "#bdff71", background: "#fbfbf9" }, steps: [step] })
+          .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,created_at,updated_at")
           .single();
         if (error) {
           console.error("Could not create the project.", error);
@@ -943,6 +1301,9 @@
         }
         projectList.unshift(data);
         document.querySelector("#project-dialog").close();
+        await refreshSections();
+        document.querySelector("#section-filter").value = section;
+        document.querySelector("#collection-filter").value = collection;
         renderGallery();
         await openProject(data);
       }
@@ -956,6 +1317,8 @@
         list.replaceChildren();
         if (!project) return;
         const itemLabel = projectItemName(project.project_type);
+        document.querySelector("#add-step").hidden = !isManager || mode !== "edit" || project.project_type === "document";
+        document.querySelector("#delete-step").hidden = !isManager || mode !== "edit" || project.project_type === "document";
         document.querySelector("#add-step").innerHTML = `<span>+</span> Add ${itemLabel === "step" ? "a step" : itemLabel === "slide" ? "a slide" : "an image"}`;
         document.querySelector("#timeline-label").textContent = project.project_type === "model" ? "Timeline" : `${projectTypeName(project.project_type)} items`;
         project.steps.forEach((step, index) => {
@@ -1110,6 +1473,183 @@
         });
       }
 
+      function renderStageTexts(step) {
+        floatingTextLayer.replaceChildren();
+        const texts = step?.texts || [];
+        const textList = document.querySelector("#text-list");
+        textList.replaceChildren();
+        document.querySelector("#text-count").textContent = formatCount(texts.length, "object");
+        texts.forEach((item) => {
+          const row = document.createElement("div");
+          row.className = "marker-row";
+          const name = document.createElement("span");
+          name.className = "marker-name";
+          name.textContent = item.text || "Text";
+          const select = document.createElement("button");
+          select.type = "button";
+          select.className = "marker-edit";
+          select.textContent = item.kind === "floating" ? "Floating" : "Fixed";
+          select.addEventListener("click", () => {
+            selectedTextId = item.id;
+            renderStageTexts(step);
+          });
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "marker-delete";
+          remove.setAttribute("aria-label", "Remove text");
+          remove.textContent = "×";
+          remove.addEventListener("click", () => {
+            step.texts = step.texts.filter((text) => text.id !== item.id);
+            if (selectedTextId === item.id) selectedTextId = null;
+            persist();
+            renderStageTexts(step);
+          });
+          row.append(name, select, remove);
+          textList.append(row);
+          const wrapper = document.createElement("div");
+          wrapper.className = `floating-text ${item.kind}${item.id === selectedTextId ? " selected" : ""}`;
+          wrapper.dataset.textId = item.id;
+          wrapper.style.left = `${item.x}%`;
+          wrapper.style.top = `${item.y}%`;
+          wrapper.style.fontSize = `${item.fontSize}px`;
+          wrapper.style.color = item.color;
+          wrapper.style.textAlign = item.align;
+          wrapper.style.fontFamily = item.fontFamily || "DM Sans";
+          wrapper.style.lineHeight = item.lineHeight || "1.5";
+          if (item.kind === "floating" && isManager && mode === "edit") {
+            const handle = document.createElement("button");
+            handle.type = "button";
+            handle.className = "text-drag-handle";
+            handle.textContent = "Move";
+            handle.title = "Move text";
+            handle.addEventListener("pointerdown", (event) => {
+              event.preventDefault();
+              textDrag = { id: item.id, startX: event.clientX, startY: event.clientY, originX: item.x, originY: item.y };
+              handle.setPointerCapture(event.pointerId);
+            });
+            handle.addEventListener("pointermove", (event) => {
+              if (!textDrag || textDrag.id !== item.id) return;
+              const rect = stage.getBoundingClientRect();
+              item.x = Math.min(95, Math.max(5, textDrag.originX + (event.clientX - textDrag.startX) / rect.width * 100));
+              item.y = Math.min(95, Math.max(5, textDrag.originY + (event.clientY - textDrag.startY) / rect.height * 100));
+              wrapper.style.left = `${item.x}%`;
+              wrapper.style.top = `${item.y}%`;
+            });
+            const endDrag = () => {
+              if (!textDrag || textDrag.id !== item.id) return;
+              textDrag = null;
+              persist();
+            };
+            handle.addEventListener("pointerup", endDrag);
+            handle.addEventListener("pointercancel", endDrag);
+            wrapper.append(handle);
+          }
+          const content = document.createElement("div");
+          content.className = "floating-text-content";
+          content.contentEditable = String(isManager && mode === "edit");
+          content.spellcheck = true;
+          if (item.html) content.innerHTML = DOMPurify.sanitize(item.html);
+          else content.textContent = item.text || "Edit text";
+          content.addEventListener("focus", () => {
+            selectedTextId = item.id;
+            document.querySelector("#text-size").value = String(item.fontSize);
+            document.querySelector("#text-color").value = item.color;
+            document.querySelector("#text-align").value = item.align;
+            document.querySelector("#text-font").value = item.fontFamily || "DM Sans";
+            document.querySelector("#text-line-height").value = item.lineHeight || "1.5";
+          });
+          content.addEventListener("input", () => {
+            item.html = DOMPurify.sanitize(content.innerHTML);
+            item.text = content.innerText;
+            persist();
+          });
+          wrapper.append(content);
+          floatingTextLayer.append(wrapper);
+        });
+      }
+
+      function stagePoint(event) {
+        const rect = stage.getBoundingClientRect();
+        return {
+          x: Math.round(Math.min(1000, Math.max(0, (event.clientX - rect.left) / rect.width * 1000))),
+          y: Math.round(Math.min(1000, Math.max(0, (event.clientY - rect.top) / rect.height * 1000)))
+        };
+      }
+
+      function drawShapeElement(shape) {
+        const points = shape.points.trim().split(/\s+/).map((point) => point.split(",").map(Number));
+        const first = points[0] || [0, 0];
+        const last = points.at(-1) || first;
+        let element;
+        if (shape.type === "line") {
+          element = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          element.setAttribute("x1", first[0]);
+          element.setAttribute("y1", first[1]);
+          element.setAttribute("x2", last[0]);
+          element.setAttribute("y2", last[1]);
+        } else if (shape.type === "rect") {
+          element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+          element.setAttribute("x", Math.min(first[0], last[0]));
+          element.setAttribute("y", Math.min(first[1], last[1]));
+          element.setAttribute("width", Math.abs(last[0] - first[0]));
+          element.setAttribute("height", Math.abs(last[1] - first[1]));
+        } else if (shape.type === "circle") {
+          element = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+          element.setAttribute("cx", (first[0] + last[0]) / 2);
+          element.setAttribute("cy", (first[1] + last[1]) / 2);
+          element.setAttribute("rx", Math.abs(last[0] - first[0]) / 2);
+          element.setAttribute("ry", Math.abs(last[1] - first[1]) / 2);
+        } else {
+          element = document.createElementNS("http://www.w3.org/2000/svg", shape.type === "polygon" ? "polygon" : "polyline");
+          element.setAttribute("points", shape.points);
+        }
+        element.classList.add("shape");
+        if (shape.id === selectedShapeId) element.classList.add("selected");
+        element.dataset.shapeId = shape.id || "preview";
+        element.setAttribute("fill", shape.fill || "none");
+        element.setAttribute("stroke", shape.stroke || "#242522");
+        element.setAttribute("stroke-width", String(shape.strokeWidth || 3));
+        element.setAttribute("vector-effect", "non-scaling-stroke");
+        element.addEventListener("click", (event) => {
+          if (drawingTool !== "select" || !isManager) return;
+          event.stopPropagation();
+          selectedShapeId = shape.id;
+          document.querySelector("#shape-stroke").value = shape.stroke || "#242522";
+          document.querySelector("#shape-width").value = String(shape.strokeWidth || 3);
+          document.querySelector("#shape-filled").checked = shape.fill && shape.fill !== "none";
+          if (shape.fill && shape.fill !== "none") document.querySelector("#shape-fill").value = shape.fill;
+          renderStageShapes(getCurrentStep());
+        });
+        return element;
+      }
+
+      function renderStageShapes(step) {
+        drawingLayer.replaceChildren();
+        (step?.shapes || []).forEach((shape) => drawingLayer.append(drawShapeElement(shape)));
+        if (drawingPreview) drawingLayer.append(drawShapeElement(drawingPreview));
+        drawingLayer.classList.toggle("active", isManager && mode === "edit" && drawingTool !== "select");
+        document.querySelectorAll("[data-shape-tool]").forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.shapeTool === drawingTool));
+        });
+      }
+
+      function commitShape(type, points) {
+        if (points.length < (type === "polygon" ? 3 : 2)) return;
+        const shape = {
+          id: makeId(),
+          type,
+          points: points.map((point) => `${point.x},${point.y}`).join(" "),
+          stroke: document.querySelector("#shape-stroke").value,
+          strokeWidth: Number(document.querySelector("#shape-width").value) || 3,
+          fill: document.querySelector("#shape-filled").checked && type !== "line" ? document.querySelector("#shape-fill").value : "none"
+        };
+        getCurrentStep().shapes.push(shape);
+        selectedShapeId = shape.id;
+        drawingPreview = null;
+        persist();
+        renderStageShapes(getCurrentStep());
+      }
+
       function renderImages(step) {
         if (!step) return;
         const list = document.querySelector("#image-list");
@@ -1231,17 +1771,28 @@
         document.querySelector("#project-type-label").textContent = projectTypeName(project.project_type);
         document.querySelector("#project-section-input").value = project.section;
         document.querySelector("#project-section-input").readOnly = !isManager;
+        document.querySelector("#project-collection-input").value = project.collection;
+        document.querySelector("#project-collection-input").readOnly = !isManager;
         document.querySelector("#theme-accent").value = project.theme.accent;
         document.querySelector("#theme-accent").disabled = !isManager;
         document.querySelector("#theme-background").value = project.theme.background;
         document.querySelector("#theme-background").disabled = !isManager;
         document.querySelector("#model-section").hidden = project.project_type !== "model";
+        document.querySelector("#video-section").hidden = project.project_type === "document";
+        document.querySelector("#text-section").hidden = project.project_type === "document";
+        document.querySelector("#hotspots-section").hidden = project.project_type === "gallery" || project.project_type === "document";
+        documentEditor.contentEditable = String(isManager && mode === "edit" && project.project_type === "document");
+        if (project?.project_type === "document" && isManager && mode === "edit") {
+          requestAnimationFrame(() => documentEditor.focus());
+        }
+        document.querySelector("#document-pane").hidden = project.project_type !== "document";
         document.querySelector(".stage-label").hidden = project.project_type !== "model" || !step.modelPath;
-        document.querySelector(".key-hint").hidden = project.project_type !== "model" || !step.modelPath;
+        document.querySelector("#stage-hint").hidden = project.project_type !== "model" || !step.modelPath;
         document.querySelector("#reset-camera").hidden = project.project_type !== "model" || !step.modelPath;
         document.querySelector("#video-file-card").hidden = !step.videoPath;
         document.querySelector("#video-file-name").textContent = step.videoName || "Video";
         document.querySelector("#project-title-input").value = project.title;
+        document.querySelector("#project-title-input").readOnly = !isManager || mode !== "edit";
         document.querySelector("#inspector-step-name").textContent = step.title || "Untitled step";
         document.querySelector("#step-title-input").value = step.title;
         document.querySelector("#step-description-input").value = step.description;
@@ -1252,25 +1803,24 @@
         document.querySelector("#add-image").textContent = project.project_type === "presentation" ? "＋ Add image to this slide" : "＋ Add image to this item";
         document.querySelector("#empty-upload").textContent = project.project_type === "model" ? "Add a model or image" : project.project_type === "presentation" ? "Add an image to this slide" : "Add an image";
         document.querySelector("#caption-title").textContent = step.title || "Untitled step";
-        document.querySelector("#caption-description").textContent = step.description || "Add a model and describe what happens in this step.";
+        document.querySelector("#caption-description").textContent = step.description || (project.project_type === "document" ? "" : "Add a model and describe what happens in this step.");
         const itemName = project.project_type === "presentation" ? "Slide" : project.project_type === "gallery" ? "Image" : "Step";
         document.querySelector("#stage-step-name").textContent = `${itemName} ${String(index + 1).padStart(2, "0")}`;
         document.querySelector("#step-position").textContent = `${String(index + 1).padStart(2, "0")} / ${String(project.steps.length).padStart(2, "0")}`;
         document.querySelector("#previous-step").disabled = index <= 0;
         document.querySelector("#next-step").disabled = index >= project.steps.length - 1;
-        document.querySelector("#empty-state").hidden = !!step.modelPath || !!step.videoPath || step.images.length > 0;
-        document.querySelector("#empty-state h2").textContent = project.project_type === "presentation"
-          ? "This slide is ready for its story"
-          : project.project_type === "gallery" ? "This image is ready to add" : "This step is ready for its story";
-        document.querySelector("#empty-state p").textContent = project.project_type === "presentation"
-          ? "Add images and text to build this slide. You can also attach a video or place hotspots."
-          : project.project_type === "gallery" ? "Add an image to move through this gallery one image at a time." : "Add a 3D model, images, or video to describe this step.";
+        const showEmptyState = project.project_type !== "document" && isManager && mode === "edit" && !step.modelPath && !step.videoPath && step.images.length === 0;
+        document.querySelector("#empty-state").hidden = !showEmptyState;
+        updateEmptyStateCopy();
         document.querySelector("#model-label").textContent = step.modelName || "No model loaded";
         applyProjectTheme();
         renderStepVideo(step);
         renderImages(step);
         renderSteps();
         renderHotspots();
+        renderStageTexts(step);
+        renderStageShapes(step);
+        updateEditorChrome();
       }
 
       function renderStepCopy() {
@@ -1278,8 +1828,33 @@
         if (!step) return;
         document.querySelector("#inspector-step-name").textContent = step.title || "Untitled step";
         document.querySelector("#caption-title").textContent = step.title || "Untitled step";
-        document.querySelector("#caption-description").textContent = step.description || "Add a model and describe what happens in this step.";
+        if (!project) {
+          document.querySelector("#caption-description").textContent = "";
+          return;
+        }
+        document.querySelector("#caption-description").textContent = step.description || (project.project_type === "document" ? "" : "Add a model and describe what happens in this step.");
         renderSteps();
+      }
+
+      function updateEmptyStateCopy() {
+        const heading = document.querySelector("#empty-state h2");
+        const description = document.querySelector("#empty-state p");
+        if (!project) {
+          heading.textContent = "";
+          description.textContent = "";
+          return;
+        }
+        if (!isManager || mode !== "edit" || project.project_type === "document") {
+          heading.textContent = "";
+          description.textContent = "";
+          return;
+        }
+        heading.textContent = project.project_type === "presentation"
+          ? "This slide is ready for its story"
+          : project.project_type === "gallery" ? "This image is ready to add" : "This step is ready for its story";
+        description.textContent = project.project_type === "presentation"
+          ? "Add images and text to build this slide. You can also attach a video or place hotspots."
+          : project.project_type === "gallery" ? "Add an image to move through this gallery one image at a time." : "Add a 3D model, images, or video to describe this step.";
       }
 
       function applyProjectTheme() {
@@ -1301,9 +1876,37 @@
         stage.append(video);
       }
 
+      function setRibbonTab(name) {
+        document.querySelectorAll("[data-ribbon-tab]").forEach((tab) => {
+          tab.setAttribute("aria-selected", String(tab.dataset.ribbonTab === name));
+        });
+        document.querySelectorAll("[data-ribbon-panel]").forEach((panel) => {
+          panel.hidden = panel.dataset.ribbonPanel !== name;
+        });
+      }
+
+      function updateEditorChrome() {
+        const editing = isManager && mode === "edit" && !!project;
+        const type = project?.project_type;
+        document.querySelector("#editor-ribbon").hidden = !editing;
+        document.querySelector("#document-toolbar").hidden = !editing || type !== "document";
+        document.querySelector("#text-tools").hidden = !editing || type === "document";
+        document.querySelector("#drawing-toolbar").hidden = !editing || type === "document";
+        document.querySelector("#add-text").hidden = !editing || type === "document";
+        document.querySelector("#ribbon-camera").hidden = type !== "model" || !getCurrentStep()?.modelPath;
+        document.querySelector("#empty-upload").hidden = !editing;
+        document.querySelector("#inspector").hidden = !editing;
+        document.querySelector("#stage-column").classList.toggle("page-mode", !!type && type !== "model");
+        if (editing) setRibbonTab(type === "document" ? "Format" : "Insert");
+      }
+
       function setMode(nextMode) {
         mode = nextMode === "edit" && !isManager ? "view" : nextMode;
         app.classList.toggle("viewer-mode", mode === "view");
+        updateEditorChrome();
+        updateEmptyStateCopy();
+        renderSteps();
+        documentEditor.contentEditable = String(isManager && project?.project_type === "document" && mode === "edit");
         document.querySelectorAll(".mode-switch button").forEach((button) => {
           const active = button.dataset.mode === mode;
           button.classList.toggle("active", active);
@@ -1318,6 +1921,8 @@
         canvas.classList.toggle("placement-cursor", placingHotspot);
         renderHotspots();
         renderImages(getCurrentStep());
+        renderStageTexts(getCurrentStep());
+        renderStageShapes(getCurrentStep());
       }
 
       async function selectStep(id) {
@@ -1615,11 +2220,62 @@
         });
       }
 
+      const defaultShortcuts = { save: "Ctrl+S", text: "T", item: "N", previous: "ArrowLeft", next: "ArrowRight" };
+
+      function currentShortcuts() {
+        try {
+          return { ...defaultShortcuts, ...JSON.parse(localStorage.getItem("formline-shortcuts") || "{}") };
+        } catch {
+          return { ...defaultShortcuts };
+        }
+      }
+
+      function matchesShortcut(event, binding) {
+        const parts = binding.split("+").map((part) => part.trim().toLowerCase());
+        const key = parts.pop();
+        const wantsCtrl = parts.includes("ctrl") || parts.includes("cmd");
+        const wantsAlt = parts.includes("alt");
+        const wantsShift = parts.includes("shift");
+        const ctrlPressed = event.ctrlKey || event.metaKey;
+        return ctrlPressed === wantsCtrl
+          && event.altKey === wantsAlt
+          && event.shiftKey === wantsShift
+          && event.key.toLowerCase() === key;
+      }
+
+      function updateSelectedText(update) {
+        const text = getCurrentStep()?.texts.find((item) => item.id === selectedTextId);
+        if (!text || !isManager) return;
+        Object.assign(text, update);
+        const wrapper = floatingTextLayer.querySelector(`[data-text-id="${CSS.escape(text.id)}"]`);
+        if (wrapper) {
+          wrapper.style.fontSize = `${text.fontSize}px`;
+          wrapper.style.color = text.color;
+          wrapper.style.textAlign = text.align;
+          wrapper.style.fontFamily = text.fontFamily;
+          wrapper.style.lineHeight = text.lineHeight;
+        }
+        persist();
+      }
+
       function bindEvents() {
         document.querySelectorAll(".mode-switch button").forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+        document.querySelectorAll("[data-ribbon-tab]").forEach((tab) => tab.addEventListener("click", () => setRibbonTab(tab.dataset.ribbonTab)));
+        document.querySelectorAll("[data-side-tab]").forEach((tab) => tab.addEventListener("click", () => {
+          document.querySelectorAll("[data-side-tab]").forEach((item) => item.removeAttribute("aria-current"));
+          tab.setAttribute("aria-current", "page");
+          if (tab.dataset.sideTab === "outline") document.querySelector("#step-list").scrollIntoView({ block: "nearest" });
+          if (tab.dataset.sideTab === "project") document.querySelector("#project-settings").scrollIntoView({ block: "nearest" });
+          if (tab.dataset.sideTab === "comments") document.querySelector("#comments-section").scrollIntoView({ behavior: "smooth" });
+        }));
+        document.querySelector("#ribbon-save").addEventListener("click", () => { void flushPendingSave(); });
+        document.querySelector("#ribbon-undo").addEventListener("click", () => document.execCommand("undo", false, null));
+        document.querySelector("#ribbon-redo").addEventListener("click", () => document.execCommand("redo", false, null));
+        document.querySelector("#ribbon-camera").addEventListener("click", () => document.querySelector("#reset-camera").click());
         document.querySelector("#present-button").addEventListener("click", () => setMode("view"));
         document.querySelector("#manager-login").addEventListener("click", async () => {
           if (isManager && supabase) {
+            if (!await flushPendingSave()) return;
             const { error } = await supabase.auth.signOut();
             if (error) {
               console.error("Could not sign out.", error);
@@ -1631,22 +2287,119 @@
         });
         document.querySelector("#manager-session").addEventListener("click", showGallery);
         document.querySelector("#back-to-projects").addEventListener("click", showGallery);
-        document.querySelector("#create-project").addEventListener("click", () => document.querySelector("#project-dialog").showModal());
+        document.querySelector("#create-project").addEventListener("click", () => {
+          document.querySelector("#new-project-section").value = document.querySelector("#section-filter").value || "Engineering";
+          document.querySelector("#new-project-collection").value = document.querySelector("#collection-filter").value;
+          document.querySelector("#project-dialog").showModal();
+        });
         document.querySelector("#cancel-project").addEventListener("click", () => document.querySelector("#project-dialog").close());
         document.querySelector("#project-form").addEventListener("submit", (event) => {
           event.preventDefault();
           createProject();
         });
+        document.querySelector("#editor-settings").addEventListener("click", () => {
+          const shortcuts = currentShortcuts();
+          Object.entries(shortcuts).forEach(([action, key]) => { document.querySelector(`#shortcut-${action}`).value = key; });
+          document.querySelector("#shortcut-dialog").showModal();
+        });
+        document.querySelector("#cancel-shortcuts").addEventListener("click", () => document.querySelector("#shortcut-dialog").close());
+        document.querySelector("#shortcut-form").addEventListener("submit", (event) => {
+          event.preventDefault();
+          const shortcuts = Object.fromEntries(Object.keys(defaultShortcuts).map((action) => [action, document.querySelector(`#shortcut-${action}`).value.trim() || defaultShortcuts[action]]));
+          localStorage.setItem("formline-shortcuts", JSON.stringify(shortcuts));
+          document.querySelector("#shortcut-dialog").close();
+        });
+        document.querySelector("#document-editor").addEventListener("input", () => {
+          if (!project || !isManager) return;
+          project.document_html = DOMPurify.sanitize(documentEditor.innerHTML);
+          persist();
+        });
+        const saveDocumentFormatting = () => {
+          if (!project || !isManager) return;
+          project.document_html = DOMPurify.sanitize(documentEditor.innerHTML);
+          persist();
+        };
+        document.querySelectorAll("[data-document-format]").forEach((button) => {
+          button.addEventListener("mousedown", (event) => event.preventDefault());
+          button.addEventListener("click", () => {
+            if (!isManager) return;
+            document.execCommand(button.dataset.documentFormat, false, null);
+            documentEditor.focus();
+            saveDocumentFormatting();
+          });
+        });
+        document.querySelector("#document-block").addEventListener("change", (event) => {
+          document.execCommand("formatBlock", false, event.target.value);
+          documentEditor.focus();
+          saveDocumentFormatting();
+        });
+        document.querySelector("#document-color").addEventListener("input", (event) => {
+          document.execCommand("foreColor", false, event.target.value);
+          documentEditor.focus();
+          saveDocumentFormatting();
+        });
+        document.querySelector("#document-size").addEventListener("change", (event) => {
+          document.execCommand("fontSize", false, event.target.value);
+          documentEditor.focus();
+          saveDocumentFormatting();
+        });
+        document.querySelector("#document-font").addEventListener("change", (event) => {
+          document.execCommand("fontName", false, event.target.value);
+          documentEditor.focus();
+          saveDocumentFormatting();
+        });
+        document.querySelector("#document-spacing").addEventListener("change", (event) => {
+          if (!project || !isManager) return;
+          project.document_line_height = event.target.value;
+          documentEditor.style.lineHeight = project.document_line_height;
+          persist();
+        });
         document.querySelector("#project-search").addEventListener("input", renderGallery);
         document.querySelector("#section-filter").addEventListener("change", renderGallery);
+        document.querySelector("#collection-filter").addEventListener("change", renderGallery);
+        document.querySelector("#create-section").addEventListener("click", () => document.querySelector("#section-dialog").showModal());
+        document.querySelector("#cancel-section").addEventListener("click", () => document.querySelector("#section-dialog").close());
+        document.querySelector("#section-form").addEventListener("submit", (event) => { event.preventDefault(); createSection(); });
+        document.querySelector("#create-collection").addEventListener("click", () => document.querySelector("#collection-dialog").showModal());
+        document.querySelector("#cancel-collection").addEventListener("click", () => document.querySelector("#collection-dialog").close());
+        document.querySelector("#collection-form").addEventListener("submit", (event) => { event.preventDefault(); createCollection(); });
         document.querySelector("#project-title-input").addEventListener("input", (event) => {
           if (!project || !isManager) return;
           project.title = event.target.value;
+          syncProjectCard();
           persist();
         });
-        document.querySelector("#project-section-input").addEventListener("change", (event) => {
+        document.querySelector("#project-section-input").addEventListener("change", async (event) => {
           if (!project || !isManager) return;
           project.section = event.target.value.trim() || "Engineering";
+          const sectionResult = await supabase.from("project_sections").upsert({ name: project.section }, { onConflict: "name", ignoreDuplicates: true });
+          if (sectionResult.error) {
+            showToast("Could not change the section.");
+            return;
+          }
+          if (project.collection) {
+            const collectionResult = await supabase.from("project_collections").upsert({ section_name: project.section, name: project.collection }, { onConflict: "section_name,name", ignoreDuplicates: true });
+            if (collectionResult.error) {
+              showToast("Could not move the project collection.");
+              return;
+            }
+          }
+          syncProjectCard();
+          document.querySelector("#section-filter").value = project.section;
+          persist();
+          renderGallery();
+        });
+        document.querySelector("#project-collection-input").addEventListener("change", async (event) => {
+          if (!project || !isManager) return;
+          project.collection = event.target.value.trim();
+          if (project.collection) {
+            const collectionResult = await supabase.from("project_collections").upsert({ section_name: project.section, name: project.collection }, { onConflict: "section_name,name", ignoreDuplicates: true });
+            if (collectionResult.error) {
+              showToast("Could not add that project collection.");
+              return;
+            }
+          }
+          syncProjectCard();
           persist();
           renderGallery();
         });
@@ -1661,6 +2414,98 @@
           project.theme.background = event.target.value;
           applyProjectTheme();
           persist();
+        });
+        document.querySelector("#add-text").addEventListener("click", () => {
+          if (!project || !isManager || !getCurrentStep()) return;
+          const item = { id: makeId(), text: "Edit text", html: "", kind: project.project_type === "gallery" ? "floating" : "fixed", x: 50, y: 30, fontSize: 18, color: "#242522", align: "left", fontFamily: "DM Sans", lineHeight: "1.5" };
+          getCurrentStep().texts.push(item);
+          selectedTextId = item.id;
+          persist();
+          renderStageTexts(getCurrentStep());
+          floatingTextLayer.querySelector(`[data-text-id="${CSS.escape(item.id)}"] .floating-text-content`)?.focus();
+        });
+        document.querySelectorAll("[data-format]").forEach((button) => {
+          button.addEventListener("mousedown", (event) => event.preventDefault());
+          button.addEventListener("click", () => {
+            const content = floatingTextLayer.querySelector(`[data-text-id="${CSS.escape(selectedTextId || "")}"] .floating-text-content`);
+            if (!content || !isManager) return;
+            content.focus();
+            document.execCommand(button.dataset.format, false, null);
+            const item = getCurrentStep().texts.find((text) => text.id === selectedTextId);
+            item.html = DOMPurify.sanitize(content.innerHTML);
+            item.text = content.innerText;
+            persist();
+          });
+        });
+        document.querySelector("#text-size").addEventListener("change", (event) => updateSelectedText({ fontSize: Number(event.target.value) }));
+        document.querySelector("#text-color").addEventListener("input", (event) => updateSelectedText({ color: event.target.value }));
+        document.querySelector("#text-align").addEventListener("change", (event) => updateSelectedText({ align: event.target.value }));
+        document.querySelector("#text-font").addEventListener("change", (event) => updateSelectedText({ fontFamily: event.target.value }));
+        document.querySelector("#text-line-height").addEventListener("change", (event) => updateSelectedText({ lineHeight: event.target.value }));
+        document.querySelector("#remove-text").addEventListener("click", () => {
+          if (!selectedTextId || !getCurrentStep()) return;
+          getCurrentStep().texts = getCurrentStep().texts.filter((item) => item.id !== selectedTextId);
+          selectedTextId = null;
+          persist();
+          renderStageTexts(getCurrentStep());
+        });
+        document.querySelectorAll("[data-shape-tool]").forEach((button) => button.addEventListener("click", () => {
+          drawingTool = button.dataset.shapeTool;
+          polygonPoints = [];
+          drawingPreview = null;
+          document.querySelector("#finish-polygon").hidden = true;
+          renderStageShapes(getCurrentStep());
+        }));
+        drawingLayer.addEventListener("pointerdown", (event) => {
+          if (!isManager || mode !== "edit" || drawingTool === "select") return;
+          event.preventDefault();
+          event.stopPropagation();
+          const point = stagePoint(event);
+          if (drawingTool === "polygon") {
+            polygonPoints.push(point);
+            drawingPreview = { id: "preview", type: "polygon", points: polygonPoints.map((item) => `${item.x},${item.y}`).join(" "), stroke: document.querySelector("#shape-stroke").value, strokeWidth: Number(document.querySelector("#shape-width").value) || 3, fill: "none" };
+            document.querySelector("#finish-polygon").hidden = polygonPoints.length < 3;
+            renderStageShapes(getCurrentStep());
+            return;
+          }
+          drawingStart = point;
+          drawingPreview = { id: "preview", type: drawingTool, points: `${point.x},${point.y} ${point.x},${point.y}`, stroke: document.querySelector("#shape-stroke").value, strokeWidth: Number(document.querySelector("#shape-width").value) || 3, fill: document.querySelector("#shape-filled").checked ? document.querySelector("#shape-fill").value : "none" };
+          renderStageShapes(getCurrentStep());
+        });
+        drawingLayer.addEventListener("pointermove", (event) => {
+          if (!drawingStart || !drawingPreview) return;
+          const point = stagePoint(event);
+          drawingPreview.points = `${drawingStart.x},${drawingStart.y} ${point.x},${point.y}`;
+          renderStageShapes(getCurrentStep());
+        });
+        drawingLayer.addEventListener("pointerup", (event) => {
+          if (!drawingStart || !drawingPreview) return;
+          const point = stagePoint(event);
+          const start = drawingStart;
+          drawingStart = null;
+          commitShape(drawingTool, [start, point]);
+        });
+        document.querySelector("#finish-polygon").addEventListener("click", () => {
+          commitShape("polygon", polygonPoints);
+          polygonPoints = [];
+          document.querySelector("#finish-polygon").hidden = true;
+        });
+        const updateSelectedShape = () => {
+          const shape = getCurrentStep()?.shapes.find((item) => item.id === selectedShapeId);
+          if (!shape) return;
+          shape.stroke = document.querySelector("#shape-stroke").value;
+          shape.strokeWidth = Number(document.querySelector("#shape-width").value) || 3;
+          shape.fill = document.querySelector("#shape-filled").checked && shape.type !== "line" ? document.querySelector("#shape-fill").value : "none";
+          renderStageShapes(getCurrentStep());
+          persist();
+        };
+        ["#shape-stroke", "#shape-width", "#shape-fill", "#shape-filled"].forEach((selector) => document.querySelector(selector).addEventListener("input", updateSelectedShape));
+        document.querySelector("#remove-shape").addEventListener("click", () => {
+          if (!selectedShapeId || !getCurrentStep()) return;
+          getCurrentStep().shapes = getCurrentStep().shapes.filter((shape) => shape.id !== selectedShapeId);
+          selectedShapeId = null;
+          persist();
+          renderStageShapes(getCurrentStep());
         });
         document.querySelector("#add-step").addEventListener("click", () => {
           if (!project || !isManager) return;
@@ -1892,14 +2737,37 @@
           }
         });
         window.addEventListener("keydown", (event) => {
-          if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
-          if (event.key === "ArrowLeft") document.querySelector("#previous-step").click();
-          if (event.key === "ArrowRight") document.querySelector("#next-step").click();
-          if (event.key === "Escape" && placingHotspot) {
+          const shortcuts = currentShortcuts();
+          if (matchesShortcut(event, shortcuts.save)) {
+            event.preventDefault();
+            void flushPendingSave();
+            return;
+          }
+          if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target.isContentEditable) return;
+          if (matchesShortcut(event, shortcuts.text) && isManager && project && project.project_type !== "document") {
+            event.preventDefault();
+            document.querySelector("#add-text").click();
+          } else if (matchesShortcut(event, shortcuts.item) && isManager && project?.project_type !== "document") {
+            event.preventDefault();
+            document.querySelector("#add-step").click();
+          } else if (matchesShortcut(event, shortcuts.previous)) {
+            event.preventDefault();
+            document.querySelector("#previous-step").click();
+          } else if (matchesShortcut(event, shortcuts.next)) {
+            event.preventDefault();
+            document.querySelector("#next-step").click();
+          }
+          if (event.key === "Escape" && (placingHotspot || drawingTool !== "select")) {
             placingHotspot = false;
+            drawingTool = "select";
+            drawingStart = null;
+            drawingPreview = null;
+            polygonPoints = [];
+            document.querySelector("#finish-polygon").hidden = true;
             document.querySelector("#add-hotspot").classList.remove("armed");
             canvas.classList.remove("placement-cursor");
             renderHotspots();
+            renderStageShapes(getCurrentStep());
           }
         });
         new ResizeObserver(resizeRenderer).observe(stage);
@@ -1924,7 +2792,7 @@
         const requestedProject = new URLSearchParams(location.search).get("project");
         if (requestedProject) {
           const { data: row, error: projectError } = await supabase.from("projects")
-            .select("id,title,project_type,section,theme,steps,created_at,updated_at")
+            .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,created_at,updated_at")
             .eq("id", requestedProject)
             .maybeSingle();
           if (projectError) {

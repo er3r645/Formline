@@ -1,12 +1,12 @@
 # Formline
 
-A public project library and a Google-authenticated editor for model walkthroughs, slide presentations, and image galleries. Projects can be grouped into named sections, themed individually, include video, and collect public comments.
+A public project library and a Google-authenticated editor for model walkthroughs, slide presentations, image galleries, and fixed-flow documents. Projects are organized into sections and collections, themed individually, and can include video and public comments.
 
 ## Configure Supabase
 
 The app uses Supabase Auth, Postgres, and Storage. Complete these steps before the gallery or editor can load shared projects:
 
-1. Create a Supabase project and open its SQL Editor. Run [`supabase-setup.sql`](./supabase-setup.sql) to create or update the project table, public comments table, manager-only project/media policies, and public media bucket. Re-run this script after pulling updates that change the schema.
+1. Create a Supabase project and open its SQL Editor. Run [`supabase-setup.sql`](./supabase-setup.sql) to create or update project metadata, sections, collections, public comments, manager-only project/media policies, and the public media bucket. Re-run this script after pulling updates that change the schema.
 2. In **Project Settings → API**, copy the Project URL and the publishable/anon key into [`supabase-config.js`](./supabase-config.js). These client-side values are public; never put a service-role key in the website.
 3. In **Authentication → Providers → Google**, enable Google and add the OAuth client ID and client secret from Google Cloud. In Google Cloud, add the Supabase callback URL shown by the provider settings as an authorized redirect URI.
 4. In **Authentication → URL Configuration**, set the Site URL to the deployed website origin and add its URL (and your local development URL, such as `http://localhost:8000/`) to the allowed redirect URLs.
@@ -23,11 +23,11 @@ The only editor account is `er275050@gmail.com`. Google sign-in is checked in th
 ## Create and review projects
 
 1. Choose **Enter as manager** and sign in with the allowed Google account.
-2. Create a Model, Presentation, or Gallery project and assign it to a section such as Engineering, Art, or Music. Search by project name or filter by section in the public library.
-3. Model projects are step-by-step; presentations are slide-by-slide with editable text, full-frame images, and slide hotspots; galleries advance image-by-image with freely arranged images.
-4. Add optional MP4, WebM, or Ogg video up to 100 MB to an item. Use Project appearance settings to choose its accent and canvas colors.
-5. Reviewers can comment without signing in, using Anonymous or a name they enter. Comments are public and the manager can remove them; public posting can attract spam, so add CAPTCHA/rate limiting before a high-traffic launch.
-6. Changes and media are shared via Supabase across devices.
+2. Create sections at the library level, then select a section to create projects and collections. Collections group related projects, such as a Minihouse collection inside Engineering. Search projects by name or filter by section and collection.
+3. Model projects are step-by-step; presentations are slide-by-slide with fixed text, full-frame images, and slide hotspots; galleries advance image-by-image with movable text and freely arranged images; documents use a fixed, rich-text flow.
+4. For Model, Presentation, and Gallery projects, add editable text overlays and draw lines, rectangles, ellipses, or polygons with configurable stroke, width, and fill. Documents have their own rich-text editor. Use Project appearance settings for per-project accent and canvas colors.
+5. Add optional MP4, WebM, or Ogg video up to 100 MB to an item. Public reviewers can comment without signing in, as Anonymous or using a name they enter. The manager can remove comments; public posting can attract spam, so add CAPTCHA/rate limiting before a high-traffic launch.
+6. Editor shortcuts are customizable in Editor Settings. Documents and text overlays use standard browser `contenteditable` elements, which Grammarly and similar extensions generally recognize, though extension behavior depends on the browser and extension settings. Changes and media are shared via Supabase across devices.
 
 ## Deploy with Netlify
 
