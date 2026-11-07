@@ -1,0 +1,1566 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f2" />
+    <title>Formline — Process Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
+          "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
+        }
+      }
+    </script>
+    <style>
+      :root {
+        font-family: "DM Sans", sans-serif;
+        color: #242522;
+        background: #f5f5f2;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        --ink: #242522;
+        --muted: #898b85;
+        --line: #e8e8e3;
+        --paper: #fff;
+        --accent: #bdff71;
+        --deep: #20231d;
+      }
+
+      * { box-sizing: border-box; }
+      body { margin: 0; min-width: 320px; min-height: 100vh; }
+      button, input, textarea { font: inherit; }
+      button { color: inherit; }
+      .app { display: none; grid-template-rows: 68px minmax(0, 1fr); height: 100vh; min-height: 620px; }
+      .app.open { display: grid; }
+      .topbar {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 28px; background: var(--paper); border-bottom: 1px solid var(--line);
+      }
+      .brand { display: flex; align-items: center; gap: 11px; font: 800 17px Manrope, sans-serif; letter-spacing: -.7px; }
+      .brand-mark { width: 27px; height: 27px; display: grid; place-items: center; border-radius: 9px; background: var(--deep); color: var(--accent); }
+      .brand-mark svg { width: 16px; height: 16px; }
+      .top-center { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+      .save-dot { width: 7px; height: 7px; border-radius: 50%; background: #68b748; }
+      .top-actions { display: flex; align-items: center; gap: 12px; }
+      .mode-switch { display: flex; gap: 3px; padding: 4px; background: #f1f1ed; border-radius: 10px; }
+      .mode-switch button { border: 0; background: transparent; padding: 7px 13px; border-radius: 7px; color: #777972; font-size: 12px; cursor: pointer; }
+      .mode-switch button.active { background: white; color: var(--ink); box-shadow: 0 1px 3px #20231d13; }
+      .share-button { border: 0; border-radius: 9px; background: var(--deep); color: white; padding: 10px 15px; font-size: 12px; font-weight: 600; cursor: pointer; }
+      .workspace { min-height: 0; display: grid; grid-template-columns: 252px minmax(360px, 1fr) 294px; }
+      .sidebar, .inspector { min-height: 0; background: var(--paper); }
+      .sidebar { display: flex; flex-direction: column; border-right: 1px solid var(--line); }
+      .side-heading { padding: 27px 19px 16px; }
+      .eyebrow { color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+      .project-name { margin: 8px 0 4px; font: 700 16px Manrope, sans-serif; letter-spacing: -.4px; }
+      .project-meta { color: var(--muted); font-size: 11px; }
+      .timeline-head { display: flex; align-items: center; justify-content: space-between; padding: 25px 19px 10px; }
+      .step-count { color: var(--muted); font-size: 10px; }
+      .step-list { display: flex; flex-direction: column; gap: 5px; padding: 0 10px; overflow-y: auto; }
+      .step-row { position: relative; display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 8px 9px; border: 1px solid transparent; border-radius: 9px; text-align: left; background: transparent; cursor: pointer; }
+      .step-row:hover { background: #f7f7f4; }
+      .step-row.active { border-color: #e9eee2; background: #f4f7ef; }
+      .step-number { width: 24px; height: 24px; flex: 0 0 24px; display: grid; place-items: center; border-radius: 7px; background: #f0f0ec; color: #777972; font-size: 10px; }
+      .step-row.active .step-number { background: var(--accent); color: var(--deep); }
+      .step-copy { min-width: 0; flex: 1; }
+      .step-title { overflow: hidden; color: #3a3b37; font-size: 11px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+      .step-subtitle { margin-top: 3px; color: #a0a19b; font-size: 10px; }
+      .step-status { width: 6px; height: 6px; flex: 0 0 6px; border-radius: 50%; background: #d7d8d1; }
+      .step-status.ready { background: #74ba53; }
+      .add-step { display: flex; align-items: center; gap: 8px; margin: 9px 10px 0; padding: 11px 10px; border: 1px dashed #dedfd8; border-radius: 9px; background: transparent; color: #777972; font-size: 11px; cursor: pointer; }
+      .add-step:hover { color: var(--ink); border-color: #b7b9b0; }
+      .add-step span { font-size: 16px; line-height: 10px; }
+      .sidebar-bottom { margin-top: auto; padding: 15px 19px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; }
+      .storage-label { display: flex; align-items: center; gap: 7px; }
+      .storage-label svg { width: 13px; height: 13px; }
+      .stage-column { display: flex; min-width: 0; min-height: 0; flex-direction: column; padding: 20px; }
+      .stage-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 1px 2px 15px; }
+      .stage-location { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 11px; }
+      .stage-location strong { color: #43443f; font-weight: 600; }
+      .toolbar-right { display: flex; align-items: center; gap: 10px; }
+      .key-hint { color: #a1a29c; font-size: 10px; }
+      .icon-button { width: 31px; height: 31px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 8px; background: white; cursor: pointer; }
+      .icon-button:hover { background: #f7f7f4; }
+      .icon-button svg { width: 14px; height: 14px; }
+      .stage {
+        position: relative; flex: 1; min-height: 300px; overflow: hidden; border: 1px solid #e8e8e3;
+        border-radius: 12px; background-color: #fbfbf9;
+        background-image: radial-gradient(#e9e9e4 .75px, transparent .75px); background-size: 19px 19px;
+      }
+      #model-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; outline: none; }
+      .stage-label { position: absolute; top: 17px; left: 18px; z-index: 1; display: flex; align-items: center; gap: 7px; padding: 7px 10px; border: 1px solid #eeeee9; border-radius: 7px; background: #ffffffc9; color: #72746d; font-size: 10px; pointer-events: none; }
+      .stage-label .mini-dot { width: 6px; height: 6px; border-radius: 50%; background: #70b64c; }
+      .hotspot-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+      .hotspot { position: absolute; width: 25px; height: 25px; display: grid; place-items: center; transform: translate(-50%, -50%); border: 0; border-radius: 50%; background: var(--accent); box-shadow: 0 2px 9px #20231d35, 0 0 0 4px #bdff7144; color: var(--deep); font-size: 10px; font-weight: 700; cursor: pointer; pointer-events: auto; }
+      .hotspot[hidden] { display: none; }
+      .hotspot:hover, .hotspot.selected { box-shadow: 0 2px 12px #20231d55, 0 0 0 6px #bdff7170; }
+      .hotspot-popover { position: absolute; z-index: 1; width: min(230px, calc(100vw - 40px)); padding: 11px 13px; transform: translate(17px, -50%); border: 1px solid #e8e8e3; border-radius: 9px; background: #fff; box-shadow: 0 8px 26px #20231d18; pointer-events: auto; }
+      .hotspot-popover-title { font: 700 11px Manrope, sans-serif; }
+      .hotspot-popover-body { margin-top: 5px; color: #777972; font-size: 10px; line-height: 1.55; white-space: pre-wrap; }
+      .empty-state { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px; pointer-events: none; }
+      .empty-state[hidden] { display: none; }
+      .empty-card { max-width: 290px; text-align: center; pointer-events: auto; }
+      .empty-icon { width: 56px; height: 56px; display: grid; place-items: center; margin: 0 auto 17px; border: 1px solid #e7e8e1; border-radius: 17px; background: #fff; color: #92948c; }
+      .empty-icon svg { width: 25px; height: 25px; }
+      .empty-card h2 { margin: 0; font: 700 16px Manrope, sans-serif; letter-spacing: -.4px; }
+      .empty-card p { margin: 8px 0 17px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+      .upload-button { border: 0; border-radius: 8px; background: var(--deep); color: white; padding: 10px 15px; font-size: 11px; font-weight: 600; cursor: pointer; }
+      .upload-button:hover, .share-button:hover { background: #383b33; }
+      .stage-bottom { position: absolute; z-index: 3; right: 15px; bottom: 14px; left: 15px; display: flex; align-items: end; justify-content: space-between; pointer-events: none; }
+      .step-caption { max-width: 60%; padding: 9px 12px; border: 1px solid #eaeae5; border-radius: 8px; background: #ffffffd9; }
+      .step-caption-title { font: 700 12px Manrope, sans-serif; }
+      .step-caption-description { max-width: 360px; margin-top: 4px; overflow: hidden; color: #777972; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+      .nav-controls { display: flex; gap: 6px; padding: 4px; border: 1px solid #eaeae5; border-radius: 9px; background: #ffffffdc; pointer-events: auto; }
+      .nav-button { width: 30px; height: 29px; display: grid; place-items: center; border: 0; border-radius: 6px; background: transparent; cursor: pointer; }
+      .nav-button:hover:not(:disabled) { background: #f0f1eb; }
+      .nav-button:disabled { color: #c9cac4; cursor: default; }
+      .nav-button svg { width: 15px; height: 15px; }
+      .step-position { align-self: center; min-width: 41px; color: #73756d; font-size: 10px; text-align: center; }
+      .inspector { display: flex; flex-direction: column; overflow-y: auto; border-left: 1px solid var(--line); }
+      .inspector-heading { padding: 26px 19px 19px; border-bottom: 1px solid var(--line); }
+      .inspector-heading h1 { margin: 7px 0 0; font: 700 17px Manrope, sans-serif; letter-spacing: -.6px; }
+      .inspector-section { padding: 20px 19px; border-bottom: 1px solid var(--line); }
+      .section-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; }
+      .section-title h2 { margin: 0; font-size: 11px; font-weight: 700; }
+      .section-title span { color: var(--muted); font-size: 10px; }
+      .field-label { display: block; margin: 12px 0 6px; color: #777972; font-size: 10px; font-weight: 600; }
+      .text-field, .text-area { width: 100%; border: 1px solid #e8e8e3; border-radius: 7px; outline: none; background: #fff; color: var(--ink); font-size: 11px; }
+      .text-field { height: 35px; padding: 0 10px; }
+      .text-area { min-height: 72px; resize: vertical; padding: 9px 10px; line-height: 1.5; }
+      .text-field:focus, .text-area:focus { border-color: #b8c5a9; box-shadow: 0 0 0 3px #bdff7124; }
+      .model-file { display: flex; align-items: center; gap: 10px; min-height: 50px; padding: 9px; border: 1px solid var(--line); border-radius: 8px; background: #fcfcfa; }
+      .file-icon { width: 30px; height: 30px; flex: 0 0 30px; display: grid; place-items: center; border-radius: 7px; background: #f0f1ec; color: #72756b; }
+      .file-icon svg { width: 15px; height: 15px; }
+      .file-info { min-width: 0; flex: 1; }
+      .file-name { overflow: hidden; font-size: 10px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+      .file-type { margin-top: 3px; color: var(--muted); font-size: 9px; }
+      .text-button { padding: 5px 0; border: 0; background: transparent; color: #62655c; font-size: 10px; cursor: pointer; white-space: nowrap; }
+      .text-button:hover { color: var(--ink); }
+      .format-note { margin: 9px 0 0; color: #999b93; font-size: 9px; line-height: 1.5; }
+      .hotspot-add { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 37px; border: 1px solid #dfe1d9; border-radius: 8px; background: white; font-size: 10px; font-weight: 600; cursor: pointer; }
+      .hotspot-add:hover { background: #f8faf5; border-color: #cbd6bf; }
+      .hotspot-add.armed { border-color: #a7cf86; background: #f4fbeD; }
+      .hotspot-add svg { width: 14px; height: 14px; }
+      .marker-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+      .marker-row { display: flex; align-items: center; gap: 8px; padding: 8px; border: 1px solid #edede8; border-radius: 7px; }
+      .marker-number { width: 20px; height: 20px; display: grid; place-items: center; flex: 0 0 20px; border-radius: 50%; background: var(--accent); font-size: 9px; font-weight: 700; }
+      .marker-name { min-width: 0; flex: 1; overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+      .marker-edit, .marker-delete { border: 0; background: transparent; color: #82847d; font-size: 10px; cursor: pointer; }
+      .marker-delete { color: #a3a49e; font-size: 15px; }
+      .marker-empty { margin: 10px 0 0; color: #9a9c95; font-size: 10px; line-height: 1.5; }
+      .marker-editor { margin-top: 12px; padding: 11px; border: 1px solid #e7e8e1; border-radius: 8px; background: #fafaf7; }
+      .marker-editor-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; font-size: 10px; font-weight: 700; }
+      .close-marker { border: 0; background: transparent; color: #898b85; font-size: 16px; cursor: pointer; }
+      .delete-step { margin: auto 19px 20px; padding: 10px 0 0; border: 0; background: transparent; color: #a36a62; font-size: 10px; text-align: left; cursor: pointer; }
+      .delete-step:hover { color: #8f4b42; }
+      .toast { position: fixed; z-index: 10; bottom: 24px; left: 50%; transform: translate(-50%, 12px); padding: 10px 14px; border-radius: 8px; background: var(--deep); color: white; font-size: 11px; opacity: 0; pointer-events: none; transition: .2s ease; }
+      .toast.show { transform: translate(-50%, 0); opacity: 1; }
+      .viewer-mode .workspace { grid-template-columns: 252px minmax(0, 1fr); }
+      .viewer-mode .inspector { display: none; }
+      .viewer-mode .stage { background-color: #fdfdfb; }
+      .dedicated-viewer .mode-switch, .dedicated-viewer #present-button, .dedicated-viewer .sidebar-bottom, .dedicated-viewer .add-step { display: none; }
+      .dedicated-viewer .workspace { grid-template-columns: 220px minmax(0, 1fr); }
+      .dedicated-viewer .viewer-mode .workspace { grid-template-columns: 220px minmax(0, 1fr); }
+      .placement-cursor { cursor: crosshair !important; }
+      .loading { position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; background: #fbfbf9d9; color: #666860; font-size: 11px; }
+      .loading[hidden] { display: none; }
+      [hidden] { display: none !important; }
+      .lobby { min-height: 100vh; padding: 28px clamp(20px, 7vw, 100px) 70px; }
+      .lobby-header { display: flex; justify-content: space-between; align-items: center; max-width: 1160px; margin: auto; }
+      .lobby-header .brand { color: var(--ink); text-decoration: none; }
+      .lobby-intro { max-width: 1160px; margin: clamp(58px, 10vh, 105px) auto 34px; }
+      .lobby-intro h1 { max-width: 700px; margin: 14px 0; font: 700 clamp(38px, 6vw, 68px)/1.07 Manrope, sans-serif; letter-spacing: -3px; }
+      .lobby-intro p { max-width: 500px; color: #777972; font-size: 15px; line-height: 1.65; }
+      .project-gallery { max-width: 1160px; margin: 0 auto; }
+      .gallery-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+      .gallery-actions { display: flex; align-items: center; gap: 12px; }
+      .gallery-toolbar h2 { margin: 0; font: 700 16px Manrope, sans-serif; }
+      .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+      .project-card { min-height: 168px; display: flex; flex-direction: column; align-items: flex-start; padding: 19px; border: 1px solid var(--line); border-radius: 12px; background: white; text-align: left; cursor: pointer; transition: transform .16s ease, box-shadow .16s ease; }
+      .project-card:hover { transform: translateY(-2px); box-shadow: 0 9px 28px #20231d0d; }
+      .project-card-icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: #f0f3ea; color: #5f7650; font-size: 17px; }
+      .project-card-title { margin-top: 20px; font: 700 14px Manrope, sans-serif; }
+      .project-card-date { margin-top: 7px; color: #898b85; font-size: 11px; }
+      .project-card-meta { margin-top: auto; padding-top: 16px; color: #777972; font-size: 10px; }
+      .gallery-empty { padding: 30px; border: 1px dashed #dedfd8; border-radius: 12px; color: #777972; font-size: 12px; line-height: 1.6; }
+      .auth-button { border: 1px solid #dedfd8; border-radius: 8px; background: white; padding: 10px 14px; font-size: 11px; font-weight: 600; cursor: pointer; }
+      .auth-button:hover { border-color: #b7b9b0; }
+      .setup-notice { max-width: 1160px; margin: 22px auto 0; padding: 13px 16px; border-left: 3px solid #bd8f42; background: #fff8e9; color: #585044; font-size: 12px; line-height: 1.6; }
+      .setup-notice a { color: #5b6547; font-weight: 700; }
+      .project-title-input { width: min(250px, 42vw); border: 1px solid transparent; background: transparent; font: 700 16px Manrope, sans-serif; outline: none; }
+      .project-title-input:focus { border-bottom-color: #bdc3b4; }
+      .image-control { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: #fcfcfa; }
+      .image-control-row { display: flex; align-items: center; gap: 8px; }
+      .image-control-row label { flex: 0 0 62px; color: #777972; font-size: 10px; }
+      .image-control-row input[type="range"] { min-width: 0; flex: 1; accent-color: #689847; }
+      .image-control-row output { width: 34px; color: #777972; font-size: 9px; text-align: right; }
+      .image-stage-item { position: absolute; z-index: 1; transform-origin: center; pointer-events: auto; }
+      .image-stage-item img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; user-select: none; }
+      .image-stage-item.selected { outline: 1px dashed #79a85c; outline-offset: 3px; cursor: move; }
+      .gallery-image { width: 100%; height: 100%; object-fit: contain; }
+      .hotspot-image { display: block; max-width: 100%; max-height: 130px; margin-top: 8px; border-radius: 6px; object-fit: contain; }
+      .step-image-row { display: flex; align-items: center; gap: 8px; padding: 7px; border: 1px solid var(--line); border-radius: 7px; }
+      .step-image-thumb { width: 38px; height: 32px; border-radius: 4px; background: #f1f1ed; object-fit: cover; }
+      .stage.gallery-step #model-canvas { display: none; }
+
+      @media (max-width: 1020px) {
+        .workspace { grid-template-columns: 210px minmax(300px, 1fr) 265px; }
+        .viewer-mode .workspace { grid-template-columns: 210px minmax(0, 1fr); }
+        .sidebar .side-heading, .timeline-head { padding-right: 14px; padding-left: 14px; }
+      }
+      @media (max-width: 760px) {
+        .app { height: auto; min-height: 100vh; grid-template-rows: 60px minmax(0, 1fr); }
+        .topbar { padding: 0 14px; }
+        .top-center { display: none; }
+        .brand { font-size: 15px; }
+        .share-button { padding: 9px 11px; }
+        .mode-switch button { padding: 7px 9px; }
+        .workspace, .viewer-mode .workspace { min-height: calc(100vh - 60px); grid-template-columns: 1fr; grid-template-rows: auto minmax(450px, 62vh) auto; }
+        .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
+        .side-heading { display: none; }
+        .timeline-head { padding: 13px 15px 8px; }
+        .step-list { flex-direction: row; padding: 0 12px 8px; }
+        .step-row { flex: 0 0 156px; }
+        .add-step { flex: 0 0 105px; margin: 0 12px 8px 0; }
+        .sidebar-bottom { display: none; }
+        .stage-column { padding: 12px; }
+        .inspector { border-top: 1px solid var(--line); border-left: 0; }
+        .viewer-mode .inspector { display: none; }
+        .viewer-mode .workspace { grid-template-rows: auto minmax(500px, calc(100vh - 132px)); }
+        .viewer-mode .stage-column { padding-top: 12px; }
+        .key-hint { display: none; }
+        .stage-caption-description { max-width: 180px; }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="lobby" id="lobby">
+        <div class="lobby-header">
+          <a class="brand" href="./">
+            <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 17 12 4l7 13H5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.2 13h7.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            Formline
+          </a>
+          <button type="button" class="auth-button" id="manager-login">Enter as manager</button>
+        </div>
+        <div class="setup-notice" id="manager-setup-notice" role="alert" tabindex="-1" hidden>
+          Manager sign-in is not connected yet. Add your Supabase project URL and publishable/anon key in <strong>supabase-config.js</strong>, run <strong>supabase-setup.sql</strong>, and enable Google sign-in in Supabase. <a href="./README.md#configure-supabase">Open setup instructions</a>.
+        </div>
+        <div class="lobby-intro">
+          <div class="eyebrow">Process library</div>
+          <h1>Explore the work behind the finished form.</h1>
+          <p>Browse each project as a sequence of 3D models, annotated images, or both.</p>
+        </div>
+        <div class="project-gallery">
+          <div class="gallery-toolbar"><h2>Projects</h2><div class="gallery-actions"><span class="project-meta" id="gallery-status">Loading projects…</span><button type="button" class="upload-button" id="create-project" hidden>＋ New project</button></div></div>
+          <div class="project-grid" id="project-grid"></div>
+        </div>
+    </section>
+    <div class="app" id="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 17 12 4l7 13H5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.2 13h7.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          Formline
+        </div>
+        <div class="top-center"><span class="save-dot"></span><span id="save-status">Saved</span></div>
+        <div class="top-actions">
+          <button type="button" class="auth-button" id="back-to-projects">← Projects</button>
+          <button type="button" class="auth-button" id="manager-session" hidden>Manager</button>
+          <div class="mode-switch" role="group" aria-label="Website mode">
+            <button type="button" class="active" data-mode="edit">Edit</button>
+            <button type="button" data-mode="view">Present</button>
+          </div>
+          <button type="button" class="share-button" id="present-button">View project&nbsp; ↗</button>
+        </div>
+      </header>
+      <main class="workspace">
+        <aside class="sidebar">
+          <div class="side-heading">
+            <div class="eyebrow">Workspace</div>
+            <input class="project-title-input" id="project-title-input" maxlength="100" aria-label="Project title" value="Untitled process" />
+            <div class="project-meta">A 3D story in progress</div>
+          </div>
+          <div class="timeline-head">
+            <span class="eyebrow">Timeline</span>
+            <span class="step-count" id="step-count">01 step</span>
+          </div>
+          <div class="step-list" id="step-list" aria-label="Timeline steps"></div>
+          <button type="button" class="add-step" id="add-step"><span>+</span> Add a step</button>
+          <div class="sidebar-bottom">
+            <div class="storage-label">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v4h8V5M8 19v-5h8v5" stroke="currentColor" stroke-width="1.5"/></svg>
+              Shared project library
+            </div>
+          </div>
+        </aside>
+        <section class="stage-column">
+          <div class="stage-toolbar">
+            <div class="stage-location"><span>Process</span><span> / </span><strong id="stage-step-name">Step 01</strong></div>
+            <div class="toolbar-right">
+              <span class="key-hint">Drag to orbit · Scroll to zoom</span>
+              <button type="button" class="icon-button" id="reset-camera" title="Reset camera" aria-label="Reset camera">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M4.5 10a7.5 7.5 0 1 1 .8 5.2M4.5 4v6h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="stage" id="stage">
+            <canvas id="model-canvas" aria-label="Interactive 3D model viewer"></canvas>
+            <div class="stage-label"><span class="mini-dot"></span><span id="model-label">No model loaded</span></div>
+            <div class="hotspot-layer" id="hotspot-layer"></div>
+            <div class="empty-state" id="empty-state">
+              <div class="empty-card">
+                <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="m4.5 7.7 7.5 4.2 7.5-4.2M12 12v9" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+                <h2>This step is ready for its story</h2>
+                <p>Add a 3D model, an image gallery, or combine models and images in one step.</p>
+                <button type="button" class="upload-button" id="empty-upload">Add a model or image</button>
+              </div>
+            </div>
+            <div class="loading" id="loading" hidden>Loading model…</div>
+            <div class="stage-bottom">
+              <div class="step-caption">
+                <div class="step-caption-title" id="caption-title">First step</div>
+                <div class="step-caption-description" id="caption-description">Add a model and describe what happens in this step.</div>
+              </div>
+              <div class="nav-controls">
+                <button type="button" class="nav-button" id="previous-step" aria-label="Previous step" title="Previous step">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <span class="step-position" id="step-position">01 / 01</span>
+                <button type="button" class="nav-button" id="next-step" aria-label="Next step" title="Next step">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+        <aside class="inspector" id="inspector">
+          <div class="inspector-heading">
+            <div class="eyebrow">Step settings</div>
+            <h1 id="inspector-step-name">First step</h1>
+          </div>
+          <section class="inspector-section">
+            <div class="section-title"><h2>Step details</h2><span id="detail-number">01</span></div>
+            <label class="field-label" for="step-title-input">Title</label>
+            <input class="text-field" id="step-title-input" maxlength="70" value="First step" />
+            <label class="field-label" for="step-description-input">Description</label>
+            <textarea class="text-area" id="step-description-input" maxlength="500" placeholder="Describe what happens in this part of the process…"></textarea>
+          </section>
+          <section class="inspector-section">
+            <div class="section-title"><h2>3D model</h2><span>Optional</span></div>
+            <div class="model-file" id="model-file-card">
+              <span class="file-icon"><svg viewBox="0 0 24 24" fill="none"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span>
+              <div class="file-info"><div class="file-name" id="file-name">No model uploaded</div><div class="file-type" id="file-type">Choose a 3D file</div></div>
+              <button type="button" class="text-button" id="choose-model">Upload</button>
+            </div>
+            <p class="format-note">Supported: GLB, GLTF, OBJ and STL. GLTF files need embedded assets.</p>
+          </section>
+          <section class="inspector-section">
+            <div class="section-title"><h2>Images</h2><span id="image-count">0 images</span></div>
+            <button type="button" class="hotspot-add" id="add-image">＋ Add image to this step</button>
+            <p class="format-note">Images can be arranged freely on the stage. Select one to drag, resize, or rotate it.</p>
+            <div class="marker-list" id="image-list"></div>
+            <div class="image-control" id="image-controls" hidden>
+              <div class="image-control-row"><label for="image-scale">Size</label><input id="image-scale" type="range" min="10" max="200" value="60" /><output id="image-scale-value">60%</output></div>
+              <div class="image-control-row"><label for="image-rotation">Rotation</label><input id="image-rotation" type="range" min="-180" max="180" value="0" /><output id="image-rotation-value">0°</output></div>
+              <button type="button" class="text-button" id="delete-image">Remove image</button>
+            </div>
+          </section>
+          <section class="inspector-section">
+            <div class="section-title"><h2>Hotspots</h2><span id="hotspot-count">0 markers</span></div>
+            <button type="button" class="hotspot-add" id="add-hotspot">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              Place a hotspot
+            </button>
+            <p class="format-note" id="hotspot-help">Add a note attached to a point on the model.</p>
+            <div class="marker-list" id="marker-list"></div>
+            <div class="marker-editor" id="marker-editor" hidden>
+              <div class="marker-editor-top"><span>Edit hotspot</span><button type="button" class="close-marker" id="close-marker" aria-label="Close hotspot editor">×</button></div>
+              <label class="field-label" for="marker-title-input">Label</label>
+              <input class="text-field" id="marker-title-input" maxlength="50" placeholder="e.g. Initial frame" />
+              <label class="field-label" for="marker-body-input">Information</label>
+              <textarea class="text-area" id="marker-body-input" maxlength="500" placeholder="What should viewers know?"></textarea>
+              <button type="button" class="text-button" id="marker-image-button">＋ Add image to this hotspot</button>
+              <img class="hotspot-image" id="marker-image-preview" alt="" hidden />
+              <button type="button" class="text-button" id="marker-image-remove" hidden>Remove hotspot image</button>
+            </div>
+          </section>
+          <button type="button" class="delete-step" id="delete-step">Delete this step</button>
+        </aside>
+      </main>
+      <input type="file" id="file-input" accept=".glb,.gltf,.obj,.stl,model/gltf-binary,model/gltf+json,model/obj,model/stl" hidden />
+      <input type="file" id="image-input" accept="image/*" hidden />
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+      import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
+      import { STLLoader } from "three/addons/loaders/STLLoader.js";
+      import { createClient } from "@supabase/supabase-js";
+      import { MANAGER_EMAIL, MEDIA_BUCKET, SUPABASE_ANON_KEY, SUPABASE_URL } from "./supabase-config.js";
+
+      const supabase = SUPABASE_URL.includes("YOUR_PROJECT_ID") || SUPABASE_ANON_KEY.includes("YOUR_SUPABASE")
+        ? null
+        : createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const stage = document.querySelector("#stage");
+      const canvas = document.querySelector("#model-canvas");
+      const app = document.querySelector("#app");
+      const fileInput = document.querySelector("#file-input");
+      const imageInput = document.querySelector("#image-input");
+      const emptyState = document.querySelector("#empty-state");
+      const loading = document.querySelector("#loading");
+      const markerLayer = document.querySelector("#hotspot-layer");
+      const gallery = document.querySelector("#lobby");
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.05;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(38, 1, 0.01, 1000);
+      camera.position.set(3.2, 2.5, 4.2);
+      const controls = new OrbitControls(camera, canvas);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.07;
+      controls.target.set(0, 0, 0);
+      scene.add(new THREE.HemisphereLight(0xffffff, 0x92968d, 2.1));
+      const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
+      keyLight.position.set(4, 7, 5);
+      scene.add(keyLight);
+      const fillLight = new THREE.DirectionalLight(0xdce9ff, 1.25);
+      fillLight.position.set(-5, 2, -3);
+      scene.add(fillLight);
+      const modelRoot = new THREE.Group();
+      scene.add(modelRoot);
+      const raycaster = new THREE.Raycaster();
+      const pointer = new THREE.Vector2();
+
+      let modelObject = null;
+      let project = null;
+      let projectList = [];
+      let currentProjectId = null;
+      let managerSession = null;
+      let isManager = false;
+      let currentStepId = null;
+      let mode = "edit";
+      let placingHotspot = false;
+      let selectedHotspotId = null;
+      let toastTimer;
+      let objectUrl = null;
+      let modelLoadToken = 0;
+      let saveTimer;
+      let pointerStart = null;
+      let selectedImageId = null;
+      let activeImageDrag = null;
+      let imageUploadTarget = "step";
+      let saveInProgress = Promise.resolve();
+
+      function makeId() {
+        return globalThis.crypto?.randomUUID?.() ?? `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      }
+
+      function newStep(title = "New step") {
+        return { id: makeId(), title, description: "", modelPath: null, modelName: "", images: [], hotspots: [] };
+      }
+
+      function normalizeProject(row) {
+        const steps = Array.isArray(row.steps) ? row.steps : [];
+        return {
+          id: row.id,
+          title: typeof row.title === "string" ? row.title : "Untitled process",
+          created_at: row.created_at,
+          steps: steps.map((step) => ({
+            ...step,
+            id: step.id || makeId(),
+            title: typeof step.title === "string" ? step.title : "Untitled step",
+            description: typeof step.description === "string" ? step.description : "",
+            hotspots: Array.isArray(step.hotspots) ? step.hotspots.filter((item) => item && Number.isFinite(item.x) && Number.isFinite(item.y) && Number.isFinite(item.z)).map((item) => ({...item, imagePath: item.imagePath || null, imageUrl: item.imageUrl || null})) : [],
+            images: Array.isArray(step.images) ? step.images.filter((item) => item && typeof item.path === "string" && typeof item.url === "string").map((item) => ({
+              ...item,
+              id: item.id || makeId(),
+              x: Number.isFinite(item.x) ? item.x : 50,
+              y: Number.isFinite(item.y) ? item.y : 50,
+              width: Number.isFinite(item.width) ? item.width : 35,
+              rotation: Number.isFinite(item.rotation) ? item.rotation : 0
+            })) : [],
+            modelPath: step.modelPath || null,
+            modelName: step.modelName || ""
+          }))
+        };
+      }
+
+      function newProjectData(row) {
+        return { id: row.id, title: row.title, created_at: row.created_at, steps: [newStep("First step")] };
+      }
+
+      function activeProject() {
+        return project?.steps?.find((step) => step.id === currentStepId) || project?.steps?.[0] || null;
+      }
+
+      async function uploadMedia(file, projectId, stepId, prefix) {
+        const extension = file.name.split(".").pop().toLowerCase().replace(/[^a-z0-9]/g, "") || "bin";
+        const path = `${projectId}/${stepId}/${prefix}-${makeId()}.${extension}`;
+        const { error } = await supabase.storage.from(MEDIA_BUCKET).upload(path, file, {
+          contentType: file.type || "application/octet-stream",
+          upsert: false
+        });
+        if (error) throw error;
+        const { data } = supabase.storage.from(MEDIA_BUCKET).getPublicUrl(path);
+        return { path, url: data.publicUrl };
+      }
+
+      async function deleteMedia(paths) {
+        const uniquePaths = [...new Set(paths.filter(Boolean))];
+        if (!uniquePaths.length || !supabase) return;
+        const { error } = await supabase.storage.from(MEDIA_BUCKET).remove(uniquePaths);
+        if (error) throw error;
+      }
+
+      function getCurrentStep() {
+        return activeProject();
+      }
+
+      function persist() {
+        clearTimeout(saveTimer);
+        document.querySelector("#save-status").textContent = "Saving…";
+        saveTimer = setTimeout(() => {
+          if (!project || !isManager || !supabase) return;
+          saveInProgress = saveInProgress.then(async () => {
+            const { error } = await supabase.from("projects").update({
+              title: project.title,
+              steps: project.steps,
+              updated_at: new Date().toISOString()
+            }).eq("id", project.id);
+            if (error) throw error;
+            document.querySelector("#save-status").textContent = "Changes saved";
+          }).catch((error) => {
+            console.error("Could not save the project.", error);
+            document.querySelector("#save-status").textContent = "Save failed";
+            showToast("Could not save changes. Check the Supabase setup and try again.");
+          });
+        }, 500);
+      }
+
+      function showToast(message) {
+        const toast = document.querySelector("#toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 2800);
+      }
+
+      function renderGallery() {
+        const grid = document.querySelector("#project-grid");
+        grid.replaceChildren();
+        document.querySelector("#create-project").hidden = !isManager;
+        const status = document.querySelector("#gallery-status");
+        if (!supabase) {
+          status.textContent = "Supabase setup required";
+          const empty = document.createElement("div");
+          empty.className = "gallery-empty";
+          empty.textContent = "Connect a Supabase project to load shared projects. Follow the setup steps in README.md.";
+          grid.append(empty);
+          return;
+        }
+        if (!projectList.length) {
+          status.textContent = "0 projects";
+          const empty = document.createElement("div");
+          empty.className = "gallery-empty";
+          empty.textContent = isManager
+            ? "Your library is empty. Create a project to start a model, image gallery, or mixed process."
+            : "No projects are available to review yet.";
+          grid.append(empty);
+          return;
+        }
+        status.textContent = formatCount(projectList.length, "project");
+        projectList.forEach((item) => {
+          const card = document.createElement("button");
+          card.type = "button";
+          card.className = "project-card";
+          const icon = document.createElement("span");
+          icon.className = "project-card-icon";
+          icon.textContent = "◇";
+          const title = document.createElement("span");
+          title.className = "project-card-title";
+          title.textContent = item.title || "Untitled process";
+          const date = document.createElement("span");
+          date.className = "project-card-date";
+          date.textContent = `Created ${new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(item.created_at))}`;
+          const meta = document.createElement("span");
+          meta.className = "project-card-meta";
+          const steps = Array.isArray(item.steps) ? item.steps : [];
+          meta.textContent = `${formatCount(steps.length, "step")} · ${steps.some((step) => step.modelPath) ? "3D" : "Gallery"} process`;
+          card.append(icon, title, date, meta);
+          card.addEventListener("click", () => openProject(item));
+          grid.append(card);
+        });
+      }
+
+      async function refreshProjects() {
+        if (!supabase) {
+          renderGallery();
+          return;
+        }
+        document.querySelector("#gallery-status").textContent = "Loading projects…";
+        const { data, error } = await supabase.from("projects")
+          .select("id,title,steps,created_at,updated_at")
+          .order("created_at", { ascending: false });
+        if (error) {
+          console.error("Could not load the project gallery.", error);
+          document.querySelector("#gallery-status").textContent = "Could not load projects";
+          showToast("Could not load projects. Check the Supabase table setup.");
+          return;
+        }
+        projectList = data || [];
+        renderGallery();
+      }
+
+      async function signInAsManager() {
+        if (!supabase) {
+          const notice = document.querySelector("#manager-setup-notice");
+          notice.hidden = false;
+          notice.focus();
+          return;
+        }
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: `${location.origin}${location.pathname}`,
+            queryParams: { prompt: "select_account" }
+          }
+        });
+        if (error) {
+          console.error("Google sign-in could not start.", error);
+          showToast("Google sign-in could not start. Check the OAuth provider setup.");
+        }
+      }
+
+      async function handleAuthSession(session) {
+        managerSession = session;
+        const user = session?.user;
+        const allowed = !!user
+          && user.email?.toLowerCase() === MANAGER_EMAIL
+          && user.app_metadata?.provider === "google"
+          && !!user.email_confirmed_at;
+        isManager = allowed;
+        const loginButton = document.querySelector("#manager-login");
+        loginButton.textContent = !supabase ? "Configure manager access" : allowed ? "Sign out" : "Enter as manager";
+        document.querySelector("#manager-session").hidden = !allowed;
+        document.querySelector("#manager-session").textContent = `${MANAGER_EMAIL} · Projects`;
+        document.querySelector(".mode-switch").hidden = !allowed;
+        document.querySelector("#present-button").hidden = !allowed;
+        document.querySelector("#add-step").hidden = !allowed;
+        document.querySelector("#delete-step").hidden = !allowed;
+        document.querySelector("#inspector").hidden = !allowed || mode === "view";
+        document.querySelector("#choose-model").disabled = !allowed;
+        document.querySelector("#empty-upload").disabled = !allowed;
+        document.querySelector("#add-image").disabled = !allowed;
+        document.querySelector("#add-hotspot").disabled = !allowed;
+        document.querySelector("#step-title-input").readOnly = !allowed;
+        document.querySelector("#step-description-input").readOnly = !allowed;
+        document.querySelector("#project-title-input").readOnly = !allowed;
+        if (user && !allowed) {
+          showToast(`Only ${MANAGER_EMAIL} can edit projects.`);
+          await supabase.auth.signOut();
+          managerSession = null;
+        }
+        if (project) {
+          if (!allowed) setMode("view");
+          else if (!new URLSearchParams(location.search).has("present")) setMode("edit");
+          renderInspector();
+        }
+        await refreshProjects();
+      }
+
+      async function openProject(row) {
+        project = normalizeProject(row);
+        if (!project.steps.length) project.steps.push(newStep("First step"));
+        currentProjectId = project.id;
+        currentStepId = project.steps[0].id;
+        selectedHotspotId = null;
+        selectedImageId = null;
+        gallery.hidden = true;
+        app.classList.add("open");
+        app.classList.toggle("dedicated-viewer", !isManager || new URLSearchParams(location.search).has("present"));
+        setMode(isManager && !new URLSearchParams(location.search).has("present") ? "edit" : "view");
+        history.replaceState({}, "", `${location.pathname}?project=${encodeURIComponent(project.id)}${mode === "view" ? "&present=1" : ""}`);
+        renderInspector();
+        resizeRenderer();
+        await loadCurrentModel();
+      }
+
+      function showGallery() {
+        project = null;
+        currentProjectId = null;
+        currentStepId = null;
+        app.classList.remove("open");
+        gallery.hidden = false;
+        history.replaceState({}, "", location.pathname);
+        disposeModel();
+        refreshProjects();
+      }
+
+      async function createProject() {
+        if (!isManager || !supabase) return;
+        const step = newStep("First step");
+        const { data, error } = await supabase.from("projects")
+          .insert({ title: "Untitled process", steps: [step] })
+          .select("id,title,steps,created_at,updated_at")
+          .single();
+        if (error) {
+          console.error("Could not create the project.", error);
+          showToast("Could not create a project. Check the manager access policies.");
+          return;
+        }
+        projectList.unshift(data);
+        renderGallery();
+        await openProject(data);
+      }
+
+      function formatCount(count, singular, plural = `${singular}s`) {
+        return `${count} ${count === 1 ? singular : plural}`;
+      }
+
+      function renderSteps() {
+        const list = document.querySelector("#step-list");
+        list.replaceChildren();
+        if (!project) return;
+        project.steps.forEach((step, index) => {
+          const row = document.createElement("button");
+          row.type = "button";
+          row.className = `step-row${step.id === currentStepId ? " active" : ""}`;
+          row.setAttribute("aria-current", step.id === currentStepId ? "step" : "false");
+          row.innerHTML = `<span class="step-number">${String(index + 1).padStart(2, "0")}</span><span class="step-copy"><span class="step-title"></span><span class="step-subtitle"></span></span><span class="step-status${step.modelPath || step.images.length ? " ready" : ""}"></span>`;
+          row.querySelector(".step-title").textContent = step.title || "Untitled step";
+          row.querySelector(".step-subtitle").textContent = [
+            step.modelPath ? "3D model" : "",
+            step.images.length ? formatCount(step.images.length, "image") : "",
+            step.hotspots.length ? formatCount(step.hotspots.length, "hotspot") : ""
+          ].filter(Boolean).join(" · ") || "No media yet";
+          row.addEventListener("click", () => selectStep(step.id));
+          list.append(row);
+        });
+        document.querySelector("#step-count").textContent = formatCount(project.steps.length, "step");
+      }
+
+      function renderHotspots() {
+        const step = getCurrentStep();
+        markerLayer.replaceChildren();
+        if (!step) return;
+        renderStageImages(step);
+        document.querySelector("#hotspot-count").textContent = formatCount(step.hotspots.length, "marker");
+        if (!step.hotspots.length) {
+          const empty = document.createElement("p");
+          empty.className = "marker-empty";
+          empty.textContent = "No hotspots yet. Place one on the model to add an explanation.";
+          document.querySelector("#marker-list").replaceChildren(empty);
+        } else {
+          const list = document.querySelector("#marker-list");
+          list.replaceChildren();
+          step.hotspots.forEach((marker, index) => {
+            const row = document.createElement("div");
+            row.className = "marker-row";
+            const number = document.createElement("span");
+            number.className = "marker-number";
+            number.textContent = String(index + 1);
+            const name = document.createElement("span");
+            name.className = "marker-name";
+            name.textContent = marker.title || `Hotspot ${index + 1}`;
+            const edit = document.createElement("button");
+            edit.type = "button";
+            edit.className = "marker-edit";
+            edit.textContent = "Edit";
+            edit.addEventListener("click", () => selectHotspot(marker.id));
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.className = "marker-delete";
+            remove.setAttribute("aria-label", `Delete ${marker.title || `hotspot ${index + 1}`}`);
+            remove.textContent = "×";
+            remove.addEventListener("click", () => removeHotspot(marker.id));
+            row.append(number, name, edit, remove);
+            list.append(row);
+
+            const dot = document.createElement("button");
+            dot.type = "button";
+            dot.className = `hotspot${marker.id === selectedHotspotId ? " selected" : ""}`;
+            dot.dataset.markerId = marker.id;
+            dot.textContent = String(index + 1);
+            dot.setAttribute("aria-label", marker.title || `Hotspot ${index + 1}`);
+            dot.addEventListener("click", (event) => {
+              event.stopPropagation();
+              if (mode === "edit") selectHotspot(marker.id);
+              else {
+                selectedHotspotId = selectedHotspotId === marker.id ? null : marker.id;
+                renderHotspots();
+              }
+            });
+            markerLayer.append(dot);
+            if (mode === "view" && marker.id === selectedHotspotId) {
+              const popover = document.createElement("div");
+              popover.className = "hotspot-popover";
+              popover.dataset.popoverId = marker.id;
+              const title = document.createElement("div");
+              title.className = "hotspot-popover-title";
+              title.textContent = marker.title || `Hotspot ${index + 1}`;
+              const body = document.createElement("div");
+              body.className = "hotspot-popover-body";
+              body.textContent = marker.body || "No information added.";
+              popover.append(title, body);
+              if (marker.imageUrl) {
+                const image = document.createElement("img");
+                image.className = "hotspot-image";
+                image.src = marker.imageUrl;
+                image.alt = marker.title || "Hotspot image";
+                popover.append(image);
+              }
+              markerLayer.append(popover);
+            }
+          });
+        }
+        document.querySelector("#marker-editor").hidden = !selectedHotspotId;
+        document.querySelector("#hotspot-help").textContent = placingHotspot
+          ? "Click directly on the model surface to place your hotspot."
+          : "Add a note attached to a point on the model.";
+        updateHotspotPositions();
+      }
+
+      function renderStageImages(step) {
+        stage.classList.toggle("gallery-step", !step.modelPath);
+        step.images.forEach((image) => {
+          const item = document.createElement("div");
+          item.className = `image-stage-item${image.id === selectedImageId ? " selected" : ""}`;
+          item.dataset.imageId = image.id;
+          item.style.left = `${image.x}%`;
+          item.style.top = `${image.y}%`;
+          item.style.width = `${image.width}%`;
+          item.style.transform = `translate(-50%, -50%) rotate(${image.rotation}deg)`;
+          const picture = document.createElement("img");
+          picture.src = image.url;
+          picture.alt = image.name || "Process image";
+          item.append(picture);
+          item.addEventListener("click", (event) => {
+            event.stopPropagation();
+            if (mode === "edit" && isManager) selectImage(image.id);
+          });
+          item.addEventListener("pointerdown", (event) => {
+            if (mode !== "edit" || !isManager || event.button !== 0) return;
+            event.preventDefault();
+            event.stopPropagation();
+            selectImage(image.id);
+            activeImageDrag = {
+              id: image.id,
+              startX: event.clientX,
+              startY: event.clientY,
+              originX: image.x,
+              originY: image.y
+            };
+            item.setPointerCapture(event.pointerId);
+          });
+          item.addEventListener("pointermove", (event) => {
+            if (!activeImageDrag || activeImageDrag.id !== image.id) return;
+            const rect = stage.getBoundingClientRect();
+            image.x = Math.min(100, Math.max(0, activeImageDrag.originX + (event.clientX - activeImageDrag.startX) / rect.width * 100));
+            image.y = Math.min(100, Math.max(0, activeImageDrag.originY + (event.clientY - activeImageDrag.startY) / rect.height * 100));
+            item.style.left = `${image.x}%`;
+            item.style.top = `${image.y}%`;
+          });
+          const endDrag = () => {
+            if (!activeImageDrag || activeImageDrag.id !== image.id) return;
+            activeImageDrag = null;
+            persist();
+          };
+          item.addEventListener("pointerup", endDrag);
+          item.addEventListener("pointercancel", endDrag);
+          markerLayer.append(item);
+        });
+      }
+
+      function renderImages(step) {
+        if (!step) return;
+        const list = document.querySelector("#image-list");
+        list.replaceChildren();
+        document.querySelector("#image-count").textContent = formatCount(step.images.length, "image");
+        step.images.forEach((image) => {
+          const row = document.createElement("div");
+          row.className = "step-image-row";
+          const thumb = document.createElement("img");
+          thumb.className = "step-image-thumb";
+          thumb.src = image.url;
+          thumb.alt = "";
+          const name = document.createElement("span");
+          name.className = "marker-name";
+          name.textContent = image.name || "Image";
+          const edit = document.createElement("button");
+          edit.type = "button";
+          edit.className = "marker-edit";
+          edit.textContent = "Edit";
+          edit.addEventListener("click", () => selectImage(image.id));
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "marker-delete";
+          remove.setAttribute("aria-label", `Remove ${image.name || "image"}`);
+          remove.textContent = "×";
+          remove.addEventListener("click", () => removeImage(image.id));
+          row.append(thumb, name, edit, remove);
+          list.append(row);
+        });
+        const selected = step.images.find((image) => image.id === selectedImageId);
+        const controlsElement = document.querySelector("#image-controls");
+        controlsElement.hidden = !selected || mode !== "edit";
+        if (selected) {
+          document.querySelector("#image-scale").value = String(Math.round(selected.width));
+          document.querySelector("#image-scale-value").textContent = `${Math.round(selected.width)}%`;
+          document.querySelector("#image-rotation").value = String(Math.round(selected.rotation));
+          document.querySelector("#image-rotation-value").textContent = `${Math.round(selected.rotation)}°`;
+        }
+        markerLayer.querySelectorAll(".image-stage-item").forEach((item) => {
+          item.classList.toggle("selected", item.dataset.imageId === selectedImageId && mode === "edit");
+          item.style.pointerEvents = mode === "edit" ? "auto" : "none";
+          item.style.cursor = mode === "edit" ? "move" : "default";
+        });
+      }
+
+      function selectImage(id) {
+        selectedImageId = id;
+        renderImages(getCurrentStep());
+      }
+
+      async function removeImage(id) {
+        const step = getCurrentStep();
+        const image = step.images.find((item) => item.id === id);
+        step.images = step.images.filter((item) => item.id !== id);
+        if (selectedImageId === id) selectedImageId = null;
+        renderInspector();
+        persist();
+        if (image?.path) {
+          try { await deleteMedia([image.path]); }
+          catch (error) { console.error("Could not remove the image file.", error); showToast("Image removed from the step, but its stored file could not be deleted."); }
+        }
+      }
+
+      async function addImage(file) {
+        if (!file || !project || !isManager) return;
+        if (!file.type.startsWith("image/")) {
+          showToast("Choose an image file.");
+          return;
+        }
+        const step = getCurrentStep();
+        try {
+          loading.hidden = false;
+          const uploaded = await uploadMedia(file, project.id, step.id, "image");
+          const image = { id: makeId(), ...uploaded, name: file.name, x: 50, y: 50, width: 35, rotation: 0 };
+          step.images.push(image);
+          selectedImageId = image.id;
+          renderInspector();
+          persist();
+        } catch (error) {
+          console.error("Could not upload the image.", error);
+          showToast("Could not upload image. Check the Supabase storage setup.");
+        } finally {
+          loading.hidden = true;
+        }
+      }
+
+      async function addHotspotImage(file) {
+        const marker = getCurrentStep()?.hotspots.find((item) => item.id === selectedHotspotId);
+        if (!file || !marker || !isManager || !project) return;
+        if (!file.type.startsWith("image/")) {
+          showToast("Choose an image file.");
+          return;
+        }
+        try {
+          const uploaded = await uploadMedia(file, project.id, getCurrentStep().id, "hotspot");
+          const oldPath = marker.imagePath;
+          marker.imagePath = uploaded.path;
+          marker.imageUrl = uploaded.url;
+          renderHotspots();
+          selectHotspot(marker.id);
+          persist();
+          if (oldPath) await deleteMedia([oldPath]);
+        } catch (error) {
+          console.error("Could not upload the hotspot image.", error);
+          showToast("Could not upload hotspot image. Check the Supabase storage setup.");
+        }
+      }
+
+      function renderInspector() {
+        const step = getCurrentStep();
+        if (!step || !project) return;
+        const index = project.steps.indexOf(step);
+        document.querySelector("#project-title-input").value = project.title;
+        document.querySelector("#inspector-step-name").textContent = step.title || "Untitled step";
+        document.querySelector("#step-title-input").value = step.title;
+        document.querySelector("#step-description-input").value = step.description;
+        document.querySelector("#detail-number").textContent = String(index + 1).padStart(2, "0");
+        document.querySelector("#file-name").textContent = step.modelName || "No model uploaded";
+        document.querySelector("#file-type").textContent = step.modelName ? "Shared with reviewers" : "Choose a 3D file";
+        document.querySelector("#choose-model").textContent = step.modelPath ? "Replace" : "Upload";
+        document.querySelector("#caption-title").textContent = step.title || "Untitled step";
+        document.querySelector("#caption-description").textContent = step.description || "Add a model and describe what happens in this step.";
+        document.querySelector("#stage-step-name").textContent = `Step ${String(index + 1).padStart(2, "0")}`;
+        document.querySelector("#step-position").textContent = `${String(index + 1).padStart(2, "0")} / ${String(project.steps.length).padStart(2, "0")}`;
+        document.querySelector("#previous-step").disabled = index <= 0;
+        document.querySelector("#next-step").disabled = index >= project.steps.length - 1;
+        document.querySelector("#empty-state").hidden = !!step.modelPath || step.images.length > 0;
+        document.querySelector("#model-label").textContent = step.modelName || "No model loaded";
+        renderImages(step);
+        renderSteps();
+        renderHotspots();
+      }
+
+      function renderStepCopy() {
+        const step = getCurrentStep();
+        if (!step) return;
+        document.querySelector("#inspector-step-name").textContent = step.title || "Untitled step";
+        document.querySelector("#caption-title").textContent = step.title || "Untitled step";
+        document.querySelector("#caption-description").textContent = step.description || "Add a model and describe what happens in this step.";
+        renderSteps();
+      }
+
+      function setMode(nextMode) {
+        mode = nextMode === "edit" && !isManager ? "view" : nextMode;
+        app.classList.toggle("viewer-mode", mode === "view");
+        document.querySelectorAll(".mode-switch button").forEach((button) => {
+          const active = button.dataset.mode === mode;
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+        if (mode === "view") {
+          placingHotspot = false;
+          selectedHotspotId = null;
+          document.querySelector("#marker-editor").hidden = true;
+        }
+        document.querySelector("#add-hotspot").classList.toggle("armed", placingHotspot);
+        canvas.classList.toggle("placement-cursor", placingHotspot);
+        renderHotspots();
+        renderImages(getCurrentStep());
+      }
+
+      async function selectStep(id) {
+        if (id === currentStepId) return;
+        currentStepId = id;
+        selectedHotspotId = null;
+        selectedImageId = null;
+        placingHotspot = false;
+        renderInspector();
+        await loadCurrentModel();
+      }
+
+      function fitModel(object) {
+        modelRoot.position.set(0, 0, 0);
+        modelRoot.scale.setScalar(1);
+        modelRoot.updateMatrixWorld(true);
+        const bounds = new THREE.Box3().setFromObject(object);
+        if (bounds.isEmpty()) return;
+        const size = bounds.getSize(new THREE.Vector3());
+        const center = bounds.getCenter(new THREE.Vector3());
+        const maxDimension = Math.max(size.x, size.y, size.z) || 1;
+        const scale = 2.2 / maxDimension;
+        modelRoot.scale.setScalar(scale);
+        modelRoot.position.copy(center).multiplyScalar(-scale);
+        modelRoot.updateMatrixWorld(true);
+        const scaledBounds = new THREE.Box3().setFromObject(object);
+        controls.target.copy(scaledBounds.getCenter(new THREE.Vector3()));
+        const scaledSize = scaledBounds.getSize(new THREE.Vector3());
+        const distance = Math.max(scaledSize.x, scaledSize.y, scaledSize.z) * 2.25;
+        camera.position.set(distance * 0.78, distance * 0.6, distance);
+        camera.near = Math.max(distance / 1000, 0.001);
+        camera.far = distance * 100;
+        camera.updateProjectionMatrix();
+        controls.minDistance = Math.max(distance * 0.25, 0.05);
+        controls.maxDistance = distance * 8;
+        controls.update();
+      }
+
+      function disposeModel() {
+        while (modelRoot.children.length) {
+          const child = modelRoot.children[0];
+          modelRoot.remove(child);
+          child.traverse?.((item) => {
+            if (item.geometry) item.geometry.dispose();
+            if (item.material) {
+              const materials = Array.isArray(item.material) ? item.material : [item.material];
+              materials.forEach((material) => {
+                for (const value of Object.values(material)) if (value && value.isTexture) value.dispose();
+                material.dispose();
+              });
+            }
+          });
+        }
+        modelObject = null;
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        objectUrl = null;
+      }
+
+      function parseModel(file) {
+        const extension = file.name.split(".").pop().toLowerCase();
+        return new Promise((resolve, reject) => {
+          const fail = (error) => reject(error instanceof Error ? error : new Error("The model file could not be read."));
+          if (extension === "glb" || extension === "gltf") {
+            const loader = new GLTFLoader();
+            file.arrayBuffer().then((buffer) => {
+              loader.parse(buffer, "", (gltf) => resolve(gltf.scene), fail);
+            }).catch(fail);
+          } else if (extension === "obj") {
+            file.text().then((text) => resolve(new OBJLoader().parse(text))).catch(fail);
+          } else if (extension === "stl") {
+            file.arrayBuffer().then((buffer) => {
+              const geometry = new STLLoader().parse(buffer);
+              geometry.computeVertexNormals();
+              const material = new THREE.MeshStandardMaterial({ color: 0xb9c0b3, metalness: 0.12, roughness: 0.62 });
+              resolve(new THREE.Mesh(geometry, material));
+            }).catch(fail);
+          } else {
+            reject(new Error("Unsupported file. Choose GLB, GLTF, OBJ or STL."));
+          }
+        });
+      }
+
+      async function showModelFile(file, token = ++modelLoadToken) {
+        loading.hidden = false;
+        try {
+          const object = await parseModel(file);
+          if (token !== modelLoadToken) return;
+          disposeModel();
+          modelRoot.add(object);
+          modelObject = object;
+          object.traverse((item) => {
+            if (item.isMesh) {
+              item.castShadow = true;
+              item.receiveShadow = true;
+              if (item.material && !Array.isArray(item.material)) {
+                item.material.side = THREE.DoubleSide;
+                item.material.needsUpdate = true;
+              }
+            }
+          });
+          fitModel(object);
+          emptyState.hidden = true;
+          document.querySelector("#model-label").textContent = file.name;
+          updateHotspotPositions();
+          return true;
+        } catch (error) {
+          console.error("Could not load the 3D model.", error);
+          showToast(error.message || "Could not load this model.");
+          return false;
+        } finally {
+          if (token === modelLoadToken) loading.hidden = true;
+        }
+      }
+
+      async function loadCurrentModel() {
+        const token = ++modelLoadToken;
+        disposeModel();
+        const step = getCurrentStep();
+        if (!step) return;
+        document.querySelector("#model-label").textContent = step.modelName || "No model loaded";
+        emptyState.hidden = !!step.modelPath || step.images.length > 0;
+        if (!step.modelPath) {
+          updateHotspotPositions();
+          return;
+        }
+        loading.hidden = false;
+        try {
+          const response = await fetch(step.modelUrl);
+          if (!response.ok) throw new Error(`Could not download model (${response.status}).`);
+          const file = new File([await response.blob()], step.modelName || "model.glb");
+          if (token !== modelLoadToken) return;
+          await showModelFile(file, token);
+        } catch (error) {
+          console.error("Could not restore the model.", error);
+          showToast("Could not load this shared model. Check its storage URL.");
+        } finally {
+          if (token === modelLoadToken) loading.hidden = true;
+        }
+      }
+
+      async function handleFile(file) {
+        if (!file) return;
+        const extension = file.name.split(".").pop().toLowerCase();
+        if (!["glb", "gltf", "obj", "stl"].includes(extension)) {
+          showToast("Choose a GLB, GLTF, OBJ or STL model.");
+          return;
+        }
+        if (!isManager || !project) return;
+        const step = getCurrentStep();
+        const token = ++modelLoadToken;
+        const oldPath = step.modelPath;
+        const oldUrl = step.modelUrl;
+        const oldName = step.modelName;
+        let uploaded;
+        try {
+          loading.hidden = false;
+          uploaded = await uploadMedia(file, project.id, step.id, "model");
+          step.modelPath = uploaded.path;
+          step.modelUrl = uploaded.url;
+          step.modelName = file.name;
+          renderInspector();
+          let loaded = true;
+          if (currentStepId === step.id) {
+            loaded = await showModelFile(file, token);
+          }
+          if (!loaded && token === modelLoadToken) {
+            step.modelPath = oldPath;
+            step.modelUrl = oldUrl;
+            step.modelName = oldName;
+            await deleteMedia([uploaded.path]);
+            renderInspector();
+            return;
+          }
+          persist();
+        } catch (error) {
+          console.error("Could not upload the model.", error);
+          showToast("Could not upload model. Check the Supabase storage setup.");
+          if (uploaded && step.modelPath === uploaded.path) {
+            step.modelPath = oldPath;
+            step.modelUrl = oldUrl;
+            step.modelName = oldName;
+            renderInspector();
+          }
+          if (uploaded?.path) {
+            try { await deleteMedia([uploaded.path]); }
+            catch (deleteError) { console.error("Could not remove the failed model upload.", deleteError); }
+          }
+          return;
+        } finally {
+          if (token === modelLoadToken) loading.hidden = true;
+        }
+        if (oldPath) {
+          try { await deleteMedia([oldPath]); }
+          catch (error) { console.error("Could not remove the replaced model file.", error); showToast("Model replaced, but the old file could not be deleted."); }
+        }
+      }
+
+      function updateHotspotPositions() {
+        if (!modelObject) {
+          markerLayer.querySelectorAll(".hotspot").forEach((dot) => { dot.hidden = true; });
+          return;
+        }
+        modelRoot.updateMatrixWorld(true);
+        const rect = stage.getBoundingClientRect();
+        const step = getCurrentStep();
+        step.hotspots.forEach((marker) => {
+          const dot = markerLayer.querySelector(`[data-marker-id="${CSS.escape(marker.id)}"]`);
+          if (!dot) return;
+          const position = new THREE.Vector3(marker.x, marker.y, marker.z);
+          modelObject.localToWorld(position);
+          position.project(camera);
+          const visible = position.z < 1 && position.z > -1 && Math.abs(position.x) <= 1.1 && Math.abs(position.y) <= 1.1;
+          dot.hidden = !visible;
+          const popover = markerLayer.querySelector(`[data-popover-id="${CSS.escape(marker.id)}"]`);
+          if (popover) popover.hidden = !visible;
+          if (visible) {
+            dot.style.left = `${(position.x * 0.5 + 0.5) * rect.width}px`;
+            dot.style.top = `${(-position.y * 0.5 + 0.5) * rect.height}px`;
+            if (popover) {
+              popover.style.left = dot.style.left;
+              popover.style.top = dot.style.top;
+            }
+          }
+        });
+      }
+
+      function resizeRenderer() {
+        const rect = stage.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        renderer.setSize(rect.width, rect.height, false);
+        camera.aspect = rect.width / rect.height;
+        camera.updateProjectionMatrix();
+        updateHotspotPositions();
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+        updateHotspotPositions();
+      }
+
+      function addHotspot(point) {
+        const local = modelObject.worldToLocal(point.clone());
+        const marker = { id: makeId(), x: local.x, y: local.y, z: local.z, title: "", body: "" };
+        getCurrentStep().hotspots.push(marker);
+        selectedHotspotId = marker.id;
+        placingHotspot = false;
+        document.querySelector("#marker-title-input").value = "";
+        document.querySelector("#marker-body-input").value = "";
+        document.querySelector("#add-hotspot").classList.remove("armed");
+        canvas.classList.remove("placement-cursor");
+        renderHotspots();
+        document.querySelector("#marker-title-input").focus();
+        persist();
+      }
+
+      function selectHotspot(id) {
+        selectedHotspotId = id;
+        const marker = getCurrentStep().hotspots.find((item) => item.id === id);
+        if (!marker) return;
+        document.querySelector("#marker-title-input").value = marker.title || "";
+        document.querySelector("#marker-body-input").value = marker.body || "";
+        document.querySelector("#marker-image-preview").hidden = !marker.imageUrl;
+        document.querySelector("#marker-image-preview").src = marker.imageUrl || "";
+        document.querySelector("#marker-image-remove").hidden = !marker.imageUrl;
+        renderHotspots();
+        document.querySelector("#marker-editor").hidden = false;
+      }
+
+      function removeHotspot(id) {
+        const step = getCurrentStep();
+        const marker = step.hotspots.find((item) => item.id === id);
+        step.hotspots = step.hotspots.filter((item) => item.id !== id);
+        if (selectedHotspotId === id) selectedHotspotId = null;
+        renderHotspots();
+        persist();
+        if (marker?.imagePath) deleteMedia([marker.imagePath]).catch((error) => {
+          console.error("Could not remove the hotspot image.", error);
+          showToast("Hotspot removed, but its image could not be deleted.");
+        });
+      }
+
+      function bindEvents() {
+        document.querySelectorAll(".mode-switch button").forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+        document.querySelector("#present-button").addEventListener("click", () => setMode("view"));
+        document.querySelector("#manager-login").addEventListener("click", async () => {
+          if (isManager && supabase) {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+              console.error("Could not sign out.", error);
+              showToast("Could not sign out.");
+            }
+            return;
+          }
+          signInAsManager();
+        });
+        document.querySelector("#manager-session").addEventListener("click", showGallery);
+        document.querySelector("#back-to-projects").addEventListener("click", showGallery);
+        document.querySelector("#create-project").addEventListener("click", createProject);
+        document.querySelector("#project-title-input").addEventListener("input", (event) => {
+          if (!project || !isManager) return;
+          project.title = event.target.value;
+          persist();
+        });
+        document.querySelector("#add-step").addEventListener("click", () => {
+          if (!project || !isManager) return;
+          const step = newStep(`Step ${String(project.steps.length + 1).padStart(2, "0")}`);
+          project.steps.push(step);
+          currentStepId = step.id;
+          selectedHotspotId = null;
+          selectedImageId = null;
+          renderInspector();
+          persist();
+          loadCurrentModel();
+        });
+        document.querySelector("#delete-step").addEventListener("click", async () => {
+          if (!project || !isManager) return;
+          if (project.steps.length === 1) {
+            showToast("A process needs at least one step.");
+            return;
+          }
+          const step = getCurrentStep();
+          const index = project.steps.indexOf(step);
+          project.steps = project.steps.filter((item) => item.id !== step.id);
+          const paths = [step.modelPath, ...step.images.map((image) => image.path), ...step.hotspots.map((marker) => marker.imagePath)];
+          currentStepId = project.steps[Math.max(0, index - 1)].id;
+          selectedHotspotId = null;
+          selectedImageId = null;
+          renderInspector();
+          persist();
+          try { await deleteMedia(paths); }
+          catch (error) { console.error("Could not remove deleted step media.", error); showToast("Step deleted, but some stored files could not be removed."); }
+          await loadCurrentModel();
+        });
+        document.querySelector("#previous-step").addEventListener("click", () => {
+          const index = project.steps.findIndex((step) => step.id === currentStepId);
+          if (index > 0) selectStep(project.steps[index - 1].id);
+        });
+        document.querySelector("#next-step").addEventListener("click", () => {
+          const index = project.steps.findIndex((step) => step.id === currentStepId);
+          if (index < project.steps.length - 1) selectStep(project.steps[index + 1].id);
+        });
+        document.querySelector("#step-title-input").addEventListener("input", (event) => {
+          getCurrentStep().title = event.target.value;
+          renderStepCopy();
+          persist();
+        });
+        document.querySelector("#step-description-input").addEventListener("input", (event) => {
+          getCurrentStep().description = event.target.value;
+          renderStepCopy();
+          persist();
+        });
+        document.querySelector("#choose-model").addEventListener("click", () => fileInput.click());
+        document.querySelector("#empty-upload").addEventListener("click", () => fileInput.click());
+        fileInput.addEventListener("change", async (event) => {
+          await handleFile(event.target.files[0]);
+          event.target.value = "";
+        });
+        document.querySelector("#add-image").addEventListener("click", () => {
+          if (!isManager) return;
+          imageUploadTarget = "step";
+          imageInput.click();
+        });
+        document.querySelector("#marker-image-button").addEventListener("click", () => {
+          if (!isManager || !selectedHotspotId) return;
+          imageUploadTarget = "hotspot";
+          imageInput.click();
+        });
+        imageInput.addEventListener("change", async (event) => {
+          const file = event.target.files[0];
+          if (imageUploadTarget === "hotspot") await addHotspotImage(file);
+          else await addImage(file);
+          event.target.value = "";
+        });
+        document.querySelector("#marker-image-remove").addEventListener("click", async () => {
+          const marker = getCurrentStep()?.hotspots.find((item) => item.id === selectedHotspotId);
+          if (!marker) return;
+          const path = marker.imagePath;
+          marker.imagePath = null;
+          marker.imageUrl = null;
+          document.querySelector("#marker-image-preview").hidden = true;
+          document.querySelector("#marker-image-remove").hidden = true;
+          persist();
+          renderHotspots();
+          selectHotspot(marker.id);
+          if (path) {
+            try { await deleteMedia([path]); }
+            catch (error) { console.error("Could not remove the hotspot image.", error); showToast("Image removed from hotspot, but its stored file could not be deleted."); }
+          }
+        });
+        document.querySelector("#image-scale").addEventListener("input", (event) => {
+          const image = getCurrentStep()?.images.find((item) => item.id === selectedImageId);
+          if (!image) return;
+          image.width = Number(event.target.value);
+          document.querySelector("#image-scale-value").textContent = `${image.width}%`;
+          const item = markerLayer.querySelector(`[data-image-id="${CSS.escape(image.id)}"]`);
+          if (item) item.style.width = `${image.width}%`;
+          persist();
+        });
+        document.querySelector("#image-rotation").addEventListener("input", (event) => {
+          const image = getCurrentStep()?.images.find((item) => item.id === selectedImageId);
+          if (!image) return;
+          image.rotation = Number(event.target.value);
+          document.querySelector("#image-rotation-value").textContent = `${image.rotation}°`;
+          const item = markerLayer.querySelector(`[data-image-id="${CSS.escape(image.id)}"]`);
+          if (item) item.style.transform = `translate(-50%, -50%) rotate(${image.rotation}deg)`;
+          persist();
+        });
+        document.querySelector("#delete-image").addEventListener("click", () => selectedImageId && removeImage(selectedImageId));
+        document.querySelector("#add-hotspot").addEventListener("click", () => {
+          if (mode !== "edit") return;
+          if (!modelObject) {
+            showToast("Upload a model before placing hotspots.");
+            return;
+          }
+          placingHotspot = !placingHotspot;
+          selectedHotspotId = null;
+          document.querySelector("#marker-editor").hidden = true;
+          document.querySelector("#add-hotspot").classList.toggle("armed", placingHotspot);
+          canvas.classList.toggle("placement-cursor", placingHotspot);
+          renderHotspots();
+        });
+        canvas.addEventListener("pointerdown", (event) => {
+          pointerStart = { x: event.clientX, y: event.clientY, button: event.button };
+        });
+        canvas.addEventListener("pointerup", (event) => {
+          if (!placingHotspot || !modelObject || event.button !== 0 || !pointerStart || pointerStart.button !== 0) return;
+          const moved = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+          pointerStart = null;
+          if (moved > 5) return;
+          const rect = canvas.getBoundingClientRect();
+          pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+          pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+          raycaster.setFromCamera(pointer, camera);
+          const intersections = raycaster.intersectObject(modelObject, true);
+          if (intersections.length) addHotspot(intersections[0].point);
+          else showToast("Click on the model surface to place a hotspot.");
+        });
+        canvas.addEventListener("click", () => {
+          if (mode === "view" && selectedHotspotId) {
+            selectedHotspotId = null;
+            renderHotspots();
+          }
+        });
+        document.querySelector("#marker-title-input").addEventListener("input", (event) => {
+          const marker = getCurrentStep().hotspots.find((item) => item.id === selectedHotspotId);
+          if (!marker) return;
+          marker.title = event.target.value;
+          renderHotspots();
+          persist();
+        });
+        document.querySelector("#marker-body-input").addEventListener("input", (event) => {
+          const marker = getCurrentStep().hotspots.find((item) => item.id === selectedHotspotId);
+          if (!marker) return;
+          marker.body = event.target.value;
+          persist();
+        });
+        document.querySelector("#close-marker").addEventListener("click", () => {
+          selectedHotspotId = null;
+          document.querySelector("#marker-editor").hidden = true;
+          renderHotspots();
+        });
+        document.querySelector("#reset-camera").addEventListener("click", () => {
+          if (modelObject) fitModel(modelObject);
+          else {
+            camera.position.set(3.2, 2.5, 4.2);
+            controls.target.set(0, 0, 0);
+            controls.update();
+          }
+        });
+        window.addEventListener("keydown", (event) => {
+          if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
+          if (event.key === "ArrowLeft") document.querySelector("#previous-step").click();
+          if (event.key === "ArrowRight") document.querySelector("#next-step").click();
+          if (event.key === "Escape" && placingHotspot) {
+            placingHotspot = false;
+            document.querySelector("#add-hotspot").classList.remove("armed");
+            canvas.classList.remove("placement-cursor");
+            renderHotspots();
+          }
+        });
+        new ResizeObserver(resizeRenderer).observe(stage);
+      }
+
+      async function start() {
+        bindEvents();
+        if (!supabase) {
+          document.querySelector("#manager-login").textContent = "Configure manager access";
+          renderGallery();
+          return;
+        }
+        supabase.auth.onAuthStateChange((_event, session) => {
+          queueMicrotask(() => handleAuthSession(session));
+        });
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Could not restore the manager session.", error);
+          showToast("Could not verify sign-in status.");
+        }
+        await handleAuthSession(data?.session || null);
+        const requestedProject = new URLSearchParams(location.search).get("project");
+        if (requestedProject) {
+          const { data: row, error: projectError } = await supabase.from("projects")
+            .select("id,title,steps,created_at,updated_at")
+            .eq("id", requestedProject)
+            .maybeSingle();
+          if (projectError) {
+            console.error("Could not load the requested project.", projectError);
+            showToast("Could not load this project.");
+          } else if (row) await openProject(row);
+        }
+        animate();
+      }
+
+      start();
+    </script>
+  </body>
+</html>
