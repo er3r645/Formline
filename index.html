@@ -40,7 +40,7 @@
       button, input, textarea { font: inherit; }
       button { color: inherit; }
       .app { display: none; grid-template-rows: 68px minmax(0, 1fr); height: 100vh; min-height: 620px; }
-      .app.open { display: grid; }
+      .app.open { display: grid; grid-template-rows: 68px minmax(620px, 1fr) auto; height: auto; min-height: 100vh; }
       .topbar {
         display: flex; align-items: center; justify-content: space-between;
         padding: 0 28px; background: var(--paper); border-bottom: 1px solid var(--line);
@@ -195,6 +195,38 @@
       .auth-button:hover { border-color: #b7b9b0; }
       .setup-notice { max-width: 1160px; margin: 22px auto 0; padding: 13px 16px; border-left: 3px solid #bd8f42; background: #fff8e9; color: #585044; font-size: 12px; line-height: 1.6; }
       .setup-notice a { color: #5b6547; font-weight: 700; }
+      .gallery-filters { display: flex; gap: 8px; align-items: center; margin: 0 0 16px; }
+      .gallery-search, .gallery-section-filter { height: 38px; border: 1px solid var(--line); border-radius: 7px; background: white; color: var(--ink); font-size: 12px; }
+      .gallery-search { width: min(360px, 100%); padding: 0 12px; }
+      .gallery-section-filter { min-width: 150px; padding: 0 10px; }
+      .project-tag { margin-top: 8px; color: #667653; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+      .project-dialog { width: min(440px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--line); border-radius: 10px; background: white; color: var(--ink); box-shadow: 0 20px 70px #20231d30; }
+      .project-dialog::backdrop { background: #20231d66; }
+      .dialog-body { padding: 24px; }
+      .dialog-body h2 { margin: 0; font: 700 20px Manrope, sans-serif; }
+      .dialog-body > p { margin: 7px 0 18px; color: var(--muted); font-size: 12px; }
+      .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 22px; }
+      .field-control { width: 100%; height: 38px; padding: 0 10px; border: 1px solid var(--line); border-radius: 7px; background: white; color: var(--ink); font: inherit; font-size: 12px; }
+      .theme-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .color-field { display: flex; align-items: center; gap: 8px; height: 38px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 7px; font-size: 10px; color: #777972; }
+      .color-field input { width: 25px; height: 25px; padding: 0; border: 0; background: transparent; }
+      .video-stage { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: contain; background: #111; }
+      .stage.presentation-step .image-stage-item:first-child { top: 50% !important; left: 50% !important; width: 100% !important; height: 100%; transform: translate(-50%, -50%) !important; }
+      .stage.presentation-step .image-stage-item:not(:first-child) { display: none; }
+      .stage.presentation-step .image-stage-item img { object-fit: contain; }
+      .stage.presentation-step .step-caption { max-width: min(680px, 78%); padding: 14px 18px; }
+      .stage.presentation-step .step-caption-title { font-size: 17px; }
+      .stage.presentation-step .step-caption-description { max-width: 600px; font-size: 13px; white-space: normal; }
+      .comments-section { max-width: 1160px; width: calc(100% - 40px); margin: 28px auto 50px; padding-top: 22px; border-top: 1px solid var(--line); }
+      .comments-section h2 { margin: 0 0 14px; font: 700 18px Manrope, sans-serif; }
+      .comment-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+      .comment-item { padding: 12px 0; border-bottom: 1px solid var(--line); }
+      .comment-meta { display: flex; gap: 8px; align-items: baseline; color: #73756d; font-size: 10px; }
+      .comment-name { color: var(--ink); font-size: 12px; font-weight: 700; }
+      .comment-text { margin-top: 6px; color: #4a4b46; font-size: 13px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+      .comment-form { display: grid; grid-template-columns: minmax(140px, 220px) 1fr auto; gap: 8px; align-items: start; }
+      .comment-form textarea { min-height: 40px; max-height: 140px; padding: 10px; resize: vertical; }
+      .comment-empty { color: var(--muted); font-size: 12px; }
       .project-title-input { width: min(250px, 42vw); border: 1px solid transparent; background: transparent; font: 700 16px Manrope, sans-serif; outline: none; }
       .project-title-input:focus { border-bottom-color: #bdc3b4; }
       .image-control { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: #fcfcfa; }
@@ -218,6 +250,7 @@
       }
       @media (max-width: 760px) {
         .app { height: auto; min-height: 100vh; grid-template-rows: 60px minmax(0, 1fr); }
+        .app.open { grid-template-rows: 60px minmax(520px, 1fr) auto; }
         .topbar { padding: 0 14px; }
         .top-center { display: none; }
         .brand { font-size: 15px; }
@@ -238,6 +271,9 @@
         .viewer-mode .stage-column { padding-top: 12px; }
         .key-hint { display: none; }
         .stage-caption-description { max-width: 180px; }
+        .gallery-filters { align-items: stretch; flex-direction: column; }
+        .gallery-search, .gallery-section-filter { width: 100%; }
+        .comment-form { grid-template-columns: 1fr; }
       }
     </style>
   </head>
@@ -256,13 +292,38 @@
         <div class="lobby-intro">
           <div class="eyebrow">Process library</div>
           <h1>Explore the work behind the finished form.</h1>
-          <p>Browse each project as a sequence of 3D models, annotated images, or both.</p>
+          <p>Browse model walkthroughs, slide presentations, and image galleries.</p>
         </div>
         <div class="project-gallery">
           <div class="gallery-toolbar"><h2>Projects</h2><div class="gallery-actions"><span class="project-meta" id="gallery-status">Loading projects…</span><button type="button" class="upload-button" id="create-project" hidden>＋ New project</button></div></div>
+          <div class="gallery-filters">
+            <input id="project-search" class="gallery-search" type="search" placeholder="Search projects by name" aria-label="Search projects by name" />
+            <select id="section-filter" class="gallery-section-filter" aria-label="Filter by section"><option value="">All sections</option></select>
+          </div>
           <div class="project-grid" id="project-grid"></div>
         </div>
     </section>
+    <dialog class="project-dialog" id="project-dialog">
+      <form class="dialog-body" id="project-form">
+        <h2>New project</h2>
+        <p>Choose the format and the section where reviewers will find it.</p>
+        <label class="field-label" for="new-project-title">Project name</label>
+        <input class="field-control" id="new-project-title" maxlength="100" value="Untitled project" required />
+        <label class="field-label" for="new-project-type">Project type</label>
+        <select class="field-control" id="new-project-type">
+          <option value="model">Model project</option>
+          <option value="presentation">Presentation project</option>
+          <option value="gallery">Gallery project</option>
+        </select>
+        <label class="field-label" for="new-project-section">Section</label>
+        <input class="field-control" id="new-project-section" maxlength="50" list="known-sections" value="Engineering" />
+        <datalist id="known-sections"></datalist>
+        <div class="dialog-actions">
+          <button class="auth-button" type="button" id="cancel-project">Cancel</button>
+          <button class="upload-button" type="submit">Create project</button>
+        </div>
+      </form>
+    </dialog>
     <div class="app" id="app">
       <header class="topbar">
         <div class="brand">
@@ -290,7 +351,7 @@
             <div class="project-meta">A 3D story in progress</div>
           </div>
           <div class="timeline-head">
-            <span class="eyebrow">Timeline</span>
+            <span class="eyebrow" id="timeline-label">Timeline</span>
             <span class="step-count" id="step-count">01 step</span>
           </div>
           <div class="step-list" id="step-list" aria-label="Timeline steps"></div>
@@ -347,6 +408,15 @@
             <div class="eyebrow">Step settings</div>
             <h1 id="inspector-step-name">First step</h1>
           </div>
+          <section class="inspector-section" id="project-settings">
+            <div class="section-title"><h2>Project appearance</h2><span id="project-type-label">Model</span></div>
+            <label class="field-label" for="project-section-input">Section</label>
+            <input class="text-field" id="project-section-input" maxlength="50" list="known-sections" />
+            <div class="theme-fields">
+              <label class="color-field">Accent <input type="color" id="theme-accent" value="#bdff71" /></label>
+              <label class="color-field">Canvas <input type="color" id="theme-background" value="#fbfbf9" /></label>
+            </div>
+          </section>
           <section class="inspector-section">
             <div class="section-title"><h2>Step details</h2><span id="detail-number">01</span></div>
             <label class="field-label" for="step-title-input">Title</label>
@@ -354,7 +424,7 @@
             <label class="field-label" for="step-description-input">Description</label>
             <textarea class="text-area" id="step-description-input" maxlength="500" placeholder="Describe what happens in this part of the process…"></textarea>
           </section>
-          <section class="inspector-section">
+          <section class="inspector-section" id="model-section">
             <div class="section-title"><h2>3D model</h2><span>Optional</span></div>
             <div class="model-file" id="model-file-card">
               <span class="file-icon"><svg viewBox="0 0 24 24" fill="none"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span>
@@ -362,6 +432,12 @@
               <button type="button" class="text-button" id="choose-model">Upload</button>
             </div>
             <p class="format-note">Supported: GLB, GLTF, OBJ and STL. GLTF files need embedded assets.</p>
+          </section>
+          <section class="inspector-section" id="video-section">
+            <div class="section-title"><h2>Video</h2><span>Optional</span></div>
+            <button type="button" class="hotspot-add" id="choose-video">＋ Add video to this item</button>
+            <div class="model-file" id="video-file-card" hidden><span class="file-info"><div class="file-name" id="video-file-name"></div><div class="file-type">Video attached to this item</div></span><button type="button" class="text-button" id="remove-video">Remove</button></div>
+            <p class="format-note">MP4, WebM, or Ogg video. Maximum 100 MB.</p>
           </section>
           <section class="inspector-section">
             <div class="section-title"><h2>Images</h2><span id="image-count">0 images</span></div>
@@ -396,8 +472,18 @@
           <button type="button" class="delete-step" id="delete-step">Delete this step</button>
         </aside>
       </main>
+      <section class="comments-section" id="comments-section" hidden>
+        <h2>Comments</h2>
+        <div class="comment-list" id="comment-list"></div>
+        <form class="comment-form" id="comment-form">
+          <input class="field-control" id="comment-name" maxlength="40" placeholder="Your name (optional)" aria-label="Your name, optional" />
+          <textarea class="field-control" id="comment-body" maxlength="1000" placeholder="Write a comment" aria-label="Write a comment" required></textarea>
+          <button class="upload-button" type="submit">Post</button>
+        </form>
+      </section>
       <input type="file" id="file-input" accept=".glb,.gltf,.obj,.stl,model/gltf-binary,model/gltf+json,model/obj,model/stl" hidden />
       <input type="file" id="image-input" accept="image/*" hidden />
+      <input type="file" id="video-input" accept="video/mp4,video/webm,video/ogg" hidden />
       <div class="toast" id="toast" role="status" aria-live="polite"></div>
     </div>
     <script type="module">
@@ -417,6 +503,7 @@
       const app = document.querySelector("#app");
       const fileInput = document.querySelector("#file-input");
       const imageInput = document.querySelector("#image-input");
+      const videoInput = document.querySelector("#video-input");
       const emptyState = document.querySelector("#empty-state");
       const loading = document.querySelector("#loading");
       const markerLayer = document.querySelector("#hotspot-layer");
@@ -471,7 +558,7 @@
       }
 
       function newStep(title = "New step") {
-        return { id: makeId(), title, description: "", modelPath: null, modelName: "", images: [], hotspots: [] };
+        return { id: makeId(), title, description: "", modelPath: null, modelName: "", videoPath: null, videoUrl: null, videoName: "", images: [], hotspots: [] };
       }
 
       function normalizeProject(row) {
@@ -479,6 +566,12 @@
         return {
           id: row.id,
           title: typeof row.title === "string" ? row.title : "Untitled process",
+          project_type: ["model", "presentation", "gallery"].includes(row.project_type) ? row.project_type : "model",
+          section: typeof row.section === "string" && row.section.trim() ? row.section.trim() : "Engineering",
+          theme: {
+            accent: /^#[0-9a-f]{6}$/i.test(row.theme?.accent) ? row.theme.accent : "#bdff71",
+            background: /^#[0-9a-f]{6}$/i.test(row.theme?.background) ? row.theme.background : "#fbfbf9"
+          },
           created_at: row.created_at,
           steps: steps.map((step) => ({
             ...step,
@@ -495,7 +588,10 @@
               rotation: Number.isFinite(item.rotation) ? item.rotation : 0
             })) : [],
             modelPath: step.modelPath || null,
-            modelName: step.modelName || ""
+            modelName: step.modelName || "",
+            videoPath: step.videoPath || null,
+            videoUrl: step.videoUrl || null,
+            videoName: step.videoName || ""
           }))
         };
       }
@@ -539,6 +635,9 @@
           saveInProgress = saveInProgress.then(async () => {
             const { error } = await supabase.from("projects").update({
               title: project.title,
+              project_type: project.project_type,
+              section: project.section,
+              theme: project.theme,
               steps: project.steps,
               updated_at: new Date().toISOString()
             }).eq("id", project.id);
@@ -565,6 +664,7 @@
         grid.replaceChildren();
         document.querySelector("#create-project").hidden = !isManager;
         const status = document.querySelector("#gallery-status");
+        updateSectionChoices();
         if (!supabase) {
           status.textContent = "Supabase setup required";
           const empty = document.createElement("div");
@@ -573,18 +673,26 @@
           grid.append(empty);
           return;
         }
-        if (!projectList.length) {
-          status.textContent = "0 projects";
+        const query = document.querySelector("#project-search").value.trim().toLocaleLowerCase();
+        const selectedSection = document.querySelector("#section-filter").value;
+        const filteredProjects = projectList.filter((item) =>
+          (!query || item.title.toLocaleLowerCase().includes(query))
+          && (!selectedSection || item.section === selectedSection)
+        );
+        if (!filteredProjects.length) {
+          status.textContent = projectList.length ? "No matching projects" : "0 projects";
           const empty = document.createElement("div");
           empty.className = "gallery-empty";
-          empty.textContent = isManager
+          empty.textContent = projectList.length
+            ? "No projects match this search and section."
+            : isManager
             ? "Your library is empty. Create a project to start a model, image gallery, or mixed process."
             : "No projects are available to review yet.";
           grid.append(empty);
           return;
         }
-        status.textContent = formatCount(projectList.length, "project");
-        projectList.forEach((item) => {
+        status.textContent = `${formatCount(filteredProjects.length, "project")} · ${projectList.length} total`;
+        filteredProjects.forEach((item) => {
           const card = document.createElement("button");
           card.type = "button";
           card.className = "project-card";
@@ -594,17 +702,39 @@
           const title = document.createElement("span");
           title.className = "project-card-title";
           title.textContent = item.title || "Untitled process";
+          const typeTag = document.createElement("span");
+          typeTag.className = "project-tag";
+          typeTag.textContent = `${item.section || "Engineering"} · ${projectTypeName(item.project_type)}`;
           const date = document.createElement("span");
           date.className = "project-card-date";
           date.textContent = `Created ${new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(item.created_at))}`;
           const meta = document.createElement("span");
           meta.className = "project-card-meta";
           const steps = Array.isArray(item.steps) ? item.steps : [];
-          meta.textContent = `${formatCount(steps.length, "step")} · ${steps.some((step) => step.modelPath) ? "3D" : "Gallery"} process`;
-          card.append(icon, title, date, meta);
+          meta.textContent = formatCount(steps.length, projectItemName(item.project_type));
+          card.append(icon, title, typeTag, date, meta);
           card.addEventListener("click", () => openProject(item));
           grid.append(card);
         });
+      }
+
+      function projectTypeName(type) {
+        return ({ model: "Model", presentation: "Presentation", gallery: "Gallery" })[type] || "Model";
+      }
+
+      function projectItemName(type) {
+        return ({ model: "step", presentation: "slide", gallery: "image" })[type] || "step";
+      }
+
+      function updateSectionChoices() {
+        const sections = [...new Set(projectList.map((item) => item.section || "Engineering"))].sort((a, b) => a.localeCompare(b));
+        const filter = document.querySelector("#section-filter");
+        const selected = filter.value;
+        filter.replaceChildren(new Option("All sections", ""));
+        sections.forEach((section) => filter.add(new Option(section, section)));
+        if (sections.includes(selected)) filter.value = selected;
+        const datalist = document.querySelector("#known-sections");
+        datalist.replaceChildren(...sections.map((section) => Object.assign(document.createElement("option"), { value: section })));
       }
 
       async function refreshProjects() {
@@ -614,7 +744,7 @@
         }
         document.querySelector("#gallery-status").textContent = "Loading projects…";
         const { data, error } = await supabase.from("projects")
-          .select("id,title,steps,created_at,updated_at")
+          .select("id,title,project_type,section,theme,steps,created_at,updated_at")
           .order("created_at", { ascending: false });
         if (error) {
           console.error("Could not load the project gallery.", error);
@@ -624,6 +754,84 @@
         }
         projectList = data || [];
         renderGallery();
+      }
+
+      async function refreshComments() {
+        const list = document.querySelector("#comment-list");
+        list.replaceChildren();
+        if (!project || !supabase) return;
+        const { data, error } = await supabase.from("project_comments")
+          .select("id,name,body,created_at")
+          .eq("project_id", project.id)
+          .order("created_at", { ascending: true });
+        if (error) {
+          console.error("Could not load project comments.", error);
+          const message = document.createElement("p");
+          message.className = "comment-empty";
+          message.textContent = "Comments are unavailable until the database setup is updated.";
+          list.append(message);
+          return;
+        }
+        if (!data?.length) {
+          const empty = document.createElement("p");
+          empty.className = "comment-empty";
+          empty.textContent = "No comments yet.";
+          list.append(empty);
+          return;
+        }
+        data.forEach((comment) => {
+          const item = document.createElement("article");
+          item.className = "comment-item";
+          const meta = document.createElement("div");
+          meta.className = "comment-meta";
+          const name = document.createElement("span");
+          name.className = "comment-name";
+          name.textContent = comment.name || "Anonymous";
+          const date = document.createElement("time");
+          date.dateTime = comment.created_at;
+          date.textContent = new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(comment.created_at));
+          meta.append(name, date);
+          if (isManager) {
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.className = "text-button";
+            remove.textContent = "Delete";
+            remove.addEventListener("click", () => removeComment(comment.id));
+            meta.append(remove);
+          }
+          const body = document.createElement("div");
+          body.className = "comment-text";
+          body.textContent = comment.body;
+          item.append(meta, body);
+          list.append(item);
+        });
+      }
+
+      async function postComment(event) {
+        event.preventDefault();
+        if (!project || !supabase) return;
+        const body = document.querySelector("#comment-body").value.trim();
+        const name = document.querySelector("#comment-name").value.trim() || "Anonymous";
+        if (!body) return;
+        const { error } = await supabase.from("project_comments").insert({ project_id: project.id, name, body });
+        if (error) {
+          console.error("Could not post project comment.", error);
+          showToast("Could not post comment. Check the comments table setup.");
+          return;
+        }
+        document.querySelector("#comment-body").value = "";
+        await refreshComments();
+      }
+
+      async function removeComment(id) {
+        if (!isManager || !supabase) return;
+        const { error } = await supabase.from("project_comments").delete().eq("id", id);
+        if (error) {
+          console.error("Could not remove project comment.", error);
+          showToast("Could not delete the comment.");
+          return;
+        }
+        await refreshComments();
       }
 
       async function signInAsManager() {
@@ -679,6 +887,7 @@
           if (!allowed) setMode("view");
           else if (!new URLSearchParams(location.search).has("present")) setMode("edit");
           renderInspector();
+          refreshComments();
         }
         await refreshProjects();
       }
@@ -692,10 +901,14 @@
         selectedImageId = null;
         gallery.hidden = true;
         app.classList.add("open");
+        app.style.setProperty("--accent", project.theme.accent);
+        app.style.setProperty("--project-background", project.theme.background);
+        document.querySelector("#comments-section").hidden = false;
         app.classList.toggle("dedicated-viewer", !isManager || new URLSearchParams(location.search).has("present"));
         setMode(isManager && !new URLSearchParams(location.search).has("present") ? "edit" : "view");
         history.replaceState({}, "", `${location.pathname}?project=${encodeURIComponent(project.id)}${mode === "view" ? "&present=1" : ""}`);
         renderInspector();
+        refreshComments();
         resizeRenderer();
         await loadCurrentModel();
       }
@@ -705,6 +918,7 @@
         currentProjectId = null;
         currentStepId = null;
         app.classList.remove("open");
+        document.querySelector("#comments-section").hidden = true;
         gallery.hidden = false;
         history.replaceState({}, "", location.pathname);
         disposeModel();
@@ -713,10 +927,14 @@
 
       async function createProject() {
         if (!isManager || !supabase) return;
-        const step = newStep("First step");
+        const type = document.querySelector("#new-project-type").value;
+        const title = document.querySelector("#new-project-title").value.trim() || "Untitled project";
+        const section = document.querySelector("#new-project-section").value.trim() || "Engineering";
+        const itemLabel = type === "presentation" ? "Slide 1" : type === "gallery" ? "Image 1" : "First step";
+        const step = newStep(itemLabel);
         const { data, error } = await supabase.from("projects")
-          .insert({ title: "Untitled process", steps: [step] })
-          .select("id,title,steps,created_at,updated_at")
+          .insert({ title, project_type: type, section, theme: { accent: "#bdff71", background: "#fbfbf9" }, steps: [step] })
+          .select("id,title,project_type,section,theme,steps,created_at,updated_at")
           .single();
         if (error) {
           console.error("Could not create the project.", error);
@@ -724,6 +942,7 @@
           return;
         }
         projectList.unshift(data);
+        document.querySelector("#project-dialog").close();
         renderGallery();
         await openProject(data);
       }
@@ -736,6 +955,9 @@
         const list = document.querySelector("#step-list");
         list.replaceChildren();
         if (!project) return;
+        const itemLabel = projectItemName(project.project_type);
+        document.querySelector("#add-step").innerHTML = `<span>+</span> Add ${itemLabel === "step" ? "a step" : itemLabel === "slide" ? "a slide" : "an image"}`;
+        document.querySelector("#timeline-label").textContent = project.project_type === "model" ? "Timeline" : `${projectTypeName(project.project_type)} items`;
         project.steps.forEach((step, index) => {
           const row = document.createElement("button");
           row.type = "button";
@@ -745,13 +967,14 @@
           row.querySelector(".step-title").textContent = step.title || "Untitled step";
           row.querySelector(".step-subtitle").textContent = [
             step.modelPath ? "3D model" : "",
+            step.videoPath ? "Video" : "",
             step.images.length ? formatCount(step.images.length, "image") : "",
             step.hotspots.length ? formatCount(step.hotspots.length, "hotspot") : ""
           ].filter(Boolean).join(" · ") || "No media yet";
           row.addEventListener("click", () => selectStep(step.id));
           list.append(row);
         });
-        document.querySelector("#step-count").textContent = formatCount(project.steps.length, "step");
+        document.querySelector("#step-count").textContent = formatCount(project.steps.length, itemLabel);
       }
 
       function renderHotspots() {
@@ -830,13 +1053,14 @@
         }
         document.querySelector("#marker-editor").hidden = !selectedHotspotId;
         document.querySelector("#hotspot-help").textContent = placingHotspot
-          ? "Click directly on the model surface to place your hotspot."
-          : "Add a note attached to a point on the model.";
+          ? project.project_type === "presentation" ? "Click on the slide to place your hotspot." : "Click directly on the model surface to place your hotspot."
+          : project.project_type === "presentation" ? "Add a note attached to a point on this slide." : "Add a note attached to a point on the model.";
         updateHotspotPositions();
       }
 
       function renderStageImages(step) {
         stage.classList.toggle("gallery-step", !step.modelPath);
+        stage.classList.toggle("presentation-step", project?.project_type === "presentation");
         step.images.forEach((image) => {
           const item = document.createElement("div");
           item.className = `image-stage-item${image.id === selectedImageId ? " selected" : ""}`;
@@ -955,12 +1179,18 @@
           showToast("Choose an image file.");
           return;
         }
-        const step = getCurrentStep();
+        const step = project.project_type === "gallery" && getCurrentStep().images.length
+          ? newStep(`Image ${project.steps.length + 1}`)
+          : getCurrentStep();
         try {
           loading.hidden = false;
           const uploaded = await uploadMedia(file, project.id, step.id, "image");
           const image = { id: makeId(), ...uploaded, name: file.name, x: 50, y: 50, width: 35, rotation: 0 };
           step.images.push(image);
+          if (!project.steps.includes(step)) {
+            project.steps.push(step);
+            currentStepId = step.id;
+          }
           selectedImageId = image.id;
           renderInspector();
           persist();
@@ -998,6 +1228,19 @@
         const step = getCurrentStep();
         if (!step || !project) return;
         const index = project.steps.indexOf(step);
+        document.querySelector("#project-type-label").textContent = projectTypeName(project.project_type);
+        document.querySelector("#project-section-input").value = project.section;
+        document.querySelector("#project-section-input").readOnly = !isManager;
+        document.querySelector("#theme-accent").value = project.theme.accent;
+        document.querySelector("#theme-accent").disabled = !isManager;
+        document.querySelector("#theme-background").value = project.theme.background;
+        document.querySelector("#theme-background").disabled = !isManager;
+        document.querySelector("#model-section").hidden = project.project_type !== "model";
+        document.querySelector(".stage-label").hidden = project.project_type !== "model" || !step.modelPath;
+        document.querySelector(".key-hint").hidden = project.project_type !== "model" || !step.modelPath;
+        document.querySelector("#reset-camera").hidden = project.project_type !== "model" || !step.modelPath;
+        document.querySelector("#video-file-card").hidden = !step.videoPath;
+        document.querySelector("#video-file-name").textContent = step.videoName || "Video";
         document.querySelector("#project-title-input").value = project.title;
         document.querySelector("#inspector-step-name").textContent = step.title || "Untitled step";
         document.querySelector("#step-title-input").value = step.title;
@@ -1006,14 +1249,25 @@
         document.querySelector("#file-name").textContent = step.modelName || "No model uploaded";
         document.querySelector("#file-type").textContent = step.modelName ? "Shared with reviewers" : "Choose a 3D file";
         document.querySelector("#choose-model").textContent = step.modelPath ? "Replace" : "Upload";
+        document.querySelector("#add-image").textContent = project.project_type === "presentation" ? "＋ Add image to this slide" : "＋ Add image to this item";
+        document.querySelector("#empty-upload").textContent = project.project_type === "model" ? "Add a model or image" : project.project_type === "presentation" ? "Add an image to this slide" : "Add an image";
         document.querySelector("#caption-title").textContent = step.title || "Untitled step";
         document.querySelector("#caption-description").textContent = step.description || "Add a model and describe what happens in this step.";
-        document.querySelector("#stage-step-name").textContent = `Step ${String(index + 1).padStart(2, "0")}`;
+        const itemName = project.project_type === "presentation" ? "Slide" : project.project_type === "gallery" ? "Image" : "Step";
+        document.querySelector("#stage-step-name").textContent = `${itemName} ${String(index + 1).padStart(2, "0")}`;
         document.querySelector("#step-position").textContent = `${String(index + 1).padStart(2, "0")} / ${String(project.steps.length).padStart(2, "0")}`;
         document.querySelector("#previous-step").disabled = index <= 0;
         document.querySelector("#next-step").disabled = index >= project.steps.length - 1;
-        document.querySelector("#empty-state").hidden = !!step.modelPath || step.images.length > 0;
+        document.querySelector("#empty-state").hidden = !!step.modelPath || !!step.videoPath || step.images.length > 0;
+        document.querySelector("#empty-state h2").textContent = project.project_type === "presentation"
+          ? "This slide is ready for its story"
+          : project.project_type === "gallery" ? "This image is ready to add" : "This step is ready for its story";
+        document.querySelector("#empty-state p").textContent = project.project_type === "presentation"
+          ? "Add images and text to build this slide. You can also attach a video or place hotspots."
+          : project.project_type === "gallery" ? "Add an image to move through this gallery one image at a time." : "Add a 3D model, images, or video to describe this step.";
         document.querySelector("#model-label").textContent = step.modelName || "No model loaded";
+        applyProjectTheme();
+        renderStepVideo(step);
         renderImages(step);
         renderSteps();
         renderHotspots();
@@ -1026,6 +1280,25 @@
         document.querySelector("#caption-title").textContent = step.title || "Untitled step";
         document.querySelector("#caption-description").textContent = step.description || "Add a model and describe what happens in this step.";
         renderSteps();
+      }
+
+      function applyProjectTheme() {
+        if (!project) return;
+        app.style.setProperty("--accent", project.theme.accent);
+        stage.style.backgroundColor = project.theme.background;
+      }
+
+      function renderStepVideo(step) {
+        stage.querySelector(".video-stage")?.remove();
+        if (!step.videoUrl) return;
+        const video = document.createElement("video");
+        video.className = "video-stage";
+        video.src = step.videoUrl;
+        video.controls = true;
+        video.playsInline = true;
+        video.preload = "metadata";
+        video.setAttribute("aria-label", step.videoName || "Process video");
+        stage.append(video);
       }
 
       function setMode(nextMode) {
@@ -1244,7 +1517,21 @@
 
       function updateHotspotPositions() {
         if (!modelObject) {
-          markerLayer.querySelectorAll(".hotspot").forEach((dot) => { dot.hidden = true; });
+          const step = getCurrentStep();
+          markerLayer.querySelectorAll(".hotspot").forEach((dot) => {
+            const marker = step?.hotspots.find((item) => item.id === dot.dataset.markerId);
+            const visible = project?.project_type === "presentation" && marker?.space === "slide";
+            dot.hidden = !visible;
+            if (visible) {
+              dot.style.left = `${marker.x}%`;
+              dot.style.top = `${marker.y}%`;
+              const popover = markerLayer.querySelector(`[data-popover-id="${CSS.escape(marker.id)}"]`);
+              if (popover) {
+                popover.style.left = dot.style.left;
+                popover.style.top = dot.style.top;
+              }
+            }
+          });
           return;
         }
         modelRoot.updateMatrixWorld(true);
@@ -1344,15 +1631,41 @@
         });
         document.querySelector("#manager-session").addEventListener("click", showGallery);
         document.querySelector("#back-to-projects").addEventListener("click", showGallery);
-        document.querySelector("#create-project").addEventListener("click", createProject);
+        document.querySelector("#create-project").addEventListener("click", () => document.querySelector("#project-dialog").showModal());
+        document.querySelector("#cancel-project").addEventListener("click", () => document.querySelector("#project-dialog").close());
+        document.querySelector("#project-form").addEventListener("submit", (event) => {
+          event.preventDefault();
+          createProject();
+        });
+        document.querySelector("#project-search").addEventListener("input", renderGallery);
+        document.querySelector("#section-filter").addEventListener("change", renderGallery);
         document.querySelector("#project-title-input").addEventListener("input", (event) => {
           if (!project || !isManager) return;
           project.title = event.target.value;
           persist();
         });
+        document.querySelector("#project-section-input").addEventListener("change", (event) => {
+          if (!project || !isManager) return;
+          project.section = event.target.value.trim() || "Engineering";
+          persist();
+          renderGallery();
+        });
+        document.querySelector("#theme-accent").addEventListener("input", (event) => {
+          if (!project || !isManager) return;
+          project.theme.accent = event.target.value;
+          applyProjectTheme();
+          persist();
+        });
+        document.querySelector("#theme-background").addEventListener("input", (event) => {
+          if (!project || !isManager) return;
+          project.theme.background = event.target.value;
+          applyProjectTheme();
+          persist();
+        });
         document.querySelector("#add-step").addEventListener("click", () => {
           if (!project || !isManager) return;
-          const step = newStep(`Step ${String(project.steps.length + 1).padStart(2, "0")}`);
+          const itemName = project.project_type === "presentation" ? "Slide" : project.project_type === "gallery" ? "Image" : "Step";
+          const step = newStep(`${itemName} ${project.steps.length + 1}`);
           project.steps.push(step);
           currentStepId = step.id;
           selectedHotspotId = null;
@@ -1370,7 +1683,7 @@
           const step = getCurrentStep();
           const index = project.steps.indexOf(step);
           project.steps = project.steps.filter((item) => item.id !== step.id);
-          const paths = [step.modelPath, ...step.images.map((image) => image.path), ...step.hotspots.map((marker) => marker.imagePath)];
+          const paths = [step.modelPath, step.videoPath, ...step.images.map((image) => image.path), ...step.hotspots.map((marker) => marker.imagePath)];
           currentStepId = project.steps[Math.max(0, index - 1)].id;
           selectedHotspotId = null;
           selectedImageId = null;
@@ -1399,7 +1712,10 @@
           persist();
         });
         document.querySelector("#choose-model").addEventListener("click", () => fileInput.click());
-        document.querySelector("#empty-upload").addEventListener("click", () => fileInput.click());
+        document.querySelector("#empty-upload").addEventListener("click", () => {
+          if (project?.project_type === "model") fileInput.click();
+          else imageInput.click();
+        });
         fileInput.addEventListener("change", async (event) => {
           await handleFile(event.target.files[0]);
           event.target.value = "";
@@ -1455,9 +1771,47 @@
           persist();
         });
         document.querySelector("#delete-image").addEventListener("click", () => selectedImageId && removeImage(selectedImageId));
+        document.querySelector("#choose-video").addEventListener("click", () => videoInput.click());
+        videoInput.addEventListener("change", async (event) => {
+          const file = event.target.files[0];
+          if (!file) return;
+          if (!file.type.startsWith("video/") || file.size > 100 * 1024 * 1024) {
+            showToast("Choose an MP4, WebM, or Ogg video under 100 MB.");
+            event.target.value = "";
+            return;
+          }
+          const step = getCurrentStep();
+          const oldPath = step.videoPath;
+          try {
+            const uploaded = await uploadMedia(file, project.id, step.id, "video");
+            step.videoPath = uploaded.path;
+            step.videoUrl = uploaded.url;
+            step.videoName = file.name;
+            renderInspector();
+            persist();
+            if (oldPath) await deleteMedia([oldPath]);
+          } catch (error) {
+            console.error("Could not upload the video.", error);
+            showToast("Could not upload video. Check the storage setup and 100 MB limit.");
+          } finally {
+            event.target.value = "";
+          }
+        });
+        document.querySelector("#remove-video").addEventListener("click", async () => {
+          const step = getCurrentStep();
+          const path = step.videoPath;
+          step.videoPath = null;
+          step.videoUrl = null;
+          step.videoName = "";
+          renderInspector();
+          persist();
+          try { await deleteMedia([path]); }
+          catch (error) { console.error("Could not delete the video.", error); showToast("Video removed from the item, but its stored file could not be deleted."); }
+        });
+        document.querySelector("#comment-form").addEventListener("submit", postComment);
         document.querySelector("#add-hotspot").addEventListener("click", () => {
           if (mode !== "edit") return;
-          if (!modelObject) {
+          if (!modelObject && project?.project_type !== "presentation") {
             showToast("Upload a model before placing hotspots.");
             return;
           }
@@ -1467,6 +1821,27 @@
           document.querySelector("#add-hotspot").classList.toggle("armed", placingHotspot);
           canvas.classList.toggle("placement-cursor", placingHotspot);
           renderHotspots();
+        });
+        stage.addEventListener("pointerup", (event) => {
+          if (!placingHotspot || project?.project_type !== "presentation" || modelObject || event.target.closest(".hotspot, .hotspot-popover, video")) return;
+          const rect = stage.getBoundingClientRect();
+          const step = getCurrentStep();
+          step.hotspots.push({
+            id: makeId(),
+            x: Math.min(100, Math.max(0, (event.clientX - rect.left) / rect.width * 100)),
+            y: Math.min(100, Math.max(0, (event.clientY - rect.top) / rect.height * 100)),
+            z: 0,
+            space: "slide",
+            title: "",
+            body: ""
+          });
+          selectedHotspotId = step.hotspots.at(-1).id;
+          placingHotspot = false;
+          document.querySelector("#marker-title-input").value = "";
+          document.querySelector("#marker-body-input").value = "";
+          renderHotspots();
+          document.querySelector("#marker-title-input").focus();
+          persist();
         });
         canvas.addEventListener("pointerdown", (event) => {
           pointerStart = { x: event.clientX, y: event.clientY, button: event.button };
@@ -1549,7 +1924,7 @@
         const requestedProject = new URLSearchParams(location.search).get("project");
         if (requestedProject) {
           const { data: row, error: projectError } = await supabase.from("projects")
-            .select("id,title,steps,created_at,updated_at")
+            .select("id,title,project_type,section,theme,steps,created_at,updated_at")
             .eq("id", requestedProject)
             .maybeSingle();
           if (projectError) {
