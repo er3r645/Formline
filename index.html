@@ -203,8 +203,11 @@
       .gallery-actions { display: flex; align-items: center; gap: 12px; }
       .gallery-toolbar h2 { margin: 0; font: 700 16px Manrope, sans-serif; }
       .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-      .project-card { min-height: 168px; display: flex; flex-direction: column; align-items: flex-start; padding: 19px; border: 1px solid var(--line); border-radius: 12px; background: white; text-align: left; cursor: pointer; transition: transform .16s ease, box-shadow .16s ease; }
+      .project-card { position: relative; min-height: 168px; padding: 0; border: 1px solid var(--line); border-radius: 12px; background: white; transition: transform .16s ease, box-shadow .16s ease; }
       .project-card:hover { transform: translateY(-2px); box-shadow: 0 9px 28px #20231d0d; }
+      .project-card-open { width: 100%; min-height: 168px; display: flex; flex-direction: column; align-items: flex-start; padding: 19px; border: 0; border-radius: inherit; background: transparent; text-align: left; cursor: pointer; }
+      .project-card-delete { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; border: 1px solid var(--line); border-radius: 8px; background: white; color: #a36a62; font-size: 17px; cursor: pointer; }
+      .project-card-delete:hover { border-color: #d7aaa3; background: #fff8f7; }
       .project-card-icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: #f0f3ea; color: #5f7650; font-size: 17px; }
       .project-card-title { margin-top: 20px; font: 700 14px Manrope, sans-serif; }
       .project-card-date { margin-top: 7px; color: #898b85; font-size: 11px; }
@@ -262,6 +265,10 @@
       .document-toolbar button, .drawing-toolbar button, .text-tools button { min-width: 32px; height: 30px; border: 1px solid var(--line); border-radius: 6px; background: white; cursor: pointer; }
       .document-toolbar select, .text-tools select { height: 30px; border: 1px solid var(--line); border-radius: 6px; background: white; font-size: 11px; }
       .document-editor { width: min(100%, 760px); min-height: 900px; height: auto; padding: clamp(24px, 4vw, 52px) clamp(20px, 4vw, 58px); border: 1px solid var(--line); border-radius: 18px; background: white; box-shadow: 0 6px 18px rgba(28, 31, 25, 0.04); outline: none; font-size: 16px; line-height: 1.65; cursor: text; }
+      .document-page-navigation { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 24px; border-top: 1px solid var(--line); background: #fff; }
+      .document-page-actions { display: flex; align-items: center; gap: 10px; }
+      .document-page-delete { border: 0; background: transparent; color: #a36a62; font-size: 11px; cursor: pointer; }
+      .document-page-delete:hover { color: #8f4b42; }
       .document-editor:empty::before { color: #a0a19b; content: "Start writing your document…"; }
       .document-editor:focus { border-color: #c3cfb7; box-shadow: 0 0 0 3px rgba(138, 176, 99, 0.12), 0 6px 18px rgba(28, 31, 25, 0.04); }
       .drawing-toolbar, .text-tools { max-width: 100%; border: 1px solid var(--line); border-radius: 8px; }
@@ -584,6 +591,21 @@
           <div class="document-page">
             <div id="document-editor" class="document-editor" contenteditable="false" role="textbox" aria-label="Document content" aria-multiline="true" spellcheck="true" tabindex="0"></div>
           </div>
+          <div class="document-page-navigation">
+            <div class="document-page-actions">
+              <button type="button" class="auth-button" id="add-document-page" hidden>＋ Add page</button>
+              <button type="button" class="document-page-delete" id="delete-document-page" hidden>Delete page</button>
+            </div>
+            <div class="nav-controls" aria-label="Document pages">
+              <button type="button" class="nav-button" id="previous-document-page" aria-label="Previous page" title="Previous page">
+                <svg viewBox="0 0 24 24" fill="none"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <span class="step-position" id="document-page-position">01 / 01</span>
+              <button type="button" class="nav-button" id="next-document-page" aria-label="Next page" title="Next page">
+                <svg viewBox="0 0 24 24" fill="none"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
         </section>
         <aside class="inspector" id="inspector">
           <div class="inspector-heading">
@@ -778,11 +800,16 @@
             background: /^#[0-9a-f]{6}$/i.test(row.theme?.background) ? row.theme.background : "#fbfbf9"
           },
           created_at: row.created_at,
-          steps: steps.map((step) => ({
+          steps: steps.map((step, index) => ({
             ...step,
             id: step.id || makeId(),
             title: typeof step.title === "string" ? step.title : "Untitled step",
             description: typeof step.description === "string" ? step.description : "",
+            document_html: typeof step.document_html === "string"
+              ? DOMPurify.sanitize(step.document_html)
+              : index === 0 && typeof row.document_html === "string"
+                ? DOMPurify.sanitize(row.document_html)
+                : "<h1></h1>",
             hotspots: Array.isArray(step.hotspots) ? step.hotspots.filter((item) => item && Number.isFinite(item.x) && Number.isFinite(item.y) && Number.isFinite(item.z)).map((item) => ({...item, imagePath: item.imagePath || null, imageUrl: item.imageUrl || null})) : [],
             texts: Array.isArray(step.texts) ? step.texts.filter((item) => item && typeof item.text === "string").map((item) => ({ ...item, id: item.id || makeId(), x: Number.isFinite(item.x) ? item.x : 50, y: Number.isFinite(item.y) ? item.y : 50, fontSize: Number.isFinite(item.fontSize) ? item.fontSize : 18, color: /^#[0-9a-f]{6}$/i.test(item.color) ? item.color : "#242522", align: ["left", "center", "right"].includes(item.align) ? item.align : "left", kind: item.kind === "fixed" ? "fixed" : "floating" })) : [],
             shapes: Array.isArray(step.shapes) ? step.shapes.filter((item) => item && ["line", "rect", "circle", "polygon"].includes(item.type) && typeof item.points === "string").map((item) => ({ ...item, id: item.id || makeId() })) : [],
@@ -828,6 +855,34 @@
         if (!uniquePaths.length || !supabase) return;
         const { error } = await supabase.storage.from(MEDIA_BUCKET).remove(uniquePaths);
         if (error) throw error;
+      }
+
+      async function deleteProject(row) {
+        if (!isManager || !supabase) return;
+        const title = row.title || "Untitled project";
+        if (!window.confirm(`Permanently delete "${title}", its comments, and its stored media?`)) return;
+        const mediaPaths = (Array.isArray(row.steps) ? row.steps : []).flatMap((step) => [
+          step.modelPath,
+          step.videoPath,
+          ...(Array.isArray(step.images) ? step.images.map((image) => image.path) : []),
+          ...(Array.isArray(step.hotspots) ? step.hotspots.map((marker) => marker.imagePath) : [])
+        ]);
+        const { error } = await supabase.from("projects").delete().eq("id", row.id).select("id").single();
+        if (error) {
+          console.error("Could not delete the project.", error);
+          showToast("Could not delete this project. Check manager access and try again.");
+          return;
+        }
+        projectList = projectList.filter((item) => item.id !== row.id);
+        renderGallery();
+        try {
+          await deleteMedia(mediaPaths);
+        } catch (mediaError) {
+          console.error("Could not remove deleted project media.", mediaError);
+          showToast("Project deleted, but some stored media could not be removed.");
+          return;
+        }
+        showToast("Project deleted.");
       }
 
       function getCurrentStep() {
@@ -958,9 +1013,11 @@
             grid.append(heading);
             lastGroup = groupLabel;
           }
-          const card = document.createElement("button");
-          card.type = "button";
+          const card = document.createElement("article");
           card.className = "project-card";
+          const openButton = document.createElement("button");
+          openButton.type = "button";
+          openButton.className = "project-card-open";
           const icon = document.createElement("span");
           icon.className = "project-card-icon";
           icon.textContent = "◇";
@@ -977,8 +1034,19 @@
           meta.className = "project-card-meta";
           const steps = Array.isArray(item.steps) ? item.steps : [];
           meta.textContent = formatCount(steps.length, projectItemName(item.project_type));
-          card.append(icon, title, typeTag, date, meta);
-          card.addEventListener("click", () => openProject(item));
+          openButton.append(icon, title, typeTag, date, meta);
+          openButton.addEventListener("click", () => openProject(item));
+          card.append(openButton);
+          if (isManager) {
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.className = "project-card-delete";
+            remove.textContent = "×";
+            remove.setAttribute("aria-label", `Delete ${item.title || "Untitled project"}`);
+            remove.title = "Delete project";
+            remove.addEventListener("click", () => { void deleteProject(item); });
+            card.append(remove);
+          }
           grid.append(card);
         });
       }
@@ -1227,7 +1295,11 @@
       async function openProject(row) {
         if (!await flushPendingSave()) return;
         project = normalizeProject(row);
-        if (!project.steps.length) project.steps.push(newStep("First step"));
+        if (!project.steps.length) {
+          const step = newStep(project.project_type === "document" ? "Page 1" : "First step");
+          if (project.project_type === "document") step.document_html = project.document_html;
+          project.steps.push(step);
+        }
         currentProjectId = project.id;
         currentStepId = project.steps[0].id;
         selectedHotspotId = null;
@@ -1236,7 +1308,7 @@
         app.classList.add("open");
         app.classList.toggle("document-mode", project.project_type === "document");
         document.querySelector("#document-pane").hidden = project.project_type !== "document";
-        documentEditor.innerHTML = DOMPurify.sanitize(project.document_html);
+        documentEditor.innerHTML = DOMPurify.sanitize(project.steps[0]?.document_html || project.document_html);
         documentEditor.style.lineHeight = project.document_line_height;
         documentEditor.contentEditable = String(isManager && mode === "edit" && project.project_type === "document");
         if (project.project_type === "document" && isManager && mode === "edit") {
@@ -1278,6 +1350,7 @@
         const collection = document.querySelector("#new-project-collection").value.trim();
         const itemLabel = type === "presentation" ? "Slide 1" : type === "gallery" ? "Image 1" : type === "document" ? "Page 1" : "First step";
         const step = newStep(itemLabel);
+        if (type === "document") step.document_html = "<h1></h1>";
         const sectionResult = await supabase.from("project_sections").upsert({ name: section }, { onConflict: "name", ignoreDuplicates: true });
         if (sectionResult.error) {
           showToast("Create the section before adding a project.");
@@ -1317,10 +1390,12 @@
         list.replaceChildren();
         if (!project) return;
         const itemLabel = projectItemName(project.project_type);
-        document.querySelector("#add-step").hidden = !isManager || mode !== "edit" || project.project_type === "document";
-        document.querySelector("#delete-step").hidden = !isManager || mode !== "edit" || project.project_type === "document";
-        document.querySelector("#add-step").innerHTML = `<span>+</span> Add ${itemLabel === "step" ? "a step" : itemLabel === "slide" ? "a slide" : "an image"}`;
-        document.querySelector("#timeline-label").textContent = project.project_type === "model" ? "Timeline" : `${projectTypeName(project.project_type)} items`;
+        document.querySelector("#add-step").hidden = !isManager || mode !== "edit";
+        document.querySelector("#delete-step").hidden = !isManager || mode !== "edit";
+        document.querySelector("#add-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
+        document.querySelector("#delete-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
+        document.querySelector("#add-step").innerHTML = `<span>+</span> Add ${itemLabel === "step" ? "a step" : itemLabel === "slide" ? "a slide" : itemLabel === "page" ? "a page" : "an image"}`;
+        document.querySelector("#timeline-label").textContent = project.project_type === "model" ? "Timeline" : project.project_type === "document" ? "Pages" : `${projectTypeName(project.project_type)} items`;
         project.steps.forEach((step, index) => {
           const row = document.createElement("button");
           row.type = "button";
@@ -1338,6 +1413,51 @@
           list.append(row);
         });
         document.querySelector("#step-count").textContent = formatCount(project.steps.length, itemLabel);
+      }
+
+      function addProjectItem() {
+        if (!project || !isManager || mode !== "edit") return;
+        const itemLabel = projectItemName(project.project_type);
+        const title = itemLabel === "page"
+          ? `Page ${project.steps.length + 1}`
+          : itemLabel === "slide" ? `Slide ${project.steps.length + 1}` : itemLabel === "image" ? `Image ${project.steps.length + 1}` : `Step ${project.steps.length + 1}`;
+        const step = newStep(title);
+        if (project.project_type === "document") step.document_html = "<h1></h1>";
+        project.steps.push(step);
+        currentStepId = step.id;
+        selectedHotspotId = null;
+        selectedImageId = null;
+        renderInspector();
+        persist();
+        void loadCurrentModel();
+      }
+
+      async function deleteCurrentItem() {
+        if (!project || !isManager || mode !== "edit") return;
+        if (project.steps.length === 1) {
+          showToast(project.project_type === "document" ? "A document needs at least one page." : "A process needs at least one step.");
+          return;
+        }
+        const step = getCurrentStep();
+        if (!step) return;
+        if (project.project_type === "document" && !window.confirm(`Delete "${step.title || "this page"}"?`)) return;
+        if (!await flushPendingSave()) return;
+        const index = project.steps.indexOf(step);
+        project.steps = project.steps.filter((item) => item.id !== step.id);
+        if (project.project_type === "document") project.document_html = project.steps[0].document_html || "<h1></h1>";
+        const paths = [step.modelPath, step.videoPath, ...step.images.map((image) => image.path), ...step.hotspots.map((marker) => marker.imagePath)];
+        currentStepId = project.steps[Math.max(0, index - 1)].id;
+        selectedHotspotId = null;
+        selectedImageId = null;
+        renderInspector();
+        persist();
+        try {
+          await deleteMedia(paths);
+        } catch (error) {
+          console.error("Could not remove deleted item media.", error);
+          showToast("Page deleted, but some stored files could not be removed.");
+        }
+        await loadCurrentModel();
       }
 
       function renderHotspots() {
@@ -1786,6 +1906,13 @@
           requestAnimationFrame(() => documentEditor.focus());
         }
         document.querySelector("#document-pane").hidden = project.project_type !== "document";
+        documentEditor.innerHTML = DOMPurify.sanitize(step.document_html || "<h1></h1>");
+        document.querySelector("#add-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
+        document.querySelector("#delete-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
+        document.querySelector("#delete-document-page").disabled = project.steps.length <= 1;
+        document.querySelector("#previous-document-page").disabled = index <= 0;
+        document.querySelector("#next-document-page").disabled = index >= project.steps.length - 1;
+        document.querySelector("#document-page-position").textContent = `${String(index + 1).padStart(2, "0")} / ${String(project.steps.length).padStart(2, "0")}`;
         document.querySelector(".stage-label").hidden = project.project_type !== "model" || !step.modelPath;
         document.querySelector("#stage-hint").hidden = project.project_type !== "model" || !step.modelPath;
         document.querySelector("#reset-camera").hidden = project.project_type !== "model" || !step.modelPath;
@@ -2311,12 +2438,16 @@
         });
         document.querySelector("#document-editor").addEventListener("input", () => {
           if (!project || !isManager) return;
-          project.document_html = DOMPurify.sanitize(documentEditor.innerHTML);
+          const step = getCurrentStep();
+          step.document_html = DOMPurify.sanitize(documentEditor.innerHTML);
+          if (step === project.steps[0]) project.document_html = step.document_html;
           persist();
         });
         const saveDocumentFormatting = () => {
           if (!project || !isManager) return;
-          project.document_html = DOMPurify.sanitize(documentEditor.innerHTML);
+          const step = getCurrentStep();
+          step.document_html = DOMPurify.sanitize(documentEditor.innerHTML);
+          if (step === project.steps[0]) project.document_html = step.document_html;
           persist();
         };
         document.querySelectorAll("[data-document-format]").forEach((button) => {
@@ -2507,42 +2638,25 @@
           persist();
           renderStageShapes(getCurrentStep());
         });
-        document.querySelector("#add-step").addEventListener("click", () => {
-          if (!project || !isManager) return;
-          const itemName = project.project_type === "presentation" ? "Slide" : project.project_type === "gallery" ? "Image" : "Step";
-          const step = newStep(`${itemName} ${project.steps.length + 1}`);
-          project.steps.push(step);
-          currentStepId = step.id;
-          selectedHotspotId = null;
-          selectedImageId = null;
-          renderInspector();
-          persist();
-          loadCurrentModel();
-        });
-        document.querySelector("#delete-step").addEventListener("click", async () => {
-          if (!project || !isManager) return;
-          if (project.steps.length === 1) {
-            showToast("A process needs at least one step.");
-            return;
-          }
-          const step = getCurrentStep();
-          const index = project.steps.indexOf(step);
-          project.steps = project.steps.filter((item) => item.id !== step.id);
-          const paths = [step.modelPath, step.videoPath, ...step.images.map((image) => image.path), ...step.hotspots.map((marker) => marker.imagePath)];
-          currentStepId = project.steps[Math.max(0, index - 1)].id;
-          selectedHotspotId = null;
-          selectedImageId = null;
-          renderInspector();
-          persist();
-          try { await deleteMedia(paths); }
-          catch (error) { console.error("Could not remove deleted step media.", error); showToast("Step deleted, but some stored files could not be removed."); }
-          await loadCurrentModel();
-        });
+        document.querySelector("#add-step").addEventListener("click", addProjectItem);
+        document.querySelector("#add-document-page").addEventListener("click", addProjectItem);
+        document.querySelector("#delete-step").addEventListener("click", () => { void deleteCurrentItem(); });
+        document.querySelector("#delete-document-page").addEventListener("click", () => { void deleteCurrentItem(); });
         document.querySelector("#previous-step").addEventListener("click", () => {
           const index = project.steps.findIndex((step) => step.id === currentStepId);
           if (index > 0) selectStep(project.steps[index - 1].id);
         });
         document.querySelector("#next-step").addEventListener("click", () => {
+          const index = project.steps.findIndex((step) => step.id === currentStepId);
+          if (index < project.steps.length - 1) selectStep(project.steps[index + 1].id);
+        });
+        document.querySelector("#previous-document-page").addEventListener("click", () => {
+          if (!project || project.project_type !== "document") return;
+          const index = project.steps.findIndex((step) => step.id === currentStepId);
+          if (index > 0) selectStep(project.steps[index - 1].id);
+        });
+        document.querySelector("#next-document-page").addEventListener("click", () => {
+          if (!project || project.project_type !== "document") return;
           const index = project.steps.findIndex((step) => step.id === currentStepId);
           if (index < project.steps.length - 1) selectStep(project.steps[index + 1].id);
         });
