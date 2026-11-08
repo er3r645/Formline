@@ -16,7 +16,7 @@ alter table public.projects
 
 alter table public.projects drop constraint if exists projects_project_type_check;
 alter table public.projects add constraint projects_project_type_check
-  check (project_type in ('model', 'presentation', 'gallery', 'document'));
+  check (project_type in ('model', 'presentation', 'gallery', 'document', 'mixed'));
 
 create table if not exists public.project_sections (
   id uuid primary key default gen_random_uuid(),
@@ -47,12 +47,14 @@ on conflict (section_name, name) do nothing;
 alter table public.project_sections enable row level security;
 alter table public.project_collections enable row level security;
 grant select on public.project_sections, public.project_collections to anon, authenticated;
-grant insert on public.project_sections, public.project_collections to authenticated;
+grant insert, delete on public.project_sections, public.project_collections to authenticated;
 
 drop policy if exists "Anyone can read project sections" on public.project_sections;
 drop policy if exists "Only the verified manager can add project sections" on public.project_sections;
+drop policy if exists "Only the verified manager can delete empty project sections" on public.project_sections;
 drop policy if exists "Anyone can read project collections" on public.project_collections;
 drop policy if exists "Only the verified manager can add project collections" on public.project_collections;
+drop policy if exists "Only the verified manager can delete unused project collections" on public.project_collections;
 
 create policy "Anyone can read project sections"
   on public.project_sections for select using (true);
@@ -62,6 +64,16 @@ create policy "Only the verified manager can add project sections"
     lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
     and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
   );
+create policy "Only the verified manager can delete empty project sections"
+  on public.project_sections for delete to authenticated
+  using (
+    lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
+    and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
+    and not exists (
+      select 1 from public.projects
+      where projects.section = project_sections.name
+    )
+  );
 create policy "Anyone can read project collections"
   on public.project_collections for select using (true);
 create policy "Only the verified manager can add project collections"
@@ -69,6 +81,17 @@ create policy "Only the verified manager can add project collections"
   with check (
     lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
     and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
+  );
+create policy "Only the verified manager can delete unused project collections"
+  on public.project_collections for delete to authenticated
+  using (
+    lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
+    and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
+    and not exists (
+      select 1 from public.projects
+      where projects.section = project_collections.section_name
+        and projects.collection = project_collections.name
+    )
   );
 
 alter table public.projects enable row level security;

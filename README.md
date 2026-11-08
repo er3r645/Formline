@@ -1,6 +1,6 @@
 # Formline
 
-A public project library and a Google-authenticated editor for model walkthroughs, slide presentations, image galleries, and fixed-flow documents. Projects are organized into sections and collections, themed individually, and can include video and public comments.
+A public project library and a Google-authenticated editor for projects with model, document, or mixed-content steps. Projects are organized into sections and collections, themed individually, and can include video and public comments.
 
 ## Configure Supabase
 
@@ -23,9 +23,9 @@ The only editor account is `er275050@gmail.com`. Google sign-in is checked in th
 ## Create and review projects
 
 1. Choose **Enter as manager** and sign in with the allowed Google account.
-2. Create sections at the library level, then select a section to create projects and collections. Collections group related projects, such as a Minihouse collection inside Engineering. Search projects by name or filter by section and collection. Managers can delete a project from its library card; deletion also removes its comments and stored media.
-3. Model projects are step-by-step; presentations are slide-by-slide with fixed text, full-frame images, and slide hotspots; galleries advance image-by-image with movable text and freely arranged images; documents are rich-text pages. Use the page navigation below a document to move between pages, and the page controls there to add or delete pages.
-4. For Model, Presentation, and Gallery projects, add editable text overlays and draw lines, rectangles, ellipses, or polygons with configurable stroke, width, and fill. Documents have their own rich-text editor. Use Project appearance settings for per-project accent and canvas colors.
+2. Create sections at the library level, then select a section to create projects and collections. Collections group related projects, such as a Minihouse collection inside Engineering. Search projects by name or filter by section and collection. Managers can delete projects from their library cards; this also removes their comments and stored media. Empty sections and collections can be deleted from the selected filters; move projects out before deleting a section or collection that is in use.
+3. New projects start empty. Add steps and choose **Model**, **Document**, or **Any** for each one. Model steps use the 3D and media tools; Document steps are rich-text pages; Any steps combine a rich-text page with the model and media tools. This lets a project mix different step formats in sequence. Existing model, presentation, gallery, and document projects remain supported.
+4. Add editable text overlays and draw lines, rectangles, ellipses, or polygons with configurable stroke, width, and fill on steps that support media. Documents have their own rich-text editor. Use Project appearance settings for per-project accent and canvas colors.
 5. Add optional MP4, WebM, or Ogg video up to 100 MB to an item. Public reviewers can comment without signing in, as Anonymous or using a name they enter. The manager can remove comments; public posting can attract spam, so add CAPTCHA/rate limiting before a high-traffic launch.
 6. Editor shortcuts are customizable in Editor Settings. Documents and text overlays use standard browser `contenteditable` elements, which Grammarly and similar extensions generally recognize, though extension behavior depends on the browser and extension settings. Changes and media are shared via Supabase across devices.
 

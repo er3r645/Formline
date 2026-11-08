@@ -65,7 +65,7 @@
       .ribbon-panel[hidden] { display: none; }
       .ribbon-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
       .ribbon-tools button { min-width: 32px; height: 30px; border: 1px solid var(--line); border-radius: 6px; background: white; cursor: pointer; }
-      .workspace { min-height: 0; display: grid; grid-template-columns: 46px 206px minmax(360px, 1fr) 294px; }
+      .workspace { position: relative; min-height: 0; display: grid; grid-template-columns: 46px 206px minmax(360px, 1fr) 294px; }
       .side-tabs { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 12px 4px; background: #f7f7f4; border-right: 1px solid var(--line); }
       .side-tab { width: 36px; min-height: 54px; display: grid; justify-items: center; align-content: center; gap: 3px; border: 0; border-radius: 7px; background: transparent; color: #74766f; font-size: 9px; cursor: pointer; }
       .side-tab span:first-child { font-size: 16px; }
@@ -201,6 +201,8 @@
       .project-gallery { max-width: 1160px; margin: 0 auto; }
       .gallery-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
       .gallery-actions { display: flex; align-items: center; gap: 12px; }
+      .delete-group-button { border: 0; background: transparent; color: #a36a62; font-size: 10px; cursor: pointer; }
+      .delete-group-button:hover { color: #8f4b42; }
       .gallery-toolbar h2 { margin: 0; font: 700 16px Manrope, sans-serif; }
       .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
       .project-card { position: relative; min-height: 168px; padding: 0; border: 1px solid var(--line); border-radius: 12px; background: white; transition: transform .16s ease, box-shadow .16s ease; }
@@ -269,6 +271,25 @@
       .document-page-actions { display: flex; align-items: center; gap: 10px; }
       .document-page-delete { border: 0; background: transparent; color: #a36a62; font-size: 11px; cursor: pointer; }
       .document-page-delete:hover { color: #8f4b42; }
+      .project-no-steps { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; padding: 24px; background: #f5f5f2; }
+      .project-no-steps-card { max-width: 420px; padding: 32px; border: 1px solid var(--line); border-radius: 14px; background: white; text-align: center; }
+      .project-no-steps-card h2 { margin: 0; font: 700 20px Manrope, sans-serif; }
+      .project-no-steps-card p { margin: 10px 0 20px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+      .mixed-mode .workspace { grid-template-columns: 46px 206px minmax(0, 1fr) 294px; }
+      .mixed-mode.mixed-document-step .stage-column { display: none; }
+      .mixed-mode.mixed-document-step .document-pane { grid-column: 3; grid-row: 1; min-height: calc(100vh - 200px); margin: 24px auto; width: min(860px, calc(100% - 48px)); border: 0; border-radius: 2px; }
+      .mixed-mode.mixed-document-step .inspector #model-section, .mixed-mode.mixed-document-step .inspector #video-section, .mixed-mode.mixed-document-step .inspector #text-section, .mixed-mode.mixed-document-step .inspector #images-upload-section, .mixed-mode.mixed-document-step .inspector #hotspots-section, .mixed-mode.mixed-document-step .inspector #step-settings, .mixed-mode.mixed-document-step .inspector #delete-step { display: none; }
+      .mixed-mode.mixed-any-step .workspace { grid-template-columns: 46px 190px minmax(280px, 1fr) minmax(300px, .9fr) 294px; }
+      .mixed-mode.mixed-any-step .document-pane { grid-column: 4; grid-row: 1; min-height: calc(100vh - 200px); margin: 16px 8px; width: auto; }
+      .mixed-mode.mixed-any-step .inspector { grid-column: 5; grid-row: 1; }
+      .mixed-mode.mixed-any-step #inspector #step-settings { display: none; }
+      .mixed-mode .document-page { padding: 12px; }
+      .mixed-mode .document-editor { min-height: 700px; }
+      .mixed-mode.mixed-any-step .stage-bottom .nav-controls { display: none; }
+      .mixed-mode.mixed-document-step #inspector #delete-step, .mixed-mode.mixed-any-step #inspector #delete-step { display: none; }
+      .empty-project .workspace > :not(#project-no-steps) { visibility: hidden; }
+      .step-type-actions { justify-content: stretch; }
+      .step-type-actions button { flex: 1; }
       .document-editor:empty::before { color: #a0a19b; content: "Start writing your document…"; }
       .document-editor:focus { border-color: #c3cfb7; box-shadow: 0 0 0 3px rgba(138, 176, 99, 0.12), 0 6px 18px rgba(28, 31, 25, 0.04); }
       .drawing-toolbar, .text-tools { max-width: 100%; border: 1px solid var(--line); border-radius: 8px; }
@@ -308,6 +329,8 @@
       @media (max-width: 1020px) {
         .workspace { grid-template-columns: 210px minmax(300px, 1fr) 265px; }
         .viewer-mode .workspace { grid-template-columns: 36px 190px minmax(0, 1fr); }
+        .mixed-mode .workspace { grid-template-columns: 36px 180px minmax(0, 1fr) 265px; }
+        .mixed-mode.mixed-any-step .workspace { grid-template-columns: 36px 150px minmax(0, 1fr) minmax(220px, .8fr) 265px; }
         .sidebar .side-heading, .timeline-head { padding-right: 14px; padding-left: 14px; }
       }
       @media (max-width: 760px) {
@@ -345,6 +368,13 @@
         .document-mode .document-pane { grid-row: 1; width: calc(100% - 20px); margin: 10px; }
         .document-mode .inspector { grid-row: 2; }
         .document-editor { min-height: 50vh; }
+        .mixed-mode .workspace, .mixed-mode.mixed-document-step .workspace, .mixed-mode.mixed-any-step .workspace { grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: auto auto auto auto; }
+        .mixed-mode .sidebar { grid-column: 2; grid-row: 1; }
+        .mixed-mode .stage-column, .mixed-mode.mixed-document-step .stage-column { grid-column: 2; grid-row: 2; }
+        .mixed-mode.mixed-document-step .document-pane, .mixed-mode.mixed-any-step .document-pane { grid-column: 2; grid-row: 3; width: calc(100% - 20px); min-height: 60vh; margin: 10px; }
+        .mixed-mode.mixed-document-step .document-pane { grid-row: 2; }
+        .mixed-mode.mixed-document-step .inspector { grid-column: 2; grid-row: 3; }
+        .mixed-mode.mixed-any-step .inspector { grid-column: 2; grid-row: 4; }
       }
     </style>
   </head>
@@ -363,12 +393,12 @@
         <div class="lobby-intro">
           <div class="eyebrow">Process library</div>
           <h1>Explore the work behind the finished form.</h1>
-          <p>Browse model walkthroughs, slide presentations, and image galleries.</p>
+          <p>Explore projects that combine model, document, and media steps.</p>
         </div>
         <div class="project-gallery">
           <div class="gallery-toolbar">
             <h2>Library</h2>
-            <div class="gallery-actions"><span class="project-meta" id="gallery-status">Loading projects…</span><button type="button" class="auth-button" id="create-section" hidden>＋ New section</button><button type="button" class="auth-button" id="create-collection" hidden>＋ New collection</button><button type="button" class="upload-button" id="create-project" hidden>＋ New project</button></div>
+            <div class="gallery-actions"><span class="project-meta" id="gallery-status">Loading projects…</span><button type="button" class="auth-button" id="create-section" hidden>＋ New section</button><button type="button" class="delete-group-button" id="delete-section" hidden>Delete section</button><button type="button" class="auth-button" id="create-collection" hidden>＋ New collection</button><button type="button" class="delete-group-button" id="delete-collection" hidden>Delete collection</button><button type="button" class="upload-button" id="create-project" hidden>＋ New project</button></div>
           </div>
           <div class="gallery-filters">
             <input id="project-search" class="gallery-search" type="search" placeholder="Search projects by name" aria-label="Search projects by name" />
@@ -381,16 +411,9 @@
     <dialog class="project-dialog" id="project-dialog">
       <form class="dialog-body" id="project-form">
         <h2>New project</h2>
-        <p>Choose the format and the section where reviewers will find it.</p>
+        <p>Create an empty project, then add steps in any combination of formats.</p>
         <label class="field-label" for="new-project-title">Project name</label>
         <input class="field-control" id="new-project-title" maxlength="100" value="Untitled project" required />
-        <label class="field-label" for="new-project-type">Project type</label>
-        <select class="field-control" id="new-project-type">
-          <option value="model">Model project</option>
-          <option value="presentation">Presentation project</option>
-          <option value="gallery">Gallery project</option>
-          <option value="document">Document project</option>
-        </select>
         <label class="field-label" for="new-project-section">Section</label>
         <input class="field-control" id="new-project-section" maxlength="50" list="known-sections" value="Engineering" />
         <label class="field-label" for="new-project-collection">Collection (optional)</label>
@@ -419,6 +442,18 @@
         <label class="field-label" for="collection-name">Collection name</label>
         <input class="field-control" id="collection-name" maxlength="60" placeholder="Minihouse" required />
         <div class="dialog-actions"><button type="button" class="auth-button" id="cancel-collection">Cancel</button><button type="submit" class="upload-button">Create collection</button></div>
+      </form>
+    </dialog>
+    <dialog class="project-dialog" id="step-type-dialog">
+      <form class="dialog-body" id="step-type-form">
+        <h2>Add a step</h2>
+        <p>Choose what this step can contain. “Any” includes both document text and model or media content.</p>
+        <div class="dialog-actions step-type-actions">
+          <button type="button" class="auth-button" data-step-kind="model">Model</button>
+          <button type="button" class="auth-button" data-step-kind="document">Document</button>
+          <button type="button" class="upload-button" data-step-kind="any">Any</button>
+        </div>
+        <div class="dialog-actions"><button type="button" class="auth-button" id="cancel-step-type">Cancel</button></div>
       </form>
     </dialog>
     <dialog class="shortcut-dialog" id="shortcut-dialog">
@@ -521,6 +556,13 @@
         </div>
       </section>
       <main class="workspace">
+        <div class="project-no-steps" id="project-no-steps" hidden>
+          <div class="project-no-steps-card">
+            <h2>This project is ready for its first step</h2>
+            <p>Choose a model step, a document step, or a mixed step with both.</p>
+            <button type="button" class="upload-button" id="empty-add-step">＋ Add first step</button>
+          </div>
+        </div>
         <nav class="side-tabs" id="side-tabs" aria-label="Workspace navigation">
           <button type="button" class="side-tab" data-side-tab="outline" aria-current="page" title="Outline"><span>☷</span><span>Outline</span></button>
           <button type="button" class="side-tab" data-side-tab="project" title="Project"><span>▤</span><span>Project</span></button>
@@ -781,8 +823,8 @@
         return globalThis.crypto?.randomUUID?.() ?? `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
       }
 
-      function newStep(title = "New step") {
-        return { id: makeId(), title, description: "", modelPath: null, modelName: "", videoPath: null, videoUrl: null, videoName: "", images: [], hotspots: [], texts: [], shapes: [] };
+      function newStep(title = "New step", kind = "model") {
+        return { id: makeId(), title, kind, document_html: "<h1></h1>", description: "", modelPath: null, modelName: "", videoPath: null, videoUrl: null, videoName: "", images: [], hotspots: [], texts: [], shapes: [] };
       }
 
       function normalizeProject(row) {
@@ -790,7 +832,7 @@
         return {
           id: row.id,
           title: typeof row.title === "string" ? row.title : "Untitled process",
-          project_type: ["model", "presentation", "gallery", "document"].includes(row.project_type) ? row.project_type : "model",
+          project_type: ["model", "presentation", "gallery", "document", "mixed"].includes(row.project_type) ? row.project_type : "model",
           section: typeof row.section === "string" && row.section.trim() ? row.section.trim() : "Engineering",
           collection: typeof row.collection === "string" ? row.collection : "",
           document_html: typeof row.document_html === "string" ? DOMPurify.sanitize(row.document_html) : "<h1></h1>",
@@ -805,6 +847,7 @@
             id: step.id || makeId(),
             title: typeof step.title === "string" ? step.title : "Untitled step",
             description: typeof step.description === "string" ? step.description : "",
+            kind: ["model", "document", "any"].includes(step.kind) ? step.kind : row.project_type === "document" ? "document" : "model",
             document_html: typeof step.document_html === "string"
               ? DOMPurify.sanitize(step.document_html)
               : index === 0 && typeof row.document_html === "string"
@@ -887,6 +930,16 @@
 
       function getCurrentStep() {
         return activeProject();
+      }
+
+      function currentStepKind() {
+        if (!project) return null;
+        if (project.project_type === "mixed") return getCurrentStep()?.kind || null;
+        return project.project_type === "document" ? "document" : "model";
+      }
+
+      function stepHasDocument() {
+        return currentStepKind() === "document" || currentStepKind() === "any";
       }
 
       function syncProjectCard() {
@@ -995,7 +1048,7 @@
           empty.textContent = projectList.length
             ? "No projects match this search and section."
             : isManager
-            ? "Your library is empty. Create a project to start a model, image gallery, or mixed process."
+            ? "Your library is empty. Create a project, then add steps in any combination of formats."
             : "No projects are available to review yet.";
           grid.append(empty);
           return;
@@ -1052,11 +1105,11 @@
       }
 
       function projectTypeName(type) {
-        return ({ model: "Model", presentation: "Presentation", gallery: "Gallery", document: "Document" })[type] || "Model";
+        return ({ model: "Model", presentation: "Presentation", gallery: "Gallery", document: "Document", mixed: "Project" })[type] || "Model";
       }
 
       function projectItemName(type) {
-        return ({ model: "step", presentation: "slide", gallery: "image", document: "page" })[type] || "step";
+        return ({ model: "step", presentation: "slide", gallery: "image", document: "page", mixed: "step" })[type] || "step";
       }
 
       function updateSectionChoices() {
@@ -1080,15 +1133,17 @@
         if (collections.includes(selectedCollection)) collectionFilter.value = selectedCollection;
         document.querySelector("#known-collections").replaceChildren(...collections.map((collection) => Object.assign(document.createElement("option"), { value: collection })));
         document.querySelector("#create-section").hidden = !isManager;
+        document.querySelector("#delete-section").hidden = !isManager || !selected;
         document.querySelector("#create-collection").hidden = !isManager || !selected;
-        document.querySelector("#create-project").hidden = !isManager || !selected;
+        document.querySelector("#delete-collection").hidden = !isManager || !selected || !document.querySelector("#collection-filter").value;
+        document.querySelector("#create-project").hidden = !isManager;
       }
 
       async function refreshSections() {
         if (!supabase) return;
         const [sectionsResult, collectionsResult] = await Promise.all([
           supabase.from("project_sections").select("name").order("name"),
-          supabase.from("project_collections").select("name").order("name")
+          supabase.from("project_collections").select("section_name,name").order("name")
         ]);
         if (sectionsResult.error || collectionsResult.error) {
           console.error("Could not load section lists.", sectionsResult.error || collectionsResult.error);
@@ -1150,6 +1205,55 @@
         await refreshSections();
         updateSectionChoices();
         document.querySelector("#collection-filter").value = name;
+        renderGallery();
+      }
+
+      async function deleteSection() {
+        if (!isManager || !supabase) return;
+        const name = document.querySelector("#section-filter").value;
+        if (!name) return;
+        if (projectList.some((item) => item.section === name)) {
+          showToast("Move or delete projects in this section before deleting it.");
+          return;
+        }
+        if (!window.confirm(`Delete the "${name}" section and its empty collections?`)) return;
+        const { error } = await supabase.from("project_sections").delete().eq("name", name).select("name").single();
+        if (error) {
+          console.error("Could not delete the section.", error);
+          showToast("Could not delete this section. It may still contain projects.");
+          return;
+        }
+        sectionList = sectionList.filter((item) => item !== name);
+        collectionList = collectionList.filter((item) => item.section_name !== name);
+        document.querySelector("#section-filter").value = "";
+        document.querySelector("#collection-filter").value = "";
+        updateSectionChoices();
+        renderGallery();
+      }
+
+      async function deleteCollection() {
+        if (!isManager || !supabase) return;
+        const section = document.querySelector("#section-filter").value;
+        const name = document.querySelector("#collection-filter").value;
+        if (!section || !name) return;
+        if (projectList.some((item) => item.section === section && item.collection === name)) {
+          showToast("Move projects out of this collection before deleting it.");
+          return;
+        }
+        if (!window.confirm(`Delete the "${name}" collection?`)) return;
+        const { error } = await supabase.from("project_collections").delete()
+          .eq("section_name", section)
+          .eq("name", name)
+          .select("name")
+          .single();
+        if (error) {
+          console.error("Could not delete the collection.", error);
+          showToast("Could not delete this collection. It may still contain projects.");
+          return;
+        }
+        collectionList = collectionList.filter((item) => item.section_name !== section || item.name !== name);
+        document.querySelector("#collection-filter").value = "";
+        updateSectionChoices();
         renderGallery();
       }
 
@@ -1295,18 +1399,20 @@
       async function openProject(row) {
         if (!await flushPendingSave()) return;
         project = normalizeProject(row);
-        if (!project.steps.length) {
+        if (!project.steps.length && project.project_type !== "mixed") {
           const step = newStep(project.project_type === "document" ? "Page 1" : "First step");
           if (project.project_type === "document") step.document_html = project.document_html;
           project.steps.push(step);
         }
         currentProjectId = project.id;
-        currentStepId = project.steps[0].id;
+        currentStepId = project.steps[0]?.id || null;
         selectedHotspotId = null;
         selectedImageId = null;
         gallery.hidden = true;
         app.classList.add("open");
+        app.classList.toggle("mixed-mode", project.project_type === "mixed");
         app.classList.toggle("document-mode", project.project_type === "document");
+        app.classList.toggle("empty-project", !project.steps.length);
         document.querySelector("#document-pane").hidden = project.project_type !== "document";
         documentEditor.innerHTML = DOMPurify.sanitize(project.steps[0]?.document_html || project.document_html);
         documentEditor.style.lineHeight = project.document_line_height;
@@ -1334,6 +1440,7 @@
         currentStepId = null;
         app.classList.remove("open");
         app.classList.remove("document-mode");
+        app.classList.remove("mixed-mode", "mixed-document-step", "mixed-any-step", "empty-project");
         document.querySelector("#document-pane").hidden = true;
         document.querySelector("#comments-section").hidden = true;
         gallery.hidden = false;
@@ -1344,13 +1451,9 @@
 
       async function createProject() {
         if (!isManager || !supabase) return;
-        const type = document.querySelector("#new-project-type").value;
         const title = document.querySelector("#new-project-title").value.trim() || "Untitled project";
         const section = document.querySelector("#new-project-section").value.trim() || "Engineering";
         const collection = document.querySelector("#new-project-collection").value.trim();
-        const itemLabel = type === "presentation" ? "Slide 1" : type === "gallery" ? "Image 1" : type === "document" ? "Page 1" : "First step";
-        const step = newStep(itemLabel);
-        if (type === "document") step.document_html = "<h1></h1>";
         const sectionResult = await supabase.from("project_sections").upsert({ name: section }, { onConflict: "name", ignoreDuplicates: true });
         if (sectionResult.error) {
           showToast("Create the section before adding a project.");
@@ -1364,12 +1467,12 @@
           }
         }
         const { data, error } = await supabase.from("projects")
-          .insert({ title, project_type: type, section, collection, document_html: "<h1></h1>", document_line_height: "1.65", theme: { accent: "#bdff71", background: "#fbfbf9" }, steps: [step] })
+          .insert({ title, project_type: "mixed", section, collection, document_html: "<h1></h1>", document_line_height: "1.65", theme: { accent: "#bdff71", background: "#fbfbf9" }, steps: [] })
           .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,created_at,updated_at")
           .single();
         if (error) {
           console.error("Could not create the project.", error);
-          showToast("Could not create a project. Check the manager access policies.");
+          showToast("Could not create a project. Check the manager access and rerun the latest Supabase setup SQL.");
           return;
         }
         projectList.unshift(data);
@@ -1390,12 +1493,12 @@
         list.replaceChildren();
         if (!project) return;
         const itemLabel = projectItemName(project.project_type);
-        document.querySelector("#add-step").hidden = !isManager || mode !== "edit";
+        document.querySelector("#add-step").hidden = !isManager || mode !== "edit" || (project.project_type === "document");
         document.querySelector("#delete-step").hidden = !isManager || mode !== "edit";
         document.querySelector("#add-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
         document.querySelector("#delete-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
         document.querySelector("#add-step").innerHTML = `<span>+</span> Add ${itemLabel === "step" ? "a step" : itemLabel === "slide" ? "a slide" : itemLabel === "page" ? "a page" : "an image"}`;
-        document.querySelector("#timeline-label").textContent = project.project_type === "model" ? "Timeline" : project.project_type === "document" ? "Pages" : `${projectTypeName(project.project_type)} items`;
+        document.querySelector("#timeline-label").textContent = project.project_type === "model" ? "Timeline" : project.project_type === "document" ? "Pages" : project.project_type === "mixed" ? "Steps" : `${projectTypeName(project.project_type)} items`;
         project.steps.forEach((step, index) => {
           const row = document.createElement("button");
           row.type = "button";
@@ -1403,7 +1506,9 @@
           row.setAttribute("aria-current", step.id === currentStepId ? "step" : "false");
           row.innerHTML = `<span class="step-number">${String(index + 1).padStart(2, "0")}</span><span class="step-copy"><span class="step-title"></span><span class="step-subtitle"></span></span><span class="step-status${step.modelPath || step.images.length ? " ready" : ""}"></span>`;
           row.querySelector(".step-title").textContent = step.title || "Untitled step";
-          row.querySelector(".step-subtitle").textContent = [
+          row.querySelector(".step-subtitle").textContent = project.project_type === "mixed"
+            ? `${step.kind === "any" ? "Any" : step.kind === "document" ? "Document" : "Model"} step`
+            : [
             step.modelPath ? "3D model" : "",
             step.videoPath ? "Video" : "",
             step.images.length ? formatCount(step.images.length, "image") : "",
@@ -1415,18 +1520,26 @@
         document.querySelector("#step-count").textContent = formatCount(project.steps.length, itemLabel);
       }
 
-      function addProjectItem() {
+      function addProjectItem(kind = null) {
         if (!project || !isManager || mode !== "edit") return;
+        if (project.project_type === "mixed" && !kind) {
+          document.querySelector("#step-type-dialog").showModal();
+          return;
+        }
         const itemLabel = projectItemName(project.project_type);
-        const title = itemLabel === "page"
+        const stepKind = project.project_type === "document" ? "document" : kind || "model";
+        const title = project.project_type === "mixed"
+          ? `${stepKind === "any" ? "Mixed" : stepKind === "document" ? "Document" : "Model"} ${project.steps.length + 1}`
+          : itemLabel === "page"
           ? `Page ${project.steps.length + 1}`
           : itemLabel === "slide" ? `Slide ${project.steps.length + 1}` : itemLabel === "image" ? `Image ${project.steps.length + 1}` : `Step ${project.steps.length + 1}`;
-        const step = newStep(title);
-        if (project.project_type === "document") step.document_html = "<h1></h1>";
+        const step = newStep(title, stepKind);
         project.steps.push(step);
         currentStepId = step.id;
         selectedHotspotId = null;
         selectedImageId = null;
+        document.querySelector("#step-type-dialog").close();
+        app.classList.remove("empty-project");
         renderInspector();
         persist();
         void loadCurrentModel();
@@ -1434,22 +1547,23 @@
 
       async function deleteCurrentItem() {
         if (!project || !isManager || mode !== "edit") return;
-        if (project.steps.length === 1) {
+        if (project.steps.length === 1 && project.project_type !== "mixed") {
           showToast(project.project_type === "document" ? "A document needs at least one page." : "A process needs at least one step.");
           return;
         }
         const step = getCurrentStep();
         if (!step) return;
-        if (project.project_type === "document" && !window.confirm(`Delete "${step.title || "this page"}"?`)) return;
+        if ((project.project_type === "document" || project.project_type === "mixed") && !window.confirm(`Delete "${step.title || (project.project_type === "document" ? "this page" : "this step")}"?`)) return;
         if (!await flushPendingSave()) return;
         const index = project.steps.indexOf(step);
         project.steps = project.steps.filter((item) => item.id !== step.id);
         if (project.project_type === "document") project.document_html = project.steps[0].document_html || "<h1></h1>";
         const paths = [step.modelPath, step.videoPath, ...step.images.map((image) => image.path), ...step.hotspots.map((marker) => marker.imagePath)];
-        currentStepId = project.steps[Math.max(0, index - 1)].id;
+        currentStepId = project.steps[Math.max(0, index - 1)]?.id || null;
         selectedHotspotId = null;
         selectedImageId = null;
         renderInspector();
+        if (!project.steps.length) app.classList.add("empty-project");
         persist();
         try {
           await deleteMedia(paths);
@@ -1886,9 +2000,39 @@
 
       function renderInspector() {
         const step = getCurrentStep();
-        if (!step || !project) return;
-        const index = project.steps.indexOf(step);
+        if (!project) return;
+        const mixedProject = project.project_type === "mixed";
+        const stepKind = currentStepKind();
+        const hasStep = !!step;
+        app.classList.toggle("mixed-mode", mixedProject);
+        app.classList.toggle("mixed-document-step", mixedProject && stepKind === "document");
+        app.classList.toggle("mixed-any-step", mixedProject && stepKind === "any");
+        app.classList.toggle("document-mode", !mixedProject && project.project_type === "document");
+        app.classList.toggle("empty-project", !hasStep);
+        document.querySelector("#project-no-steps").hidden = hasStep;
+        document.querySelector("#empty-add-step").hidden = !isManager || mode !== "edit";
+        document.querySelector("#project-title-input").value = project.title;
+        document.querySelector("#project-title-input").readOnly = !isManager || mode !== "edit";
         document.querySelector("#project-type-label").textContent = projectTypeName(project.project_type);
+        if (!step) {
+          document.querySelector("#project-no-steps h2").textContent = isManager
+            ? "This project is ready for its first step"
+            : "No steps have been added to this project yet";
+          document.querySelector("#project-no-steps p").textContent = isManager
+            ? "Choose a model step, a document step, or a mixed step with both."
+            : "";
+          document.querySelector("#document-pane").hidden = true;
+          documentEditor.contentEditable = "false";
+          document.querySelector("#inspector").hidden = true;
+          document.querySelector("#previous-step").disabled = true;
+          document.querySelector("#next-step").disabled = true;
+          document.querySelector("#previous-document-page").disabled = true;
+          document.querySelector("#next-document-page").disabled = true;
+          renderSteps();
+          updateEditorChrome();
+          return;
+        }
+        const index = project.steps.indexOf(step);
         document.querySelector("#project-section-input").value = project.section;
         document.querySelector("#project-section-input").readOnly = !isManager;
         document.querySelector("#project-collection-input").value = project.collection;
@@ -1897,29 +2041,28 @@
         document.querySelector("#theme-accent").disabled = !isManager;
         document.querySelector("#theme-background").value = project.theme.background;
         document.querySelector("#theme-background").disabled = !isManager;
-        document.querySelector("#model-section").hidden = project.project_type !== "model";
-        document.querySelector("#video-section").hidden = project.project_type === "document";
-        document.querySelector("#text-section").hidden = project.project_type === "document";
-        document.querySelector("#hotspots-section").hidden = project.project_type === "gallery" || project.project_type === "document";
-        documentEditor.contentEditable = String(isManager && mode === "edit" && project.project_type === "document");
-        if (project?.project_type === "document" && isManager && mode === "edit") {
+        document.querySelector("#model-section").hidden = isDocumentOnlyStep() || (project.project_type !== "model" && !mixedProject);
+        document.querySelector("#video-section").hidden = isDocumentOnlyStep();
+        document.querySelector("#text-section").hidden = isDocumentOnlyStep();
+        document.querySelector("#hotspots-section").hidden = isDocumentOnlyStep() || project.project_type === "gallery";
+        documentEditor.contentEditable = String(isManager && mode === "edit" && stepHasDocument());
+        if (stepHasDocument() && isManager && mode === "edit") {
           requestAnimationFrame(() => documentEditor.focus());
         }
-        document.querySelector("#document-pane").hidden = project.project_type !== "document";
+        document.querySelector("#document-pane").hidden = !stepHasDocument();
         documentEditor.innerHTML = DOMPurify.sanitize(step.document_html || "<h1></h1>");
         document.querySelector("#add-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
-        document.querySelector("#delete-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
-        document.querySelector("#delete-document-page").disabled = project.steps.length <= 1;
+        document.querySelector("#delete-document-page").hidden = !isManager || mode !== "edit" || !(project.project_type === "document" || (mixedProject && stepHasDocument()));
+        document.querySelector("#delete-document-page").textContent = mixedProject ? "Delete step" : "Delete page";
+        document.querySelector("#delete-document-page").disabled = project.steps.length <= 1 && !mixedProject;
         document.querySelector("#previous-document-page").disabled = index <= 0;
         document.querySelector("#next-document-page").disabled = index >= project.steps.length - 1;
         document.querySelector("#document-page-position").textContent = `${String(index + 1).padStart(2, "0")} / ${String(project.steps.length).padStart(2, "0")}`;
-        document.querySelector(".stage-label").hidden = project.project_type !== "model" || !step.modelPath;
-        document.querySelector("#stage-hint").hidden = project.project_type !== "model" || !step.modelPath;
-        document.querySelector("#reset-camera").hidden = project.project_type !== "model" || !step.modelPath;
+        document.querySelector(".stage-label").hidden = isDocumentOnlyStep() || (!mixedProject && project.project_type !== "model") || !step.modelPath;
+        document.querySelector("#stage-hint").hidden = isDocumentOnlyStep() || (!mixedProject && project.project_type !== "model") || !step.modelPath;
+        document.querySelector("#reset-camera").hidden = isDocumentOnlyStep() || (!mixedProject && project.project_type !== "model") || !step.modelPath;
         document.querySelector("#video-file-card").hidden = !step.videoPath;
         document.querySelector("#video-file-name").textContent = step.videoName || "Video";
-        document.querySelector("#project-title-input").value = project.title;
-        document.querySelector("#project-title-input").readOnly = !isManager || mode !== "edit";
         document.querySelector("#inspector-step-name").textContent = step.title || "Untitled step";
         document.querySelector("#step-title-input").value = step.title;
         document.querySelector("#step-description-input").value = step.description;
@@ -1931,12 +2074,12 @@
         document.querySelector("#empty-upload").textContent = project.project_type === "model" ? "Add a model or image" : project.project_type === "presentation" ? "Add an image to this slide" : "Add an image";
         document.querySelector("#caption-title").textContent = step.title || "Untitled step";
         document.querySelector("#caption-description").textContent = step.description || (project.project_type === "document" ? "" : "Add a model and describe what happens in this step.");
-        const itemName = project.project_type === "presentation" ? "Slide" : project.project_type === "gallery" ? "Image" : "Step";
+        const itemName = project.project_type === "presentation" ? "Slide" : project.project_type === "gallery" ? "Image" : project.project_type === "document" ? "Page" : "Step";
         document.querySelector("#stage-step-name").textContent = `${itemName} ${String(index + 1).padStart(2, "0")}`;
         document.querySelector("#step-position").textContent = `${String(index + 1).padStart(2, "0")} / ${String(project.steps.length).padStart(2, "0")}`;
         document.querySelector("#previous-step").disabled = index <= 0;
         document.querySelector("#next-step").disabled = index >= project.steps.length - 1;
-        const showEmptyState = project.project_type !== "document" && isManager && mode === "edit" && !step.modelPath && !step.videoPath && step.images.length === 0;
+        const showEmptyState = !isDocumentOnlyStep() && isManager && mode === "edit" && !step.modelPath && !step.videoPath && step.images.length === 0;
         document.querySelector("#empty-state").hidden = !showEmptyState;
         updateEmptyStateCopy();
         document.querySelector("#model-label").textContent = step.modelName || "No model loaded";
@@ -1971,7 +2114,7 @@
           description.textContent = "";
           return;
         }
-        if (!isManager || mode !== "edit" || project.project_type === "document") {
+        if (!isManager || mode !== "edit" || isDocumentOnlyStep()) {
           heading.textContent = "";
           description.textContent = "";
           return;
@@ -2015,16 +2158,19 @@
       function updateEditorChrome() {
         const editing = isManager && mode === "edit" && !!project;
         const type = project?.project_type;
+        const documentStep = stepHasDocument();
+        const modelStep = currentStepKind() === "model" || currentStepKind() === "any";
         document.querySelector("#editor-ribbon").hidden = !editing;
-        document.querySelector("#document-toolbar").hidden = !editing || type !== "document";
-        document.querySelector("#text-tools").hidden = !editing || type === "document";
-        document.querySelector("#drawing-toolbar").hidden = !editing || type === "document";
-        document.querySelector("#add-text").hidden = !editing || type === "document";
-        document.querySelector("#ribbon-camera").hidden = type !== "model" || !getCurrentStep()?.modelPath;
+        document.querySelector("#document-toolbar").hidden = !editing || !documentStep;
+        document.querySelector("#text-tools").hidden = !editing || !modelStep;
+        document.querySelector("#drawing-toolbar").hidden = !editing || !modelStep;
+        document.querySelector("#add-text").hidden = !editing || !modelStep;
+        const cameraAvailable = type === "model" || (type === "mixed" && modelStep);
+        document.querySelector("#ribbon-camera").hidden = !cameraAvailable || !getCurrentStep()?.modelPath;
         document.querySelector("#empty-upload").hidden = !editing;
-        document.querySelector("#inspector").hidden = !editing;
-        document.querySelector("#stage-column").classList.toggle("page-mode", !!type && type !== "model");
-        if (editing) setRibbonTab(type === "document" ? "Format" : "Insert");
+        document.querySelector("#inspector").hidden = !editing || !getCurrentStep();
+        document.querySelector("#stage-column").classList.toggle("page-mode", !!type && type !== "model" && type !== "mixed");
+        if (editing) setRibbonTab(documentStep && !modelStep ? "Format" : "Insert");
       }
 
       function setMode(nextMode) {
@@ -2033,7 +2179,7 @@
         updateEditorChrome();
         updateEmptyStateCopy();
         renderSteps();
-        documentEditor.contentEditable = String(isManager && project?.project_type === "document" && mode === "edit");
+        documentEditor.contentEditable = String(isManager && stepHasDocument() && mode === "edit");
         document.querySelectorAll(".mode-switch button").forEach((button) => {
           const active = button.dataset.mode === mode;
           button.classList.toggle("active", active);
@@ -2168,8 +2314,17 @@
         const token = ++modelLoadToken;
         disposeModel();
         const step = getCurrentStep();
-        if (!step) return;
+        if (!step) {
+          loading.hidden = true;
+          return;
+        }
         document.querySelector("#model-label").textContent = step.modelName || "No model loaded";
+        if (isDocumentOnlyStep()) {
+          loading.hidden = true;
+          emptyState.hidden = true;
+          updateHotspotPositions();
+          return;
+        }
         emptyState.hidden = !!step.modelPath || step.images.length > 0;
         if (!step.modelPath) {
           updateHotspotPositions();
@@ -2489,9 +2644,11 @@
         document.querySelector("#section-filter").addEventListener("change", renderGallery);
         document.querySelector("#collection-filter").addEventListener("change", renderGallery);
         document.querySelector("#create-section").addEventListener("click", () => document.querySelector("#section-dialog").showModal());
+        document.querySelector("#delete-section").addEventListener("click", () => { void deleteSection(); });
         document.querySelector("#cancel-section").addEventListener("click", () => document.querySelector("#section-dialog").close());
         document.querySelector("#section-form").addEventListener("submit", (event) => { event.preventDefault(); createSection(); });
         document.querySelector("#create-collection").addEventListener("click", () => document.querySelector("#collection-dialog").showModal());
+        document.querySelector("#delete-collection").addEventListener("click", () => { void deleteCollection(); });
         document.querySelector("#cancel-collection").addEventListener("click", () => document.querySelector("#collection-dialog").close());
         document.querySelector("#collection-form").addEventListener("submit", (event) => { event.preventDefault(); createCollection(); });
         document.querySelector("#project-title-input").addEventListener("input", (event) => {
@@ -2638,8 +2795,13 @@
           persist();
           renderStageShapes(getCurrentStep());
         });
-        document.querySelector("#add-step").addEventListener("click", addProjectItem);
-        document.querySelector("#add-document-page").addEventListener("click", addProjectItem);
+        document.querySelector("#add-step").addEventListener("click", () => addProjectItem());
+        document.querySelector("#empty-add-step").addEventListener("click", () => addProjectItem());
+        document.querySelector("#add-document-page").addEventListener("click", () => addProjectItem("document"));
+        document.querySelectorAll("[data-step-kind]").forEach((button) => {
+          button.addEventListener("click", () => addProjectItem(button.dataset.stepKind));
+        });
+        document.querySelector("#cancel-step-type").addEventListener("click", () => document.querySelector("#step-type-dialog").close());
         document.querySelector("#delete-step").addEventListener("click", () => { void deleteCurrentItem(); });
         document.querySelector("#delete-document-page").addEventListener("click", () => { void deleteCurrentItem(); });
         document.querySelector("#previous-step").addEventListener("click", () => {
@@ -2651,12 +2813,12 @@
           if (index < project.steps.length - 1) selectStep(project.steps[index + 1].id);
         });
         document.querySelector("#previous-document-page").addEventListener("click", () => {
-          if (!project || project.project_type !== "document") return;
+          if (!project || !stepHasDocument()) return;
           const index = project.steps.findIndex((step) => step.id === currentStepId);
           if (index > 0) selectStep(project.steps[index - 1].id);
         });
         document.querySelector("#next-document-page").addEventListener("click", () => {
-          if (!project || project.project_type !== "document") return;
+          if (!project || !stepHasDocument()) return;
           const index = project.steps.findIndex((step) => step.id === currentStepId);
           if (index < project.steps.length - 1) selectStep(project.steps[index + 1].id);
         });
@@ -2858,10 +3020,10 @@
             return;
           }
           if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target.isContentEditable) return;
-          if (matchesShortcut(event, shortcuts.text) && isManager && project && project.project_type !== "document") {
+          if (matchesShortcut(event, shortcuts.text) && isManager && project && !isDocumentOnlyStep()) {
             event.preventDefault();
             document.querySelector("#add-text").click();
-          } else if (matchesShortcut(event, shortcuts.item) && isManager && project?.project_type !== "document") {
+          } else if (matchesShortcut(event, shortcuts.item) && isManager && project && project.project_type !== "document") {
             event.preventDefault();
             document.querySelector("#add-step").click();
           } else if (matchesShortcut(event, shortcuts.previous)) {
