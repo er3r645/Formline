@@ -102,9 +102,11 @@
       .stage-column { display: flex; min-width: 0; min-height: 0; flex-direction: column; padding: 20px; }
       .stage-column.page-mode { align-items: center; background: #eeeFEa; }
       .stage-column.page-mode .stage-toolbar { width: 100%; max-width: 1020px; }
-      .stage-column.page-mode .stage { width: min(100%, 1020px); min-height: min(700px, 72vh); flex: 0 0 min(700px, 72vh); background-color: white; background-image: none; border-color: #e2e2dc; border-radius: 3px; box-shadow: 0 5px 22px #20231d12; }
+      .stage-column.page-mode .stage { min-height: 120px; max-height: 72vh; background-color: white; background-image: none; border-color: #e2e2dc; border-radius: 3px; box-shadow: 0 5px 22px #20231d12; }
       .stage-column.page-mode .stage-bottom { right: 24px; bottom: 20px; left: 24px; }
       .stage-column.page-mode .step-caption { max-width: 72%; padding: 10px 14px; }
+      .viewer-mode .stage-column:not(.page-mode) { min-height: calc(100vh - 190px); padding-top: 12px; padding-bottom: 24px; }
+      .viewer-mode .stage-column:not(.page-mode) .stage { min-height: min(820px, calc(100vh - 270px)); }
       .stage-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 1px 2px 15px; }
       .stage-location { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 11px; }
       .stage-location strong { color: #43443f; font-weight: 600; }
@@ -147,6 +149,13 @@
       .nav-button:disabled { color: #c9cac4; cursor: default; }
       .nav-button svg { width: 15px; height: 15px; }
       .step-position { align-self: center; min-width: 41px; color: #73756d; font-size: 10px; text-align: center; }
+      .gallery-image-navigation { display: flex; align-items: center; gap: 5px; padding: 4px; border: 1px solid #eaeae5; border-radius: 9px; background: #ffffffdc; pointer-events: auto; }
+      .gallery-image-navigation[hidden] { display: none; }
+      .gallery-image-position { min-width: 82px; color: #73756d; font-size: 10px; text-align: center; }
+      .stage.gallery-view .stage-bottom { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "caption caption" "steps images"; gap: 6px; align-items: end; }
+      .stage.gallery-view .step-caption { grid-area: caption; max-width: 100%; }
+      .stage.gallery-view .stage-bottom > .nav-controls { grid-area: steps; justify-self: start; }
+      .stage.gallery-view .gallery-image-navigation { grid-area: images; justify-self: end; }
       .inspector { display: flex; flex-direction: column; overflow-y: auto; border-left: 1px solid var(--line); }
       .inspector-heading { padding: 26px 19px 19px; border-bottom: 1px solid var(--line); }
       .inspector-heading h1 { margin: 7px 0 0; font: 700 17px Manrope, sans-serif; letter-spacing: -.6px; }
@@ -326,7 +335,10 @@
       .hotspot-image { display: block; max-width: 100%; max-height: 130px; margin-top: 8px; border-radius: 6px; object-fit: contain; }
       .step-image-row { display: flex; align-items: center; gap: 8px; padding: 7px; border: 1px solid var(--line); border-radius: 7px; }
       .step-image-thumb { width: 38px; height: 32px; border-radius: 4px; background: #f1f1ed; object-fit: cover; }
-      .stage.gallery-step #model-canvas { display: none; }
+      .gallery-transform-controls { display: flex; gap: 5px; }
+      .gallery-transform-controls[hidden] { display: none; }
+      .gallery-transform-controls button { border: 1px solid var(--line); border-radius: 5px; background: white; color: var(--ink); padding: 5px 8px; font-size: 10px; cursor: pointer; }
+      .gallery-transform-controls button[aria-pressed="true"] { border-color: #9fb28a; background: #f0f4eb; }
 
       @media (max-width: 1020px) {
         .workspace { grid-template-columns: 36px 190px minmax(0, 1fr) 265px; }
@@ -357,6 +369,8 @@
         .add-step { flex: 0 0 105px; margin: 0 12px 8px 0; }
         .sidebar-bottom { display: none; }
         .stage-column { padding: 12px; }
+        .viewer-mode .stage-column:not(.page-mode) { min-height: calc(100vh - 150px); padding-top: 12px; }
+        .viewer-mode .stage-column:not(.page-mode) .stage { min-height: min(820px, calc(100vh - 220px)); }
         .inspector { border-top: 1px solid var(--line); border-left: 0; }
         .viewer-mode .inspector { display: none; }
         .viewer-mode .workspace { grid-template-rows: auto minmax(500px, calc(100vh - 132px)); }
@@ -606,6 +620,15 @@
                 <svg viewBox="0 0 24 24" fill="none"><path d="M4.5 10a7.5 7.5 0 1 1 .8 5.2M4.5 4v6h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
             </div>
+            <div class="gallery-image-navigation" id="gallery-image-navigation" aria-label="Gallery images" hidden>
+              <button type="button" class="nav-button" id="previous-gallery-image" aria-label="Previous image" title="Previous image">
+                <svg viewBox="0 0 24 24" fill="none"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <span class="gallery-image-position" id="gallery-image-position">01 / 01</span>
+              <button type="button" class="nav-button" id="next-gallery-image" aria-label="Next image" title="Next image">
+                <svg viewBox="0 0 24 24" fill="none"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
           </div>
           <div class="stage" id="stage">
             <canvas id="model-canvas" aria-label="Interactive 3D model viewer"></canvas>
@@ -682,6 +705,14 @@
             <label class="field-label" for="step-description-input">Description</label>
             <textarea class="text-area" id="step-description-input" maxlength="500" placeholder="Describe what happens in this part of the process…"></textarea>
           </section>
+          <section class="inspector-section" id="page-size-section" hidden>
+            <div class="section-title"><h2>Page size</h2><span>5–30 units</span></div>
+            <label class="field-label" for="page-width-input">Width</label>
+            <input class="text-field" id="page-width-input" type="number" min="5" max="30" step="1" />
+            <label class="field-label" for="page-height-input">Height</label>
+            <input class="text-field" id="page-height-input" type="number" min="5" max="30" step="1" />
+            <p class="format-note">Document default: 10 × 20 units, with a portrait proportion similar to legal paper (8.5 × 14 in). Presentation default: 15 × 7 units.</p>
+          </section>
           <section class="inspector-section" id="model-section">
             <div class="section-title"><h2>3D model</h2><span>Optional</span></div>
             <div class="model-file" id="model-file-card">
@@ -704,9 +735,14 @@
           <section class="inspector-section" id="images-upload-section">
             <div class="section-title"><h2>Images</h2><span id="image-count">0 images</span></div>
             <button type="button" class="hotspot-add" id="add-image">＋ Add image to this step</button>
-            <p class="format-note">Images can be arranged freely on the stage. Select one to drag, resize, or rotate it.</p>
+            <p class="format-note" id="image-tools-help">Images can be arranged freely on the stage. Select one to drag, resize, or rotate it.</p>
             <div class="marker-list" id="image-list"></div>
             <div class="image-control" id="image-controls" hidden>
+              <div class="gallery-transform-controls" id="gallery-transform-controls" hidden aria-label="3D image transform mode">
+                <button type="button" data-gallery-transform="translate" aria-pressed="true">Move</button>
+                <button type="button" data-gallery-transform="rotate" aria-pressed="false">Rotate</button>
+                <button type="button" data-gallery-transform="scale" aria-pressed="false">Scale</button>
+              </div>
               <div class="image-control-row"><label for="image-scale">Size</label><input id="image-scale" type="range" min="10" max="200" value="60" /><output id="image-scale-value">60%</output></div>
               <div class="image-control-row"><label for="image-rotation">Rotation</label><input id="image-rotation" type="range" min="-180" max="180" value="0" /><output id="image-rotation-value">0°</output></div>
               <button type="button" class="text-button" id="delete-image">Remove image</button>
@@ -751,6 +787,7 @@
     <script type="module">
       import * as THREE from "three";
       import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      import { TransformControls } from "three/addons/controls/TransformControls.js";
       import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
       import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
       import { STLLoader } from "three/addons/loaders/STLLoader.js";
@@ -787,6 +824,9 @@
       controls.enableDamping = true;
       controls.dampingFactor = 0.07;
       controls.target.set(0, 0, 0);
+      const imageTransformControls = new TransformControls(camera, canvas);
+      imageTransformControls.setMode("translate");
+      scene.add(imageTransformControls.getHelper());
       scene.add(new THREE.HemisphereLight(0xffffff, 0x92968d, 2.1));
       const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
       keyLight.position.set(4, 7, 5);
@@ -796,6 +836,9 @@
       scene.add(fillLight);
       const modelRoot = new THREE.Group();
       scene.add(modelRoot);
+      const galleryImageRoot = new THREE.Group();
+      scene.add(galleryImageRoot);
+      const galleryImageMeshes = new Map();
       const raycaster = new THREE.Raycaster();
       const pointer = new THREE.Vector2();
 
@@ -818,6 +861,7 @@
       let pendingProjectSave = null;
       let pointerStart = null;
       let selectedImageId = null;
+      let galleryImageIndex = 0;
       let activeImageDrag = null;
       let imageUploadTarget = "step";
       let selectedTextId = null;
@@ -834,7 +878,8 @@
       }
 
       function newStep(title = "New step", kind = "model") {
-        return { id: makeId(), title, kind, document_html: "<h1></h1>", description: "", modelPath: null, modelName: "", videoPath: null, videoUrl: null, videoName: "", images: [], hotspots: [], texts: [], shapes: [] };
+        const pageSize = kind === "document" ? { page_width: 10, page_height: 20 } : { page_width: 15, page_height: 7 };
+        return { id: makeId(), title, kind, ...pageSize, document_html: "<h1></h1>", description: "", modelPath: null, modelName: "", videoPath: null, videoUrl: null, videoName: "", images: [], hotspots: [], texts: [], shapes: [] };
       }
 
       function normalizeProject(row) {
@@ -860,6 +905,8 @@
             kind: ["gallery", "model", "presentation", "document", "any"].includes(step.kind)
               ? step.kind
               : ["gallery", "model", "presentation", "document"].includes(row.project_type) ? row.project_type : "model",
+            page_width: Number.isFinite(step.page_width) ? Math.min(30, Math.max(5, step.page_width)) : step.kind === "document" || row.project_type === "document" ? 10 : 15,
+            page_height: Number.isFinite(step.page_height) ? Math.min(30, Math.max(5, step.page_height)) : step.kind === "document" || row.project_type === "document" ? 20 : 7,
             document_html: typeof step.document_html === "string"
               ? DOMPurify.sanitize(step.document_html)
               : index === 0 && typeof row.document_html === "string"
@@ -868,13 +915,18 @@
             hotspots: Array.isArray(step.hotspots) ? step.hotspots.filter((item) => item && Number.isFinite(item.x) && Number.isFinite(item.y) && Number.isFinite(item.z)).map((item) => ({...item, imagePath: item.imagePath || null, imageUrl: item.imageUrl || null})) : [],
             texts: Array.isArray(step.texts) ? step.texts.filter((item) => item && typeof item.text === "string").map((item) => ({ ...item, id: item.id || makeId(), x: Number.isFinite(item.x) ? item.x : 50, y: Number.isFinite(item.y) ? item.y : 50, fontSize: Number.isFinite(item.fontSize) ? item.fontSize : 18, color: /^#[0-9a-f]{6}$/i.test(item.color) ? item.color : "#242522", align: ["left", "center", "right"].includes(item.align) ? item.align : "left", kind: item.kind === "fixed" ? "fixed" : "floating" })) : [],
             shapes: Array.isArray(step.shapes) ? step.shapes.filter((item) => item && ["line", "rect", "circle", "polygon"].includes(item.type) && typeof item.points === "string").map((item) => ({ ...item, id: item.id || makeId() })) : [],
-            images: Array.isArray(step.images) ? step.images.filter((item) => item && typeof item.path === "string" && typeof item.url === "string").map((item) => ({
+            images: Array.isArray(step.images) ? step.images.filter((item) => item && typeof item.path === "string" && typeof item.url === "string").map((item, imageIndex, allImages) => ({
               ...item,
               id: item.id || makeId(),
               x: Number.isFinite(item.x) ? item.x : 50,
               y: Number.isFinite(item.y) ? item.y : 50,
               width: Number.isFinite(item.width) ? item.width : 35,
-              rotation: Number.isFinite(item.rotation) ? item.rotation : 0
+              rotation: Number.isFinite(item.rotation) ? item.rotation : 0,
+              position3d: item.position3d && ["x", "y", "z"].every((axis) => Number.isFinite(item.position3d[axis]))
+                ? item.position3d
+                : { x: (imageIndex - (allImages.length - 1) / 2) * 2.4, y: 0, z: 0 },
+              rotation3d: item.rotation3d && ["x", "y", "z"].every((axis) => Number.isFinite(item.rotation3d[axis])) ? item.rotation3d : { x: 0, y: 0, z: 0 },
+              scale3d: Number.isFinite(item.scale3d) ? Math.min(5, Math.max(0.1, item.scale3d)) : 1
             })) : [],
             modelPath: step.modelPath || null,
             modelName: step.modelName || "",
@@ -1432,13 +1484,13 @@
         if (!await flushPendingSave()) return;
         project = normalizeProject(row);
         if (!project.steps.length && project.project_type !== "mixed") {
-          const step = newStep(project.project_type === "document" ? "Page 1" : "First step");
-          step.kind = project.project_type;
+          const step = newStep(project.project_type === "document" ? "Page 1" : "First step", project.project_type);
           if (project.project_type === "document") step.document_html = project.document_html;
           project.steps.push(step);
         }
         currentProjectId = project.id;
         currentStepId = project.steps[0]?.id || null;
+        galleryImageIndex = 0;
         selectedHotspotId = null;
         selectedImageId = null;
         gallery.hidden = true;
@@ -1471,6 +1523,8 @@
         project = null;
         currentProjectId = null;
         currentStepId = null;
+        selectedImageId = null;
+        syncGalleryImagePlanes(null);
         app.classList.remove("open");
         app.classList.remove("document-mode");
         app.classList.remove("mixed-mode", "mixed-document-step", "mixed-any-step", "mixed-media-step", "empty-project");
@@ -1702,8 +1756,11 @@
       }
 
       function renderStageImages(step) {
-        stage.classList.toggle("gallery-step", !step.modelPath);
+        stage.classList.toggle("gallery-step", isGalleryStep());
+        stage.classList.toggle("gallery-view", isGalleryStep() && mode === "view");
         stage.classList.toggle("presentation-step", isPresentationStep());
+        syncGalleryImagePlanes(step);
+        if (isGalleryStep()) return;
         step.images.forEach((image) => {
           const item = document.createElement("div");
           item.className = `image-stage-item${image.id === selectedImageId ? " selected" : ""}`;
@@ -1751,6 +1808,149 @@
           item.addEventListener("pointercancel", endDrag);
           markerLayer.append(item);
         });
+      }
+
+      function disposeGalleryImageMesh(record) {
+        if (imageTransformControls.object === record.mesh) imageTransformControls.detach();
+        galleryImageRoot.remove(record.mesh);
+        record.mesh.geometry.dispose();
+        record.mesh.material.map?.dispose();
+        record.mesh.material.dispose();
+      }
+
+      function syncGalleryImagePlanes(step) {
+        const galleryStep = !!step && isGalleryStep();
+        galleryImageRoot.visible = galleryStep;
+        imageTransformControls.enabled = galleryStep && isManager && mode === "edit";
+        const liveIds = new Set(galleryStep ? step.images.map((image) => image.id) : []);
+        for (const [id, record] of galleryImageMeshes) {
+          if (!liveIds.has(id) || record.stepId !== step?.id) {
+            disposeGalleryImageMesh(record);
+            galleryImageMeshes.delete(id);
+          }
+        }
+        if (!galleryStep) {
+          imageTransformControls.detach();
+          imageTransformControls.getHelper().visible = false;
+          return;
+        }
+        galleryImageIndex = Math.min(galleryImageIndex, Math.max(0, step.images.length - 1));
+        step.images.forEach((image, index) => {
+          let record = galleryImageMeshes.get(image.id);
+          if (!record) {
+            const material = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+            const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 1.5), material);
+            mesh.userData.imageId = image.id;
+            record = { mesh, stepId: step.id, url: image.url };
+            galleryImageMeshes.set(image.id, record);
+            galleryImageRoot.add(mesh);
+            const textureLoader = new THREE.TextureLoader();
+            textureLoader.load(image.url, (texture) => {
+              if (galleryImageMeshes.get(image.id) !== record) {
+                texture.dispose();
+                return;
+              }
+              texture.colorSpace = THREE.SRGBColorSpace;
+              record.mesh.material.map = texture;
+              record.mesh.material.needsUpdate = true;
+              const aspect = texture.image.width / texture.image.height || 1;
+              record.mesh.geometry.dispose();
+              record.mesh.geometry = new THREE.PlaneGeometry(2, 2 / aspect);
+            }, undefined, (error) => {
+              console.error(`Could not load gallery image "${image.name || image.id}".`, error);
+              showToast("Could not load a gallery image. Check the image storage URL.");
+            });
+          } else if (record.url !== image.url) {
+            disposeGalleryImageMesh(record);
+            galleryImageMeshes.delete(image.id);
+            syncGalleryImagePlanes(step);
+            return;
+          }
+          const position = image.position3d || { x: (index - (step.images.length - 1) / 2) * 2.4, y: 0, z: 0 };
+          const rotation = image.rotation3d || { x: 0, y: 0, z: 0 };
+          record.mesh.position.set(position.x, position.y, position.z);
+          record.mesh.rotation.set(rotation.x, rotation.y, rotation.z);
+          record.mesh.scale.setScalar(image.scale3d || 1);
+          record.mesh.visible = mode === "edit" || index === galleryImageIndex;
+        });
+        const selected = galleryImageMeshes.get(selectedImageId);
+        if (imageTransformControls.enabled && selected) imageTransformControls.attach(selected.mesh);
+        else imageTransformControls.detach();
+        imageTransformControls.getHelper().visible = imageTransformControls.enabled && !!selected;
+        updateGalleryImageNavigation(step);
+      }
+
+      function updateGalleryImageNavigation(step = getCurrentStep()) {
+        const navigation = document.querySelector("#gallery-image-navigation");
+        const galleryView = !!step && isGalleryStep() && mode === "view";
+        navigation.hidden = !galleryView || !step.images.length;
+        const index = galleryView ? Math.min(galleryImageIndex, step.images.length - 1) : 0;
+        document.querySelector("#gallery-image-position").textContent = step?.images.length
+          ? `Image ${String(index + 1).padStart(2, "0")} / ${String(step.images.length).padStart(2, "0")}`
+          : "Image 00 / 00";
+        document.querySelector("#previous-gallery-image").disabled = index <= 0;
+        document.querySelector("#next-gallery-image").disabled = !step || index >= step.images.length - 1;
+      }
+
+      function moveGalleryImage(direction) {
+        const step = getCurrentStep();
+        if (!step || !isGalleryStep() || !step.images.length) return;
+        galleryImageIndex = Math.min(step.images.length - 1, Math.max(0, galleryImageIndex + direction));
+        syncGalleryImagePlanes(step);
+      }
+
+      function applyPageDimensions() {
+        const step = getCurrentStep();
+        const pageStep = !!step && (isPresentationStep() || isDocumentOnlyStep());
+        const stageColumn = document.querySelector("#stage-column");
+        const documentPane = document.querySelector("#document-pane");
+        if (!pageStep) {
+          stage.style.removeProperty("width");
+          stage.style.removeProperty("height");
+          stage.style.removeProperty("flex");
+          documentPane.style.removeProperty("width");
+          documentPane.style.removeProperty("height");
+          documentPane.style.removeProperty("min-height");
+          documentEditor.style.removeProperty("width");
+          documentEditor.style.removeProperty("height");
+          documentEditor.style.removeProperty("min-height");
+          documentEditor.style.removeProperty("overflow-y");
+          return;
+        }
+        const widthUnits = step.page_width;
+        const heightUnits = step.page_height;
+        const maxWidth = isPresentationStep()
+          ? Math.max(240, Math.min(1020, (stageColumn.clientWidth || window.innerWidth - 340) - 40))
+          : Math.max(240, Math.min(760, window.innerWidth - 360));
+        const maxHeight = Math.max(240, Math.min(700, window.innerHeight * 0.72));
+        const scale = Math.min(maxWidth / widthUnits, maxHeight / heightUnits);
+        const width = Math.round(widthUnits * scale);
+        const height = Math.round(heightUnits * scale);
+        if (isPresentationStep()) {
+          stage.style.width = `${width}px`;
+          stage.style.height = `${height}px`;
+          stage.style.flex = `0 0 ${height}px`;
+        } else {
+          documentPane.style.width = `${width + 24}px`;
+          documentPane.style.height = `${height + 96}px`;
+          documentPane.style.minHeight = "0";
+          documentEditor.style.width = `${width}px`;
+          documentEditor.style.height = `${height}px`;
+          documentEditor.style.minHeight = "0";
+          documentEditor.style.overflowY = "auto";
+        }
+      }
+
+      function updatePageDimension(axis, input) {
+        const step = getCurrentStep();
+        const value = Number(input.value);
+        if (!step || !Number.isFinite(value)) return;
+        const dimension = axis === "width" ? "page_width" : "page_height";
+        step[dimension] = Math.min(30, Math.max(5, Math.round(value)));
+        input.value = String(step[dimension]);
+        applyPageDimensions();
+        resizeRenderer();
+        persist();
       }
 
       function renderStageTexts(step) {
@@ -1962,6 +2162,17 @@
         const selected = step.images.find((image) => image.id === selectedImageId);
         const controlsElement = document.querySelector("#image-controls");
         controlsElement.hidden = !selected || mode !== "edit";
+        const isGalleryEditor = isGalleryStep() && mode === "edit";
+        document.querySelector("#gallery-transform-controls").hidden = !isGalleryEditor || !selected;
+        document.querySelector("#image-tools-help").textContent = isGalleryStep()
+          ? "Gallery images are 3D planes. Select one in the scene, then use the transform handles."
+          : "Images can be arranged freely on the stage. Select one to drag, resize, or rotate it.";
+        document.querySelectorAll("[data-gallery-transform]").forEach((button) => {
+          button.setAttribute("aria-pressed", String(imageTransformControls.getMode() === button.dataset.galleryTransform));
+        });
+        document.querySelectorAll("#image-controls .image-control-row").forEach((row) => {
+          row.hidden = isGalleryStep();
+        });
         if (selected) {
           document.querySelector("#image-scale").value = String(Math.round(selected.width));
           document.querySelector("#image-scale-value").textContent = `${Math.round(selected.width)}%`;
@@ -1977,7 +2188,10 @@
 
       function selectImage(id) {
         selectedImageId = id;
+        const step = getCurrentStep();
+        if (isGalleryStep() && step) galleryImageIndex = step.images.findIndex((image) => image.id === id);
         renderImages(getCurrentStep());
+        if (isGalleryStep()) syncGalleryImagePlanes(step);
       }
 
       async function removeImage(id) {
@@ -1999,19 +2213,26 @@
           showToast("Choose an image file.");
           return;
         }
-        const step = isGalleryStep() && getCurrentStep().images.length
-          ? newStep(`Image ${project.steps.length + 1}`, "gallery")
-          : getCurrentStep();
+        const step = getCurrentStep();
         try {
           loading.hidden = false;
           const uploaded = await uploadMedia(file, project.id, step.id, "image");
-          const image = { id: makeId(), ...uploaded, name: file.name, x: 50, y: 50, width: 35, rotation: 0 };
+          const imageIndex = step.images.length;
+          const image = {
+            id: makeId(),
+            ...uploaded,
+            name: file.name,
+            x: 50,
+            y: 50,
+            width: 35,
+            rotation: 0,
+            position3d: { x: imageIndex * 2.4, y: 0, z: 0 },
+            rotation3d: { x: 0, y: 0, z: 0 },
+            scale3d: 1
+          };
           step.images.push(image);
-          if (!project.steps.includes(step)) {
-            project.steps.push(step);
-            currentStepId = step.id;
-          }
           selectedImageId = image.id;
+          if (isGalleryStep()) galleryImageIndex = imageIndex;
           renderInspector();
           persist();
         } catch (error) {
@@ -2062,6 +2283,7 @@
         document.querySelector("#project-title-input").readOnly = !isManager || mode !== "edit";
         document.querySelector("#project-type-label").textContent = projectTypeName(project.project_type);
         if (!step) {
+          document.querySelector("#page-size-section").hidden = true;
           document.querySelector("#project-no-steps h2").textContent = isManager
             ? "This project is ready for its first step"
             : "No steps have been added to this project yet";
@@ -2075,6 +2297,8 @@
           document.querySelector("#next-step").disabled = true;
           document.querySelector("#previous-document-page").disabled = true;
           document.querySelector("#next-document-page").disabled = true;
+          applyPageDimensions();
+          syncGalleryImagePlanes(null);
           renderSteps();
           updateEditorChrome();
           return;
@@ -2088,6 +2312,12 @@
         document.querySelector("#theme-accent").disabled = !isManager;
         document.querySelector("#theme-background").value = project.theme.background;
         document.querySelector("#theme-background").disabled = !isManager;
+        const pageSizeSection = document.querySelector("#page-size-section");
+        pageSizeSection.hidden = !(isPresentationStep() || isDocumentOnlyStep());
+        document.querySelector("#page-width-input").value = String(step.page_width);
+        document.querySelector("#page-width-input").disabled = !isManager || mode !== "edit";
+        document.querySelector("#page-height-input").value = String(step.page_height);
+        document.querySelector("#page-height-input").disabled = !isManager || mode !== "edit";
         document.querySelector("#model-section").hidden = !isModelStep();
         document.querySelector("#video-section").hidden = isDocumentOnlyStep();
         document.querySelector("#text-section").hidden = isDocumentOnlyStep();
@@ -2106,8 +2336,8 @@
         document.querySelector("#next-document-page").disabled = index >= project.steps.length - 1;
         document.querySelector("#document-page-position").textContent = `${String(index + 1).padStart(2, "0")} / ${String(project.steps.length).padStart(2, "0")}`;
         document.querySelector(".stage-label").hidden = !isModelStep() || !step.modelPath;
-        document.querySelector("#stage-hint").hidden = !isModelStep() || !step.modelPath;
-        document.querySelector("#reset-camera").hidden = !isModelStep() || !step.modelPath;
+        document.querySelector("#stage-hint").hidden = isModelStep() ? !step.modelPath : !(isGalleryStep() && step.images.length);
+        document.querySelector("#reset-camera").hidden = !(isModelStep() && step.modelPath) && !(isGalleryStep() && step.images.length);
         document.querySelector("#video-file-card").hidden = !step.videoPath;
         document.querySelector("#video-file-name").textContent = step.videoName || "Video";
         document.querySelector("#inspector-step-name").textContent = step.title || "Untitled step";
@@ -2131,6 +2361,7 @@
         updateEmptyStateCopy();
         document.querySelector("#model-label").textContent = step.modelName || "No model loaded";
         applyProjectTheme();
+        applyPageDimensions();
         renderStepVideo(step);
         renderImages(step);
         renderSteps();
@@ -2217,7 +2448,7 @@
         document.querySelector("#ribbon-camera").hidden = !cameraAvailable || !getCurrentStep()?.modelPath;
         document.querySelector("#empty-upload").hidden = !editing;
         document.querySelector("#inspector").hidden = !editing || !getCurrentStep();
-        document.querySelector("#stage-column").classList.toggle("page-mode", !!type && type !== "model" && type !== "mixed");
+        document.querySelector("#stage-column").classList.toggle("page-mode", isPresentationStep() || (!!type && type !== "model" && type !== "mixed"));
         if (editing) setRibbonTab(documentStep && !modelStep ? "Format" : "Insert");
       }
 
@@ -2242,6 +2473,7 @@
         canvas.classList.toggle("placement-cursor", placingHotspot);
         renderHotspots();
         renderImages(getCurrentStep());
+        syncGalleryImagePlanes(getCurrentStep());
         renderStageTexts(getCurrentStep());
         renderStageShapes(getCurrentStep());
       }
@@ -2251,6 +2483,7 @@
         currentStepId = id;
         selectedHotspotId = null;
         selectedImageId = null;
+        galleryImageIndex = 0;
         placingHotspot = false;
         renderInspector();
         await loadCurrentModel();
@@ -2333,6 +2566,7 @@
           if (token !== modelLoadToken) return;
           disposeModel();
           modelRoot.add(object);
+          modelRoot.visible = true;
           modelObject = object;
           object.traverse((item) => {
             if (item.isMesh) {
@@ -2363,9 +2597,11 @@
         disposeModel();
         const step = getCurrentStep();
         if (!step) {
+          modelRoot.visible = false;
           loading.hidden = true;
           return;
         }
+        modelRoot.visible = isModelStep() && !!step.modelPath;
         document.querySelector("#model-label").textContent = step.modelName || "No model loaded";
         if (isDocumentOnlyStep()) {
           loading.hidden = true;
@@ -2494,11 +2730,13 @@
       }
 
       function resizeRenderer() {
+        applyPageDimensions();
         const rect = stage.getBoundingClientRect();
         if (!rect.width || !rect.height) return;
         renderer.setSize(rect.width, rect.height, false);
         camera.aspect = rect.width / rect.height;
         camera.updateProjectionMatrix();
+        imageTransformControls.getHelper().updateMatrixWorld();
         updateHotspotPositions();
       }
 
@@ -2751,6 +2989,14 @@
           applyProjectTheme();
           persist();
         });
+        document.querySelector("#page-width-input").addEventListener("change", (event) => updatePageDimension("width", event.target));
+        document.querySelector("#page-height-input").addEventListener("change", (event) => updatePageDimension("height", event.target));
+        document.querySelectorAll("[data-gallery-transform]").forEach((button) => {
+          button.addEventListener("click", () => {
+            imageTransformControls.setMode(button.dataset.galleryTransform);
+            renderImages(getCurrentStep());
+          });
+        });
         document.querySelector("#add-text").addEventListener("click", () => {
           if (!project || !isManager || !getCurrentStep()) return;
           const item = { id: makeId(), text: "Edit text", html: "", kind: isGalleryStep() ? "floating" : "fixed", x: 50, y: 30, fontSize: 18, color: "#242522", align: "left", fontFamily: "DM Sans", lineHeight: "1.5" };
@@ -2948,6 +3194,22 @@
           persist();
         });
         document.querySelector("#delete-image").addEventListener("click", () => selectedImageId && removeImage(selectedImageId));
+        document.querySelector("#previous-gallery-image").addEventListener("click", () => moveGalleryImage(-1));
+        document.querySelector("#next-gallery-image").addEventListener("click", () => moveGalleryImage(1));
+        imageTransformControls.addEventListener("dragging-changed", (event) => {
+          controls.enabled = !event.value;
+        });
+        imageTransformControls.addEventListener("objectChange", () => {
+          const mesh = imageTransformControls.object;
+          const image = getCurrentStep()?.images.find((item) => item.id === mesh?.userData.imageId);
+          if (!image || !mesh) return;
+          const scale = Math.min(5, Math.max(0.1, mesh.scale.x));
+          mesh.scale.setScalar(scale);
+          image.position3d = { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z };
+          image.rotation3d = { x: mesh.rotation.x, y: mesh.rotation.y, z: mesh.rotation.z };
+          image.scale3d = scale;
+          persist();
+        });
         document.querySelector("#choose-video").addEventListener("click", () => videoInput.click());
         videoInput.addEventListener("change", async (event) => {
           const file = event.target.files[0];
@@ -3036,6 +3298,18 @@
           if (intersections.length) addHotspot(intersections[0].point);
           else showToast("Click on the model surface to place a hotspot.");
         });
+        canvas.addEventListener("pointerup", (event) => {
+          if (!isGalleryStep() || mode !== "edit" || !isManager || event.button !== 0 || !pointerStart || pointerStart.button !== 0) return;
+          const moved = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+          pointerStart = null;
+          if (moved > 5 || imageTransformControls.dragging) return;
+          const rect = canvas.getBoundingClientRect();
+          pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+          pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+          raycaster.setFromCamera(pointer, camera);
+          const intersections = raycaster.intersectObjects(galleryImageRoot.children, false);
+          if (intersections.length) selectImage(intersections[0].object.userData.imageId);
+        });
         canvas.addEventListener("click", () => {
           if (mode === "view" && selectedHotspotId) {
             selectedHotspotId = null;
@@ -3103,6 +3377,7 @@
           }
         });
         new ResizeObserver(resizeRenderer).observe(stage);
+        window.addEventListener("resize", resizeRenderer);
       }
 
       async function start() {
