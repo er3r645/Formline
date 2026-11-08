@@ -271,7 +271,7 @@
       .document-page-actions { display: flex; align-items: center; gap: 10px; }
       .document-page-delete { border: 0; background: transparent; color: #a36a62; font-size: 11px; cursor: pointer; }
       .document-page-delete:hover { color: #8f4b42; }
-      .project-no-steps { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; padding: 24px; background: #f5f5f2; }
+      .project-no-steps { position: absolute; z-index: 3; inset: 0 0 0 clamp(226px, 22vw, 252px); display: grid; place-items: center; padding: 24px; background: #f5f5f2; }
       .project-no-steps-card { max-width: 420px; padding: 32px; border: 1px solid var(--line); border-radius: 14px; background: white; text-align: center; }
       .project-no-steps-card h2 { margin: 0; font: 700 20px Manrope, sans-serif; }
       .project-no-steps-card p { margin: 10px 0 20px; color: var(--muted); font-size: 13px; line-height: 1.6; }
@@ -287,7 +287,6 @@
       .mixed-mode .document-editor { min-height: 700px; }
       .mixed-mode.mixed-any-step .stage-bottom .nav-controls { display: none; }
       .mixed-mode.mixed-document-step #inspector #delete-step, .mixed-mode.mixed-any-step #inspector #delete-step { display: none; }
-      .empty-project .workspace > :not(#project-no-steps) { visibility: hidden; }
       .step-type-actions { justify-content: stretch; }
       .step-type-actions button { flex: 1; }
       .document-editor:empty::before { color: #a0a19b; content: "Start writing your document…"; }
@@ -327,10 +326,11 @@
       .stage.gallery-step #model-canvas { display: none; }
 
       @media (max-width: 1020px) {
-        .workspace { grid-template-columns: 210px minmax(300px, 1fr) 265px; }
+        .workspace { grid-template-columns: 36px 190px minmax(0, 1fr) 265px; }
         .viewer-mode .workspace { grid-template-columns: 36px 190px minmax(0, 1fr); }
         .mixed-mode .workspace { grid-template-columns: 36px 180px minmax(0, 1fr) 265px; }
         .mixed-mode.mixed-any-step .workspace { grid-template-columns: 36px 150px minmax(0, 1fr) minmax(220px, .8fr) 265px; }
+        .project-no-steps { left: 226px; }
         .sidebar .side-heading, .timeline-head { padding-right: 14px; padding-left: 14px; }
       }
       @media (max-width: 760px) {
@@ -375,6 +375,7 @@
         .mixed-mode.mixed-document-step .document-pane { grid-row: 2; }
         .mixed-mode.mixed-document-step .inspector { grid-column: 2; grid-row: 3; }
         .mixed-mode.mixed-any-step .inspector { grid-column: 2; grid-row: 4; }
+        .project-no-steps { inset: 150px 0 0 36px; padding: 16px; }
       }
     </style>
   </head>
@@ -564,7 +565,7 @@
           </div>
         </div>
         <nav class="side-tabs" id="side-tabs" aria-label="Workspace navigation">
-          <button type="button" class="side-tab" data-side-tab="outline" aria-current="page" title="Outline"><span>☷</span><span>Outline</span></button>
+          <button type="button" class="side-tab" data-side-tab="outline" aria-current="page" title="Steps"><span>☷</span><span>Steps</span></button>
           <button type="button" class="side-tab" data-side-tab="project" title="Project"><span>▤</span><span>Project</span></button>
           <button type="button" class="side-tab" data-side-tab="comments" title="Comments"><span>▱</span><span>Comments</span></button>
         </nav>
