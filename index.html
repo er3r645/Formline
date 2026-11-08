@@ -78,6 +78,10 @@
       .project-meta { color: var(--muted); font-size: 11px; }
       .timeline-head { display: flex; align-items: center; justify-content: space-between; padding: 25px 19px 10px; }
       .step-count { color: var(--muted); font-size: 10px; }
+      .timeline-navigation { display: flex; align-items: center; gap: 7px; padding: 0 10px 9px; }
+      .timeline-navigation button { width: 30px; height: 28px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--ink); cursor: pointer; }
+      .timeline-navigation button:disabled { color: #c9cac4; cursor: default; }
+      .timeline-position { color: var(--muted); font-size: 10px; }
       .step-list { display: flex; flex-direction: column; gap: 5px; padding: 0 10px; overflow-y: auto; }
       .step-row { position: relative; display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 8px 9px; border: 1px solid transparent; border-radius: 9px; text-align: left; background: transparent; cursor: pointer; }
       .step-row:hover { background: #f7f7f4; }
@@ -285,10 +289,9 @@
       .mixed-mode.mixed-any-step #inspector #step-settings { display: none; }
       .mixed-mode .document-page { padding: 12px; }
       .mixed-mode .document-editor { min-height: 700px; }
-      .mixed-mode.mixed-any-step .stage-bottom .nav-controls { display: none; }
       .mixed-mode.mixed-document-step #inspector #delete-step, .mixed-mode.mixed-any-step #inspector #delete-step { display: none; }
-      .step-type-actions { justify-content: stretch; }
-      .step-type-actions button { flex: 1; }
+      .step-type-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .step-type-actions button { min-height: 40px; }
       .document-editor:empty::before { color: #a0a19b; content: "Start writing your document…"; }
       .document-editor:focus { border-color: #c3cfb7; box-shadow: 0 0 0 3px rgba(138, 176, 99, 0.12), 0 6px 18px rgba(28, 31, 25, 0.04); }
       .drawing-toolbar, .text-tools { max-width: 100%; border: 1px solid var(--line); border-radius: 8px; }
@@ -394,7 +397,7 @@
         <div class="lobby-intro">
           <div class="eyebrow">Process library</div>
           <h1>Explore the work behind the finished form.</h1>
-          <p>Explore projects that combine model, document, and media steps.</p>
+          <p>Explore projects that combine image gallery, model, presentation, and document steps.</p>
         </div>
         <div class="project-gallery">
           <div class="gallery-toolbar">
@@ -448,11 +451,12 @@
     <dialog class="project-dialog" id="step-type-dialog">
       <form class="dialog-body" id="step-type-form">
         <h2>Add a step</h2>
-        <p>Choose what this step can contain. “Any” includes both document text and model or media content.</p>
+        <p>Choose the format for this step.</p>
         <div class="dialog-actions step-type-actions">
+          <button type="button" class="auth-button" data-step-kind="gallery">Image gallery</button>
           <button type="button" class="auth-button" data-step-kind="model">Model</button>
+          <button type="button" class="auth-button" data-step-kind="presentation">Presentation</button>
           <button type="button" class="auth-button" data-step-kind="document">Document</button>
-          <button type="button" class="upload-button" data-step-kind="any">Any</button>
         </div>
         <div class="dialog-actions"><button type="button" class="auth-button" id="cancel-step-type">Cancel</button></div>
       </form>
@@ -560,7 +564,7 @@
         <div class="project-no-steps" id="project-no-steps" hidden>
           <div class="project-no-steps-card">
             <h2>This project is ready for its first step</h2>
-            <p>Choose a model step, a document step, or a mixed step with both.</p>
+            <p>Choose an image gallery, model, presentation, or document step.</p>
             <button type="button" class="upload-button" id="empty-add-step">＋ Add first step</button>
           </div>
         </div>
@@ -578,6 +582,11 @@
           <div class="timeline-head">
             <span class="eyebrow" id="timeline-label">Timeline</span>
             <span class="step-count" id="step-count">01 step</span>
+          </div>
+          <div class="timeline-navigation" aria-label="Step navigation">
+            <button type="button" id="timeline-previous-step" aria-label="Previous step" title="Previous step">←</button>
+            <span class="timeline-position" id="timeline-step-position">00 / 00</span>
+            <button type="button" id="timeline-next-step" aria-label="Next step" title="Next step">→</button>
           </div>
           <div class="step-list" id="step-list" aria-label="Timeline steps"></div>
           <button type="button" class="add-step" id="add-step"><span>+</span> Add a step</button>
@@ -848,7 +857,9 @@
             id: step.id || makeId(),
             title: typeof step.title === "string" ? step.title : "Untitled step",
             description: typeof step.description === "string" ? step.description : "",
-            kind: ["model", "document", "any"].includes(step.kind) ? step.kind : row.project_type === "document" ? "document" : "model",
+            kind: ["gallery", "model", "presentation", "document", "any"].includes(step.kind)
+              ? step.kind
+              : ["gallery", "model", "presentation", "document"].includes(row.project_type) ? row.project_type : "model",
             document_html: typeof step.document_html === "string"
               ? DOMPurify.sanitize(step.document_html)
               : index === 0 && typeof row.document_html === "string"
@@ -936,11 +947,31 @@
       function currentStepKind() {
         if (!project) return null;
         if (project.project_type === "mixed") return getCurrentStep()?.kind || null;
-        return project.project_type === "document" ? "document" : "model";
+        return project.project_type;
       }
 
       function stepHasDocument() {
         return currentStepKind() === "document" || currentStepKind() === "any";
+      }
+
+      function isDocumentOnlyStep() {
+        return currentStepKind() === "document";
+      }
+
+      function isModelStep() {
+        return ["model", "any"].includes(currentStepKind());
+      }
+
+      function isPresentationStep() {
+        return currentStepKind() === "presentation";
+      }
+
+      function isGalleryStep() {
+        return currentStepKind() === "gallery";
+      }
+
+      function stepKindName(kind) {
+        return ({ gallery: "Image gallery", model: "Model", presentation: "Presentation", document: "Document", any: "Any" })[kind] || "Model";
       }
 
       function syncProjectCard() {
@@ -1402,6 +1433,7 @@
         project = normalizeProject(row);
         if (!project.steps.length && project.project_type !== "mixed") {
           const step = newStep(project.project_type === "document" ? "Page 1" : "First step");
+          step.kind = project.project_type;
           if (project.project_type === "document") step.document_html = project.document_html;
           project.steps.push(step);
         }
@@ -1417,8 +1449,8 @@
         document.querySelector("#document-pane").hidden = project.project_type !== "document";
         documentEditor.innerHTML = DOMPurify.sanitize(project.steps[0]?.document_html || project.document_html);
         documentEditor.style.lineHeight = project.document_line_height;
-        documentEditor.contentEditable = String(isManager && mode === "edit" && project.project_type === "document");
-        if (project.project_type === "document" && isManager && mode === "edit") {
+        documentEditor.contentEditable = String(isManager && mode === "edit" && stepHasDocument());
+        if (stepHasDocument() && isManager && mode === "edit") {
           requestAnimationFrame(() => documentEditor.focus());
         }
         document.querySelector("#document-spacing").value = project.document_line_height;
@@ -1441,7 +1473,7 @@
         currentStepId = null;
         app.classList.remove("open");
         app.classList.remove("document-mode");
-        app.classList.remove("mixed-mode", "mixed-document-step", "mixed-any-step", "empty-project");
+        app.classList.remove("mixed-mode", "mixed-document-step", "mixed-any-step", "mixed-media-step", "empty-project");
         document.querySelector("#document-pane").hidden = true;
         document.querySelector("#comments-section").hidden = true;
         gallery.hidden = false;
@@ -1492,10 +1524,18 @@
       function renderSteps() {
         const list = document.querySelector("#step-list");
         list.replaceChildren();
-        if (!project) return;
+        const previousButton = document.querySelector("#timeline-previous-step");
+        const nextButton = document.querySelector("#timeline-next-step");
+        const position = document.querySelector("#timeline-step-position");
+        if (!project) {
+          previousButton.disabled = true;
+          nextButton.disabled = true;
+          position.textContent = "00 / 00";
+          return;
+        }
         const itemLabel = projectItemName(project.project_type);
         document.querySelector("#add-step").hidden = !isManager || mode !== "edit" || (project.project_type === "document");
-        document.querySelector("#delete-step").hidden = !isManager || mode !== "edit";
+        document.querySelector("#delete-step").hidden = !isManager || mode !== "edit" || project.project_type === "document";
         document.querySelector("#add-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
         document.querySelector("#delete-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
         document.querySelector("#add-step").innerHTML = `<span>+</span> Add ${itemLabel === "step" ? "a step" : itemLabel === "slide" ? "a slide" : itemLabel === "page" ? "a page" : "an image"}`;
@@ -1508,7 +1548,7 @@
           row.innerHTML = `<span class="step-number">${String(index + 1).padStart(2, "0")}</span><span class="step-copy"><span class="step-title"></span><span class="step-subtitle"></span></span><span class="step-status${step.modelPath || step.images.length ? " ready" : ""}"></span>`;
           row.querySelector(".step-title").textContent = step.title || "Untitled step";
           row.querySelector(".step-subtitle").textContent = project.project_type === "mixed"
-            ? `${step.kind === "any" ? "Any" : step.kind === "document" ? "Document" : "Model"} step`
+            ? `${stepKindName(step.kind)} step`
             : [
             step.modelPath ? "3D model" : "",
             step.videoPath ? "Video" : "",
@@ -1518,6 +1558,10 @@
           row.addEventListener("click", () => selectStep(step.id));
           list.append(row);
         });
+        const activeIndex = project.steps.findIndex((step) => step.id === currentStepId);
+        previousButton.disabled = activeIndex <= 0;
+        nextButton.disabled = activeIndex < 0 || activeIndex >= project.steps.length - 1;
+        position.textContent = `${String(Math.max(0, activeIndex + 1)).padStart(2, "0")} / ${String(project.steps.length).padStart(2, "0")}`;
         document.querySelector("#step-count").textContent = formatCount(project.steps.length, itemLabel);
       }
 
@@ -1528,9 +1572,9 @@
           return;
         }
         const itemLabel = projectItemName(project.project_type);
-        const stepKind = project.project_type === "document" ? "document" : kind || "model";
+        const stepKind = project.project_type === "mixed" ? kind || "model" : project.project_type === "document" ? "document" : project.project_type;
         const title = project.project_type === "mixed"
-          ? `${stepKind === "any" ? "Mixed" : stepKind === "document" ? "Document" : "Model"} ${project.steps.length + 1}`
+          ? `${stepKindName(stepKind)} ${project.steps.length + 1}`
           : itemLabel === "page"
           ? `Page ${project.steps.length + 1}`
           : itemLabel === "slide" ? `Slide ${project.steps.length + 1}` : itemLabel === "image" ? `Image ${project.steps.length + 1}` : `Step ${project.steps.length + 1}`;
@@ -1541,6 +1585,7 @@
         selectedImageId = null;
         document.querySelector("#step-type-dialog").close();
         app.classList.remove("empty-project");
+        renderSteps();
         renderInspector();
         persist();
         void loadCurrentModel();
@@ -1651,14 +1696,14 @@
         }
         document.querySelector("#marker-editor").hidden = !selectedHotspotId;
         document.querySelector("#hotspot-help").textContent = placingHotspot
-          ? project.project_type === "presentation" ? "Click on the slide to place your hotspot." : "Click directly on the model surface to place your hotspot."
-          : project.project_type === "presentation" ? "Add a note attached to a point on this slide." : "Add a note attached to a point on the model.";
+          ? isPresentationStep() ? "Click on the slide to place your hotspot." : "Click directly on the model surface to place your hotspot."
+          : isPresentationStep() ? "Add a note attached to a point on this slide." : "Add a note attached to a point on the model.";
         updateHotspotPositions();
       }
 
       function renderStageImages(step) {
         stage.classList.toggle("gallery-step", !step.modelPath);
-        stage.classList.toggle("presentation-step", project?.project_type === "presentation");
+        stage.classList.toggle("presentation-step", isPresentationStep());
         step.images.forEach((image) => {
           const item = document.createElement("div");
           item.className = `image-stage-item${image.id === selectedImageId ? " selected" : ""}`;
@@ -1954,8 +1999,8 @@
           showToast("Choose an image file.");
           return;
         }
-        const step = project.project_type === "gallery" && getCurrentStep().images.length
-          ? newStep(`Image ${project.steps.length + 1}`)
+        const step = isGalleryStep() && getCurrentStep().images.length
+          ? newStep(`Image ${project.steps.length + 1}`, "gallery")
           : getCurrentStep();
         try {
           loading.hidden = false;
@@ -2008,6 +2053,7 @@
         app.classList.toggle("mixed-mode", mixedProject);
         app.classList.toggle("mixed-document-step", mixedProject && stepKind === "document");
         app.classList.toggle("mixed-any-step", mixedProject && stepKind === "any");
+        app.classList.toggle("mixed-media-step", mixedProject && ["gallery", "model", "presentation"].includes(stepKind));
         app.classList.toggle("document-mode", !mixedProject && project.project_type === "document");
         app.classList.toggle("empty-project", !hasStep);
         document.querySelector("#project-no-steps").hidden = hasStep;
@@ -2020,7 +2066,7 @@
             ? "This project is ready for its first step"
             : "No steps have been added to this project yet";
           document.querySelector("#project-no-steps p").textContent = isManager
-            ? "Choose a model step, a document step, or a mixed step with both."
+            ? "Choose an image gallery, model, presentation, or document step."
             : "";
           document.querySelector("#document-pane").hidden = true;
           documentEditor.contentEditable = "false";
@@ -2042,10 +2088,10 @@
         document.querySelector("#theme-accent").disabled = !isManager;
         document.querySelector("#theme-background").value = project.theme.background;
         document.querySelector("#theme-background").disabled = !isManager;
-        document.querySelector("#model-section").hidden = isDocumentOnlyStep() || (project.project_type !== "model" && !mixedProject);
+        document.querySelector("#model-section").hidden = !isModelStep();
         document.querySelector("#video-section").hidden = isDocumentOnlyStep();
         document.querySelector("#text-section").hidden = isDocumentOnlyStep();
-        document.querySelector("#hotspots-section").hidden = isDocumentOnlyStep() || project.project_type === "gallery";
+        document.querySelector("#hotspots-section").hidden = isDocumentOnlyStep() || isGalleryStep();
         documentEditor.contentEditable = String(isManager && mode === "edit" && stepHasDocument());
         if (stepHasDocument() && isManager && mode === "edit") {
           requestAnimationFrame(() => documentEditor.focus());
@@ -2053,15 +2099,15 @@
         document.querySelector("#document-pane").hidden = !stepHasDocument();
         documentEditor.innerHTML = DOMPurify.sanitize(step.document_html || "<h1></h1>");
         document.querySelector("#add-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
-        document.querySelector("#delete-document-page").hidden = !isManager || mode !== "edit" || !(project.project_type === "document" || (mixedProject && stepHasDocument()));
-        document.querySelector("#delete-document-page").textContent = mixedProject ? "Delete step" : "Delete page";
+        document.querySelector("#delete-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
+        document.querySelector("#delete-document-page").textContent = "Delete page";
         document.querySelector("#delete-document-page").disabled = project.steps.length <= 1 && !mixedProject;
         document.querySelector("#previous-document-page").disabled = index <= 0;
         document.querySelector("#next-document-page").disabled = index >= project.steps.length - 1;
         document.querySelector("#document-page-position").textContent = `${String(index + 1).padStart(2, "0")} / ${String(project.steps.length).padStart(2, "0")}`;
-        document.querySelector(".stage-label").hidden = isDocumentOnlyStep() || (!mixedProject && project.project_type !== "model") || !step.modelPath;
-        document.querySelector("#stage-hint").hidden = isDocumentOnlyStep() || (!mixedProject && project.project_type !== "model") || !step.modelPath;
-        document.querySelector("#reset-camera").hidden = isDocumentOnlyStep() || (!mixedProject && project.project_type !== "model") || !step.modelPath;
+        document.querySelector(".stage-label").hidden = !isModelStep() || !step.modelPath;
+        document.querySelector("#stage-hint").hidden = !isModelStep() || !step.modelPath;
+        document.querySelector("#reset-camera").hidden = !isModelStep() || !step.modelPath;
         document.querySelector("#video-file-card").hidden = !step.videoPath;
         document.querySelector("#video-file-name").textContent = step.videoName || "Video";
         document.querySelector("#inspector-step-name").textContent = step.title || "Untitled step";
@@ -2071,11 +2117,11 @@
         document.querySelector("#file-name").textContent = step.modelName || "No model uploaded";
         document.querySelector("#file-type").textContent = step.modelName ? "Shared with reviewers" : "Choose a 3D file";
         document.querySelector("#choose-model").textContent = step.modelPath ? "Replace" : "Upload";
-        document.querySelector("#add-image").textContent = project.project_type === "presentation" ? "＋ Add image to this slide" : "＋ Add image to this item";
-        document.querySelector("#empty-upload").textContent = project.project_type === "model" ? "Add a model or image" : project.project_type === "presentation" ? "Add an image to this slide" : "Add an image";
+        document.querySelector("#add-image").textContent = isPresentationStep() ? "＋ Add image to this slide" : "＋ Add image to this item";
+        document.querySelector("#empty-upload").textContent = isModelStep() ? "Add a model or image" : isPresentationStep() ? "Add an image to this slide" : "Add an image";
         document.querySelector("#caption-title").textContent = step.title || "Untitled step";
-        document.querySelector("#caption-description").textContent = step.description || (project.project_type === "document" ? "" : "Add a model and describe what happens in this step.");
-        const itemName = project.project_type === "presentation" ? "Slide" : project.project_type === "gallery" ? "Image" : project.project_type === "document" ? "Page" : "Step";
+        document.querySelector("#caption-description").textContent = step.description || (isDocumentOnlyStep() ? "" : isPresentationStep() ? "Add images and describe this slide." : isGalleryStep() ? "Add an image to this gallery item." : "Add a model and describe what happens in this step.");
+        const itemName = isPresentationStep() ? "Slide" : isGalleryStep() ? "Image" : isDocumentOnlyStep() ? "Page" : "Step";
         document.querySelector("#stage-step-name").textContent = `${itemName} ${String(index + 1).padStart(2, "0")}`;
         document.querySelector("#step-position").textContent = `${String(index + 1).padStart(2, "0")} / ${String(project.steps.length).padStart(2, "0")}`;
         document.querySelector("#previous-step").disabled = index <= 0;
@@ -2103,7 +2149,7 @@
           document.querySelector("#caption-description").textContent = "";
           return;
         }
-        document.querySelector("#caption-description").textContent = step.description || (project.project_type === "document" ? "" : "Add a model and describe what happens in this step.");
+        document.querySelector("#caption-description").textContent = step.description || (isDocumentOnlyStep() ? "" : isPresentationStep() ? "Add images and describe this slide." : isGalleryStep() ? "Add an image to this gallery item." : "Add a model and describe what happens in this step.");
         renderSteps();
       }
 
@@ -2120,12 +2166,12 @@
           description.textContent = "";
           return;
         }
-        heading.textContent = project.project_type === "presentation"
+        heading.textContent = isPresentationStep()
           ? "This slide is ready for its story"
-          : project.project_type === "gallery" ? "This image is ready to add" : "This step is ready for its story";
-        description.textContent = project.project_type === "presentation"
+          : isGalleryStep() ? "This image is ready to add" : "This step is ready for its story";
+        description.textContent = isPresentationStep()
           ? "Add images and text to build this slide. You can also attach a video or place hotspots."
-          : project.project_type === "gallery" ? "Add an image to move through this gallery one image at a time." : "Add a 3D model, images, or video to describe this step.";
+          : isGalleryStep() ? "Add an image to move through this gallery one image at a time." : "Add a 3D model, images, or video to describe this step.";
       }
 
       function applyProjectTheme() {
@@ -2160,13 +2206,14 @@
         const editing = isManager && mode === "edit" && !!project;
         const type = project?.project_type;
         const documentStep = stepHasDocument();
-        const modelStep = currentStepKind() === "model" || currentStepKind() === "any";
+        const modelStep = isModelStep();
+        const mediaStep = !!project && !isDocumentOnlyStep();
         document.querySelector("#editor-ribbon").hidden = !editing;
         document.querySelector("#document-toolbar").hidden = !editing || !documentStep;
-        document.querySelector("#text-tools").hidden = !editing || !modelStep;
-        document.querySelector("#drawing-toolbar").hidden = !editing || !modelStep;
-        document.querySelector("#add-text").hidden = !editing || !modelStep;
-        const cameraAvailable = type === "model" || (type === "mixed" && modelStep);
+        document.querySelector("#text-tools").hidden = !editing || !mediaStep;
+        document.querySelector("#drawing-toolbar").hidden = !editing || !mediaStep;
+        document.querySelector("#add-text").hidden = !editing || !mediaStep;
+        const cameraAvailable = modelStep;
         document.querySelector("#ribbon-camera").hidden = !cameraAvailable || !getCurrentStep()?.modelPath;
         document.querySelector("#empty-upload").hidden = !editing;
         document.querySelector("#inspector").hidden = !editing || !getCurrentStep();
@@ -2408,7 +2455,7 @@
           const step = getCurrentStep();
           markerLayer.querySelectorAll(".hotspot").forEach((dot) => {
             const marker = step?.hotspots.find((item) => item.id === dot.dataset.markerId);
-            const visible = project?.project_type === "presentation" && marker?.space === "slide";
+            const visible = isPresentationStep() && marker?.space === "slide";
             dot.hidden = !visible;
             if (visible) {
               dot.style.left = `${marker.x}%`;
@@ -2706,7 +2753,7 @@
         });
         document.querySelector("#add-text").addEventListener("click", () => {
           if (!project || !isManager || !getCurrentStep()) return;
-          const item = { id: makeId(), text: "Edit text", html: "", kind: project.project_type === "gallery" ? "floating" : "fixed", x: 50, y: 30, fontSize: 18, color: "#242522", align: "left", fontFamily: "DM Sans", lineHeight: "1.5" };
+          const item = { id: makeId(), text: "Edit text", html: "", kind: isGalleryStep() ? "floating" : "fixed", x: 50, y: 30, fontSize: 18, color: "#242522", align: "left", fontFamily: "DM Sans", lineHeight: "1.5" };
           getCurrentStep().texts.push(item);
           selectedTextId = item.id;
           persist();
@@ -2813,6 +2860,14 @@
           const index = project.steps.findIndex((step) => step.id === currentStepId);
           if (index < project.steps.length - 1) selectStep(project.steps[index + 1].id);
         });
+        document.querySelector("#timeline-previous-step").addEventListener("click", () => {
+          const index = project?.steps.findIndex((step) => step.id === currentStepId) ?? -1;
+          if (index > 0) selectStep(project.steps[index - 1].id);
+        });
+        document.querySelector("#timeline-next-step").addEventListener("click", () => {
+          const index = project?.steps.findIndex((step) => step.id === currentStepId) ?? -1;
+          if (project && index >= 0 && index < project.steps.length - 1) selectStep(project.steps[index + 1].id);
+        });
         document.querySelector("#previous-document-page").addEventListener("click", () => {
           if (!project || !stepHasDocument()) return;
           const index = project.steps.findIndex((step) => step.id === currentStepId);
@@ -2835,7 +2890,7 @@
         });
         document.querySelector("#choose-model").addEventListener("click", () => fileInput.click());
         document.querySelector("#empty-upload").addEventListener("click", () => {
-          if (project?.project_type === "model") fileInput.click();
+          if (isModelStep()) fileInput.click();
           else imageInput.click();
         });
         fileInput.addEventListener("change", async (event) => {
@@ -2933,7 +2988,7 @@
         document.querySelector("#comment-form").addEventListener("submit", postComment);
         document.querySelector("#add-hotspot").addEventListener("click", () => {
           if (mode !== "edit") return;
-          if (!modelObject && project?.project_type !== "presentation") {
+          if (!modelObject && !isPresentationStep()) {
             showToast("Upload a model before placing hotspots.");
             return;
           }
@@ -2945,7 +3000,7 @@
           renderHotspots();
         });
         stage.addEventListener("pointerup", (event) => {
-          if (!placingHotspot || project?.project_type !== "presentation" || modelObject || event.target.closest(".hotspot, .hotspot-popover, video")) return;
+          if (!placingHotspot || !isPresentationStep() || modelObject || event.target.closest(".hotspot, .hotspot-popover, video")) return;
           const rect = stage.getBoundingClientRect();
           const step = getCurrentStep();
           step.hotspots.push({

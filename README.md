@@ -1,6 +1,6 @@
 # Formline
 
-A public project library and a Google-authenticated editor for projects with model, document, or mixed-content steps. Projects are organized into sections and collections, themed individually, and can include video and public comments.
+A public project library and a Google-authenticated editor for projects with image gallery, model, presentation, and document steps. Projects are organized into sections and collections, themed individually, and can include video and public comments.
 
 ## Configure Supabase
 
@@ -24,13 +24,18 @@ The only editor account is `er275050@gmail.com`. Google sign-in is checked in th
 
 1. Choose **Enter as manager** and sign in with the allowed Google account.
 2. Create sections at the library level, then select a section to create projects and collections. Collections group related projects, such as a Minihouse collection inside Engineering. Search projects by name or filter by section and collection. Managers can delete projects from their library cards; this also removes their comments and stored media. Empty sections and collections can be deleted from the selected filters; move projects out before deleting a section or collection that is in use.
-3. New projects start empty. The **Steps** sidebar stays visible in edit mode; use **Add a step** to choose **Model**, **Document**, or **Any**. Model steps use the 3D and media tools; Document steps are rich-text pages; Any steps combine a rich-text page with the model and media tools. This lets a project mix different step formats in sequence. Existing model, presentation, gallery, and document projects remain supported.
+3. New projects start empty. The **Steps** sidebar stays visible in edit mode; use **Add a step** to choose **Image gallery**, **Model**, **Presentation**, or **Document**. Gallery steps hold one image each; Model steps use the 3D and media tools; Presentation steps support slide images and hotspots; Document steps are rich-text pages. Add steps in any order to combine formats in one project. Existing model, presentation, gallery, and document projects remain supported.
 4. Add editable text overlays and draw lines, rectangles, ellipses, or polygons with configurable stroke, width, and fill on steps that support media. Documents have their own rich-text editor. Use Project appearance settings for per-project accent and canvas colors.
 5. Add optional MP4, WebM, or Ogg video up to 100 MB to an item. Public reviewers can comment without signing in, as Anonymous or using a name they enter. The manager can remove comments; public posting can attract spam, so add CAPTCHA/rate limiting before a high-traffic launch.
 6. Editor shortcuts are customizable in Editor Settings. Documents and text overlays use standard browser `contenteditable` elements, which Grammarly and similar extensions generally recognize, though extension behavior depends on the browser and extension settings. Changes and media are shared via Supabase across devices.
 
-## Deploy with Netlify
+## Deploy with GitHub Pages
 
-Connect the GitHub repository to Netlify. This is a static HTML site: leave the build command empty and set the publish directory to `.` (the repository root, where `index.html` lives). To test a branch without changing production, enable branch deploys in Netlify. Merge to the configured production branch to publish production changes. Add the deployed HTTPS origin to Google OAuth's authorized JavaScript origins and to Supabase's Site URL and allowed redirect URLs.
+This is a static HTML site and can be hosted directly from GitHub without a separate hosting service:
 
-The frontend imports Three.js and Supabase JS from public CDNs, so internet access is required.
+1. Push the project files, including `index.html`, to a GitHub repository.
+2. In the repository, open **Settings → Pages**. Under **Build and deployment**, choose **Deploy from a branch**, select the branch containing the site (usually `main`) and the `/(root)` folder, then save.
+3. Wait for the deployment. The site URL is usually `https://<username>.github.io/<repository>/`.
+4. In Supabase **Authentication → URL Configuration**, set the Site URL to the deployed site URL and add that URL to the allowed redirect URLs. Keep your local URL there too if you use local development. In Google Cloud, keep the Supabase callback URL from the Supabase Google provider settings as an authorized redirect URI.
+
+GitHub Pages hosts the website files only. Supabase is still required for shared projects, manager sign-in, comments, and uploaded media. The frontend imports Three.js and Supabase JS from public CDNs, so internet access is required.
