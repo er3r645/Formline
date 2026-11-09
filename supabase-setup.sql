@@ -16,7 +16,8 @@ alter table public.projects
   add column if not exists is_private boolean not null default false,
   add column if not exists diagram_nodes jsonb not null default '[]'::jsonb,
   add column if not exists diagram_edges jsonb not null default '[]'::jsonb,
-  add column if not exists code_source text not null default '';
+  add column if not exists code_source text not null default '',
+  add column if not exists code_files jsonb not null default '[]'::jsonb;
 
 alter table public.projects drop constraint if exists projects_project_type_check;
 alter table public.projects add constraint projects_project_type_check

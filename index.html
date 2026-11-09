@@ -326,6 +326,7 @@
       .diagram-node-link { display: inline-block; margin-top: 9px; color: #637a45; font-size: 10px; font-weight: 700; }
       .diagram-inspector { position: absolute; z-index: 3; top: 68px; right: 12px; width: 270px; max-height: calc(100% - 80px); overflow: auto; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; box-shadow: 0 5px 20px #20231d18; }
       .diagram-inspector label { display: block; margin: 12px 0 5px; color: var(--muted); font-size: 10px; font-weight: 600; }
+      .diagram-inspector .diagram-value-help { margin: 5px 0 0; color: var(--muted); font-size: 9px; line-height: 1.45; }
       .diagram-inspector label:first-child { margin-top: 0; }
       .diagram-inspector textarea { height: 120px; padding: 9px; resize: vertical; }
       .diagram-inspector input[type="color"] { width: 100%; height: 32px; border: 0; background: transparent; }
@@ -337,15 +338,42 @@
       .code-toolbar { justify-content: space-between; }
       .code-toolbar strong { font-size: 13px; }
       .code-toolbar span { margin-left: 8px; color: var(--muted); font-size: 11px; }
+      .code-tabs { display: flex; gap: 5px; padding: 8px 16px 0; border-bottom: 1px solid var(--line); background: white; }
+      .code-tabs button { padding: 9px 12px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--muted); font-size: 11px; cursor: pointer; }
+      .code-tabs button[aria-selected="true"] { border-bottom-color: #749d54; color: var(--ink); font-weight: 700; }
+      .sketch-run-controls { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+      .sketch-run-controls button { white-space: nowrap; }
+      .sketch-run-controls select { height: 34px; padding: 0 8px; border: 1px solid var(--line); border-radius: 7px; background: white; font-size: 11px; }
+      .sketch-run-controls .field-label { margin: 0; }
+      .code-files { display: flex; align-items: center; gap: 5px; min-height: 40px; padding: 5px 16px 0; background: #f7f8f5; }
+      .code-file-tab { padding: 7px 10px; border: 1px solid transparent; border-radius: 6px 6px 0 0; background: transparent; color: #777972; font: 11px ui-monospace, monospace; cursor: pointer; }
+      .code-file-tab[aria-selected="true"] { border-color: var(--line); border-bottom-color: #20231d; background: #20231d; color: #e6eadf; }
       .code-workspace { display: grid; grid-template-columns: minmax(280px, .8fr) minmax(350px, 1fr); grid-template-rows: auto minmax(420px, 1fr); gap: 8px 14px; height: calc(100vh - 190px); min-height: 500px; padding: 16px; background: #f7f8f5; }
       .code-editor-label { grid-column: 1; }
       #python-source { grid-column: 1; grid-row: 2; width: 100%; height: 100%; min-height: 400px; padding: 16px; resize: none; border: 1px solid #353932; border-radius: 8px; background: #20231d; color: #e6eadf; font: 13px/1.65 ui-monospace, SFMono-Regular, Menlo, monospace; tab-size: 4; }
       .code-reference { grid-column: 1; grid-row: 3; display: flex; flex-wrap: wrap; gap: 7px; align-content: start; color: #777972; font-size: 10px; }
       .code-reference code { padding: 4px 6px; border-radius: 4px; background: #eee; font: 10px ui-monospace, monospace; }
-      .sketch-output { grid-column: 2; grid-row: 2 / 4; display: flex; flex-direction: column; min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: white; }
-      #python-canvas { width: 100%; height: min(65vh, 500px); border: 1px solid #e4e6df; background: white; }
-      #python-print-output { min-height: 40px; margin: 10px 0 0; color: #55574f; font: 12px/1.5 ui-monospace, monospace; white-space: pre-wrap; }
-      #python-error { margin: 8px 0 0; color: #a0443c; font-size: 11px; white-space: pre-wrap; }
+      .code-guide { max-width: 1000px; margin: 22px auto; padding: 24px clamp(18px, 4vw, 40px); border: 1px solid var(--line); border-radius: 10px; background: white; color: #55574f; font-size: 12px; line-height: 1.65; }
+      .code-guide h2, .code-guide h3 { color: var(--ink); font-family: Manrope, sans-serif; }
+      .code-guide h2 { margin-top: 0; font-size: 19px; }
+      .code-guide h3 { margin: 22px 0 8px; font-size: 13px; }
+      .code-guide .code-reference { margin: 10px 0; }
+      .code-guide .code-reference code { font-size: 11px; }
+      .code-example { overflow: auto; padding: 14px; border-radius: 8px; background: #20231d; color: #e6eadf; font: 12px/1.65 ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .sketch-output { grid-column: 2; grid-row: 2 / 4; display: flex; flex-direction: column; min-width: 0; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+      .sketch-canvas-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 8px; }
+      .sketch-canvas-tools input { width: 72px; height: 30px; padding: 0 7px; border: 1px solid var(--line); border-radius: 5px; font-size: 10px; }
+      .sketch-canvas-tools button { height: 30px; padding: 0 8px; border: 1px solid var(--line); border-radius: 5px; background: white; font-size: 10px; cursor: pointer; }
+      .sketch-canvas-tools button:hover { background: #f7f7f4; }
+      .sketch-canvas-tools .canvas-size-separator { color: var(--muted); font-size: 10px; }
+      .sketch-canvas-tools .canvas-tool-spacer { flex: 1; }
+      #python-canvas { display: block; width: 100%; height: auto; max-height: 65vh; aspect-ratio: 8 / 5; border: 1px solid #dfe2d9; background: white; image-rendering: pixelated; touch-action: none; }
+      #python-canvas:focus-visible { outline: 2px solid #749d54; outline-offset: 2px; }
+      .sketch-console-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; color: #55574f; font-size: 11px; }
+      .sketch-console-heading span { flex: 1; color: var(--muted); font-size: 10px; }
+      .sketch-console-heading button { padding: 3px 7px; border: 1px solid var(--line); border-radius: 4px; background: white; color: var(--muted); font-size: 10px; cursor: pointer; }
+      #python-print-output { min-height: 70px; max-height: 180px; overflow: auto; margin: 5px 0 0; padding: 9px; border-radius: 5px; background: #20231d; color: #e6eadf; font: 11px/1.5 ui-monospace, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+      #python-error { min-height: 0; margin: 5px 0 0; color: #a0443c; font: 11px/1.5 ui-monospace, monospace; white-space: pre-wrap; }
       .project-no-steps { position: absolute; z-index: 3; inset: 0 0 0 clamp(226px, 22vw, 252px); display: grid; place-items: center; padding: 24px; background: #f5f5f2; }
       .project-no-steps-card { max-width: 420px; padding: 32px; border: 1px solid var(--line); border-radius: 14px; background: white; text-align: center; }
       .project-no-steps-card h2 { margin: 0; font: 700 20px Manrope, sans-serif; }
@@ -457,7 +485,7 @@
         #python-source { grid-row: 2; min-height: 280px; }
         .code-reference { grid-row: 3; }
         .sketch-output { grid-row: 4; }
-        #python-canvas { height: min(55vh, 400px); }
+        #python-canvas { max-height: 55vh; }
         .mixed-mode .workspace, .mixed-mode.mixed-document-step .workspace, .mixed-mode.mixed-any-step .workspace { grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: auto auto auto auto; }
         .mixed-mode .sidebar { grid-column: 2; grid-row: 1; }
         .mixed-mode .stage-column, .mixed-mode.mixed-document-step .stage-column { grid-column: 2; grid-row: 2; }
@@ -650,7 +678,7 @@
               <button type="button" data-document-format="insertOrderedList" title="Numbered list">1. List</button>
               <input type="color" id="document-color" value="#242522" aria-label="Text color" />
               <select id="document-font" aria-label="Font"><option value="DM Sans">DM Sans</option><option value="Manrope">Manrope</option><option value="Georgia">Georgia</option></select>
-              <select id="document-size" aria-label="Text size"><option value="1">10 px</option><option value="2">11 px</option><option value="3">13 px</option><option value="4" selected>14 px</option><option value="5">18 px</option><option value="6">24 px</option><option value="7">32 px</option></select>
+              <select id="document-size" aria-label="Text size"><option value="8">8 px</option><option value="9">9 px</option><option value="10">10 px</option><option value="11">11 px</option><option value="12">12 px</option><option value="14" selected>14 px</option><option value="16">16 px</option><option value="18">18 px</option><option value="20">20 px</option><option value="24">24 px</option><option value="28">28 px</option><option value="32">32 px</option><option value="40">40 px</option><option value="48">48 px</option></select>
               <select id="document-spacing" aria-label="Line spacing"><option value="1.4">Tight spacing</option><option value="1.65" selected>Normal spacing</option><option value="1.9">Loose spacing</option></select>
             </div>
           </div>
@@ -796,24 +824,118 @@
             <button type="button" class="text-button" id="remove-diagram-node">Remove node</button>
             <hr />
             <label for="diagram-edge-value">Selected connection value</label>
-            <input id="diagram-edge-value" class="field-control" maxlength="200" placeholder="Optional label or value" disabled />
+            <input id="diagram-edge-value" class="field-control" type="text" maxlength="200" value="1" disabled />
+            <p class="diagram-value-help" id="diagram-value-help" hidden>Higher values pull nodes closer and more strongly. Values are relative across connections.</p>
+            <button type="button" class="text-button" id="remove-diagram-edge" hidden>Remove connection</button>
           </aside>
         </section>
         <section class="code-pane" id="code-pane" hidden>
           <div class="code-toolbar">
-            <div><strong>Python sketches</strong><span> Simple drawing functions, no setup needed.</span></div>
-            <button type="button" class="upload-button" id="run-python">Run sketch</button>
-          </div>
-          <div class="code-workspace">
-            <label class="code-editor-label" for="python-source">Python code</label>
-            <textarea id="python-source" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
-            <div class="code-reference"><strong>Functions</strong><code>circle(x, y, radius, color)</code><code>rect(x, y, width, height, color)</code><code>line(x1, y1, x2, y2, color, width)</code><code>text(x, y, "words", size, color)</code><code>print("message")</code><code>background("color")</code></div>
-            <div class="sketch-output">
-              <canvas id="python-canvas" width="800" height="500" aria-label="Python sketch output"></canvas>
-              <pre id="python-print-output" aria-live="polite"></pre>
-              <p id="python-error" role="alert"></p>
+            <div><strong>Python sketches</strong><span> Safe, frame-based canvas code; use Stop to end a continuous sketch.</span></div>
+            <div class="sketch-run-controls">
+              <label class="field-label" for="python-frame-rate">Frame rate</label>
+              <select id="python-frame-rate" aria-label="Animation frame rate"><option value="15">15 fps</option><option value="30">30 fps</option><option value="60" selected>60 fps</option></select>
+              <button type="button" class="upload-button" id="run-python">Run once</button>
+              <button type="button" class="upload-button" id="run-python-continuous">Run continuously</button>
+              <button type="button" class="upload-button" id="pause-python" hidden>Pause</button>
+              <button type="button" class="upload-button" id="stop-python" hidden>Stop</button>
             </div>
           </div>
+          <nav class="code-tabs" role="tablist" aria-label="Python workspace">
+            <button type="button" role="tab" id="code-editor-tab" aria-selected="true">Editor</button>
+            <button type="button" role="tab" id="code-guide-tab" aria-selected="false">Functions &amp; guide</button>
+          </nav>
+          <div id="code-editor-panel">
+            <div class="code-files" id="code-file-tabs" role="tablist" aria-label="Sketch files"></div>
+            <div class="code-workspace">
+              <label class="code-editor-label" for="python-source">Python code</label>
+              <textarea id="python-source" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+              <div class="code-reference" id="code-file-actions">
+                <button type="button" class="auth-button" id="add-code-file">＋ New file</button>
+                <button type="button" class="auth-button" id="delete-code-file" hidden>Delete file</button>
+              </div>
+              <div class="sketch-output">
+                <div class="sketch-canvas-tools" role="toolbar" aria-label="Canvas controls">
+                  <input id="python-canvas-width" type="number" min="1" max="1600" step="1" value="800" aria-label="Canvas width" />
+                  <span class="canvas-size-separator">×</span>
+                  <input id="python-canvas-height" type="number" min="1" max="1000" step="1" value="500" aria-label="Canvas height" />
+                  <button type="button" id="resize-python-canvas">Resize</button>
+                  <span class="canvas-tool-spacer"></span>
+                  <button type="button" id="save-python-canvas" title="Download canvas as PNG">Save PNG</button>
+                  <button type="button" id="clear-python-canvas">Clear canvas</button>
+                </div>
+                <canvas id="python-canvas" width="800" height="500" aria-label="Python sketch output" tabindex="0"></canvas>
+                <div class="sketch-console-heading">
+                  <strong>Console</strong>
+                  <span id="python-runtime-status" role="status">Ready · 800 × 500</span>
+                  <button type="button" id="clear-python-console">Clear</button>
+                </div>
+                <pre id="python-print-output" aria-live="polite"></pre>
+                <p id="python-error" role="alert"></p>
+              </div>
+            </div>
+          </div>
+          <section class="code-guide" id="code-guide-panel" hidden>
+            <h2>Sketch language</h2>
+            <p>This editor runs a small, safe Python-style language. It supports variables, arrays, math, functions, <code>for</code>/<code>while</code> loops, and imports between your project files. It does not execute arbitrary Python, JavaScript, or external packages.</p>
+            <h3>Drawing and math functions</h3>
+            <div class="code-reference">
+              <code>circle(x, y, radius, color="#bdff71")</code><code>rect(x, y, width, height, color)</code>
+              <code>line(x1, y1, x2, y2, color, width)</code><code>text(x, y, "words", size, color)</code>
+              <code>ellipse(x, y, rx, ry, color)</code><code>polygon(points, color)</code>
+              <code>background("white")</code><code>clear()</code><code>print(value, ...)</code>
+              <code>pixel(x, y, color)</code><code>get_pixel(x, y)</code><code>color(r, g, b, a=255)</code>
+              <code>pixel_batch([[x, y, color], ...])</code><code>resize_canvas(width, height)</code>
+              <code>begin_path()</code><code>move_to(x, y)</code><code>line_to(x, y)</code><code>quadratic_to(cx, cy, x, y)</code>
+              <code>bezier_to(c1x, c1y, c2x, c2y, x, y)</code><code>close_path()</code><code>fill_path(color)</code><code>stroke_path(color, width)</code>
+              <code>line_cap(value)</code><code>line_join(value)</code><code>global_alpha(value)</code>
+              <code>mouse_x</code><code>mouse_y</code><code>mouse_down</code><code>key_down(key)</code>
+              <code>frame</code><code>time</code><code>delta</code>
+              <code>save()</code><code>restore()</code><code>translate(x, y)</code><code>rotate(radians)</code><code>scale(x, y)</code>
+              <code>stroke(color, width)</code>
+              <code>sqrt(x)</code><code>sin(radians)</code><code>cos(radians)</code><code>tan(radians)</code>
+              <code>atan2(y, x)</code><code>pow(x, y)</code><code>log(x)</code><code>exp(x)</code>
+              <code>floor(x)</code><code>ceil(x)</code><code>round(x)</code><code>abs(x)</code>
+              <code>min(values)</code><code>max(values)</code><code>sum(values)</code><code>len(values)</code>
+              <code>hypot(x, y)</code><code>factorial(n)</code><code>map_range(value, in_min, in_max, out_min, out_max)</code><code>seed_random(seed)</code>
+              <code>range(stop)</code><code>range(start, stop, step)</code><code>append(array, value)</code>
+              <code>pop(array)</code><code>contains(array, value)</code><code>mean(values)</code>
+              <code>median(values)</code><code>dot(a, b)</code><code>gcd(a, b)</code><code>is_prime(n)</code><code>pi</code>
+            </div>
+            <h3>Variables, arrays, loops, and functions</h3>
+            <pre class="code-example">colors = ["#bdff71", "#79a85c", "#405b38"]
+for i in range(len(colors)):
+    angle = i * 2 * pi / len(colors)
+    x = 400 + cos(angle) * 120
+    y = 250 + sin(angle) * 120
+    circle(x, y, 24, colors[i])
+
+def polygon(points, color):
+    for i in range(len(points)):
+        next_i = (i + 1) % len(points)
+        line(points[i][0], points[i][1], points[next_i][0], points[next_i][1], color, 3)</pre>
+            <h3>Reusable files</h3>
+            <p>Create a file with <strong>New file</strong> and define functions in it. Import those functions into the main sketch or another file:</p>
+            <pre class="code-example"># In shapes.py
+def star(x, y, radius, color):
+    circle(x, y, radius, color)
+
+# In the main sketch
+from shapes import star
+star(400, 250, 40, "#bdff71")</pre>
+            <h3>Continuous animation and canvas input</h3>
+            <p>For an animation, finish <code>main.py</code> with a top-level <code>while True:</code> block and choose <strong>Run continuously</strong>. The code before the loop runs once; the loop body runs once per frame with its variables and canvas preserved. Choose 15, 30, or 60 fps. Pause/resume preserves elapsed sketch time, and Stop ends the run. Each frame is limited to 1,000 statements and nested loops to 1,000 iterations, so one sketch cannot lock up the page.</p>
+            <pre class="code-example">x = 0
+while True:
+    background("#101820")
+    x = (x + 2) % width
+    circle(x, height / 2, 20, color(120, 220, 180))
+    if mouse_down:
+        pixel(mouse_x, mouse_y, "#ffffff")
+    print("frame", frame, "seconds", round(time, 2))</pre>
+            <p>Canvas coordinates use pixel dimensions (default 800 × 500); resize from the canvas toolbar or with <code>resize_canvas(width, height)</code>. <code>get_pixel</code> returns [R, G, B, A], <code>pixel</code> writes one exact, transform-independent pixel, and <code>pixel_batch</code> writes up to 1,000 [x, y, color] points in one call. The path functions provide low-level curves, fills, strokes, caps, joins, and opacity. Pointer variables use canvas coordinates; <code>key_down("ArrowLeft")</code> reads keys while the canvas is focused. <code>time</code> excludes pauses and <code>delta</code> is simulated seconds since the last frame. <code>seed_random(seed)</code> makes <code>random()</code> repeatable. Sketches cannot access page elements, files, network requests, or arbitrary browser code.</p>
+            <p>One-shot sketches and each animation frame allow at most 3,000 and 1,000 executed statements respectively; arrays and ranges are limited to 1,000 items. Projects are limited to 50,000 characters and 500 lines combined. Console output retains only its most recent 10,000 characters.</p>
+          </section>
         </section>
         <aside class="inspector" id="inspector">
           <div class="inspector-heading">
@@ -1029,12 +1151,23 @@
       let diagram3dCamera = null;
       let diagram3dControls = null;
       let diagram3dNodes = new Map();
+      let diagram3dNodeLabels = new Map();
+      let diagram3dEdgeObjects = new Map();
+      let diagram3dEdgeLabels = new Map();
       let diagram3dEdges = new THREE.Group();
+      let activeSketchRun = null;
+      const sketchPointer = { x: 0, y: 0, down: false };
+      const sketchKeys = new Set();
       let diagram3dLabels = new THREE.Group();
       const diagram3dRaycaster = new THREE.Raycaster();
       const diagram3dPointer = new THREE.Vector2();
       let diagram3dDrag = null;
+      const diagram3dVelocities = new Map();
+      let diagram3dLayoutSaveTimer = null;
+      let diagram3dLayoutFrame = 0;
       let diagramPan = null;
+      let selectedCodeFile = "";
+      let savedDocumentSelection = null;
 
       function makeId() {
         return globalThis.crypto?.randomUUID?.() ?? `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -1075,9 +1208,17 @@
           })) : [],
           diagram_edges: Array.isArray(row.diagram_edges) ? row.diagram_edges.filter((edge) => edge && typeof edge.from === "string" && typeof edge.to === "string").map((edge) => ({
             id: typeof edge.id === "string" ? edge.id : makeId(), from: edge.from, to: edge.to,
-            value: typeof edge.value === "string" ? edge.value.slice(0, 200) : ""
+            value: String(edge.value ?? "1").slice(0, 200)
           })) : [],
           code_source: typeof row.code_source === "string" ? row.code_source.slice(0, 50000) : "",
+          code_files: Array.isArray(row.code_files) ? row.code_files.reduce((files, file) => {
+            if (files.length < 20 && file && typeof file.name === "string" && /^[A-Za-z_]\w{0,31}$/.test(file.name)
+              && !["main", "math", "for", "while", "if", "else", "def", "return", "import", "from"].includes(file.name)
+              && typeof file.source === "string" && !files.some((existing) => existing.name === file.name)) {
+              files.push({ name: file.name, source: file.source.slice(0, 50000) });
+            }
+            return files;
+          }, []) : [],
           theme: {
             accent: /^#[0-9a-f]{6}$/i.test(row.theme?.accent) ? row.theme.accent : "#bdff71",
             background: /^#[0-9a-f]{6}$/i.test(row.theme?.background) ? row.theme.background : "#fbfbf9"
@@ -1255,6 +1396,7 @@
           diagram_nodes: project.diagram_nodes,
           diagram_edges: project.diagram_edges,
           code_source: project.code_source,
+          code_files: project.code_files,
           steps: project.steps
         });
       }
@@ -1274,12 +1416,20 @@
           diagram_nodes: structuredClone(project.diagram_nodes),
           diagram_edges: structuredClone(project.diagram_edges),
           code_source: project.code_source,
+          code_files: structuredClone(project.code_files),
           steps: structuredClone(project.steps),
           updated_at: new Date().toISOString()
         };
         clearTimeout(saveTimer);
         document.querySelector("#save-status").textContent = "Saving…";
         saveTimer = setTimeout(() => { void flushPendingSave(); }, 500);
+      }
+
+      function flushDiagramLayoutSave() {
+        if (!diagram3dLayoutSaveTimer) return;
+        clearTimeout(diagram3dLayoutSaveTimer);
+        diagram3dLayoutSaveTimer = null;
+        persist();
       }
 
       async function flushPendingSave() {
@@ -1301,6 +1451,7 @@
               diagram_nodes: snapshot.diagram_nodes,
               diagram_edges: snapshot.diagram_edges,
               code_source: snapshot.code_source,
+              code_files: snapshot.code_files,
               steps: snapshot.steps,
               updated_at: snapshot.updated_at
             }).eq("id", snapshot.id).select("id").single();
@@ -1399,7 +1550,7 @@
           const meta = document.createElement("span");
           meta.className = "project-card-meta";
           const steps = Array.isArray(item.steps) ? item.steps : [];
-          meta.textContent = formatCount(steps.length, projectItemName(item.project_type));
+          meta.textContent = formatCount(steps.length, projectItemName(item.project_type), projectItemPlural(item.project_type));
           openButton.append(icon, title, typeTag, date, meta);
           openButton.addEventListener("click", () => openProject(item));
           card.append(openButton);
@@ -1423,6 +1574,10 @@
 
       function projectItemName(type) {
         return ({ model: "step", presentation: "slide", gallery: "image", document: "page", mixed: "step", diagram2d: "node", diagram3d: "node", code: "sketch" })[type] || "step";
+      }
+
+      function projectItemPlural(type) {
+        return ({ gallery: "images", document: "pages", code: "sketches" })[type] || `${projectItemName(type)}s`;
       }
 
       function updateSectionChoices() {
@@ -1474,7 +1629,7 @@
         }
         document.querySelector("#gallery-status").textContent = "Loading projects…";
         const { data, error } = await supabase.from("projects")
-          .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,is_private,diagram_nodes,diagram_edges,code_source,created_at,updated_at")
+          .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,is_private,diagram_nodes,diagram_edges,code_source,code_files,created_at,updated_at")
           .order("created_at", { ascending: false });
         if (error) {
           console.error("Could not load the project gallery.", error);
@@ -1721,8 +1876,15 @@
       }
 
       async function openProject(row) {
+        flushDiagramLayoutSave();
+        stopSketchRunner("Ready");
         if (!await flushPendingSave()) return;
         project = normalizeProject(row);
+        selectedCodeFile = "";
+        setCodeWorkspaceTab("editor");
+        diagram3dVelocities.clear();
+        diagramConnectionArmed = false;
+        connectingFromNodeId = null;
         if (project.is_private && !isManager) {
           project = null;
           showToast("This project is in the manager's private library.");
@@ -1788,6 +1950,8 @@
       }
 
       async function showGallery() {
+        flushDiagramLayoutSave();
+        stopSketchRunner("Ready");
         if (!await flushPendingSave()) return;
         project = null;
         currentProjectId = null;
@@ -1797,6 +1961,10 @@
         selectedDiagramEdgeId = null;
         documentEditor.replaceChildren();
         document.querySelector("#python-source").value = "";
+        document.querySelector("#code-file-tabs").replaceChildren();
+        selectedCodeFile = "";
+        setCodeWorkspaceTab("editor");
+        diagram3dVelocities.clear();
         document.querySelector("#diagram-world").replaceChildren();
         document.querySelector("#python-print-output").textContent = "";
         document.querySelector("#python-error").textContent = "";
@@ -1805,7 +1973,7 @@
         document.querySelector("#diagram-edge-value").value = "";
         document.querySelector("#comment-list").replaceChildren();
         const pythonCanvas = document.querySelector("#python-canvas");
-        pythonCanvas.getContext("2d").clearRect(0, 0, pythonCanvas.width, pythonCanvas.height);
+        pythonCanvas.getContext("2d", { willReadFrequently: true }).clearRect(0, 0, pythonCanvas.width, pythonCanvas.height);
         if (diagram3dScene) clearDiagram3d();
         if (!isManager) projectList = projectList.filter((item) => !item.is_private);
         syncGalleryImagePlanes(null);
@@ -1848,8 +2016,8 @@
           }
         }
         const { data, error } = await supabase.from("projects")
-          .insert({ title, project_type: projectType, section, collection, is_private: isPrivate, document_html: "<h1></h1>", document_line_height: "1.65", theme: { accent: "#bdff71", background: "#fbfbf9" }, steps: [], diagram_nodes: [], diagram_edges: [], code_source: projectType === "code" ? 'background("white")\ncircle(400, 250, 80, color="#bdff71")\ntext(400, 250, "Hello, canvas!", 24)\nprint("Sketch is ready")' : "" })
-          .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,is_private,diagram_nodes,diagram_edges,code_source,created_at,updated_at")
+          .insert({ title, project_type: projectType, section, collection, is_private: isPrivate, document_html: "<h1></h1>", document_line_height: "1.65", theme: { accent: "#bdff71", background: "#fbfbf9" }, steps: [], diagram_nodes: [], diagram_edges: [], code_source: projectType === "code" ? 'background("white")\ncircle(400, 250, 80, color="#bdff71")\ntext(400, 250, "Hello, canvas!", 24)\nprint("Sketch is ready")' : "", code_files: [] })
+          .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,is_private,diagram_nodes,diagram_edges,code_source,code_files,created_at,updated_at")
           .single();
         if (error) {
           console.error("Could not create the project.", error);
@@ -2265,6 +2433,47 @@
         document.querySelector("#document-character-count").textContent = `${text.length} ${text.length === 1 ? "character" : "characters"}`;
       }
 
+      function restoreDocumentSelection() {
+        if (!savedDocumentSelection || !documentEditor.contains(savedDocumentSelection.commonAncestorContainer)) return false;
+        const selection = document.getSelection();
+        if (!selection) return false;
+        selection.removeAllRanges();
+        selection.addRange(savedDocumentSelection);
+        return true;
+      }
+
+      function applyDocumentFontSize(size) {
+        if (!isManager || !stepHasDocument()) return;
+        restoreDocumentSelection();
+        const selection = document.getSelection();
+        const range = selection?.rangeCount ? selection.getRangeAt(0) : null;
+        if (!range || range.collapsed || !documentEditor.contains(range.commonAncestorContainer)) {
+          showToast("Select some text to change its size.");
+          documentEditor.focus();
+          return;
+        }
+        const textNodes = [];
+        const walker = document.createTreeWalker(documentEditor, NodeFilter.SHOW_TEXT);
+        while (walker.nextNode()) {
+          const node = walker.currentNode;
+          if (node.textContent && range.intersectsNode(node)) textNodes.push(node);
+        }
+        for (const node of textNodes.reverse()) {
+          const start = range.startContainer === node ? range.startOffset : 0;
+          const end = range.endContainer === node ? range.endOffset : node.length;
+          if (end <= start) continue;
+          const selected = node.splitText(start);
+          selected.splitText(end - start);
+          const span = document.createElement("span");
+          span.style.fontSize = `${size}px`;
+          selected.parentNode.insertBefore(span, selected);
+          span.append(selected);
+        }
+        savedDocumentSelection = null;
+        saveCurrentDocument();
+        documentEditor.focus();
+      }
+
       function diagramNode(id) {
         return project?.diagram_nodes.find((node) => node.id === id) || null;
       }
@@ -2305,6 +2514,20 @@
         const edge = project?.diagram_edges.find((item) => item.id === selectedDiagramEdgeId);
         panel.hidden = !node && !edge;
         const linkSelect = document.querySelector("#diagram-node-link");
+        const edgeValueInput = document.querySelector("#diagram-edge-value");
+        const weightedConnections = project?.project_type === "diagram3d";
+        edgeValueInput.type = weightedConnections ? "number" : "text";
+        edgeValueInput.placeholder = weightedConnections ? "Weight (0.1–10)" : "Optional label or value";
+        document.querySelector("#diagram-value-help").hidden = !weightedConnections;
+        if (edgeValueInput.type === "number") {
+          edgeValueInput.min = "0.1";
+          edgeValueInput.max = "10";
+          edgeValueInput.step = "0.1";
+        } else {
+          edgeValueInput.removeAttribute("min");
+          edgeValueInput.removeAttribute("max");
+          edgeValueInput.removeAttribute("step");
+        }
         const currentLink = node?.projectId && node?.stepId ? `${node.projectId}:${node.stepId}` : "";
         linkSelect.replaceChildren(new Option("No linked step", ""));
         diagramStepChoices().forEach((choice) => linkSelect.add(new Option(choice.label, choice.value)));
@@ -2313,7 +2536,9 @@
           ["#diagram-node-name", node?.name || ""],
           ["#diagram-node-text", node?.text || ""],
           ["#diagram-node-color", node?.color || "#bdff71"],
-          ["#diagram-edge-value", edge?.value || ""]
+          ["#diagram-edge-value", !edge ? "" : project.project_type === "diagram3d"
+            ? String(Math.max(0.1, Math.min(10, Number(edge.value) || 1)))
+            : edge.value]
         ]) {
           const input = document.querySelector(selector);
           input.value = value;
@@ -2323,6 +2548,7 @@
         document.querySelector("#open-diagram-link").hidden = !node?.projectId || !node?.stepId;
         document.querySelector("#remove-diagram-node").hidden = !node || !isManager || mode !== "edit";
         document.querySelector("#diagram-node-link").disabled = !node || !isManager || mode !== "edit";
+        document.querySelector("#remove-diagram-edge").hidden = !edge || !isManager || mode !== "edit";
       }
 
       function selectDiagramNode(id) {
@@ -2341,17 +2567,6 @@
             to.x = from.x + Math.cos(angle) * minimum;
             to.y = from.y + Math.sin(angle) * minimum;
           }
-          return;
-        }
-        const minimum = 2.5 + Math.min(8, value.length * 0.06);
-        const distance = Math.hypot(to.x - from.x, to.y - from.y, to.z - from.z);
-        if (distance < minimum) {
-          const direction = new THREE.Vector3(to.x - from.x, to.y - from.y, to.z - from.z);
-          if (direction.lengthSq() < 0.0001) direction.set(1, 0, 0);
-          direction.normalize().multiplyScalar(minimum);
-          to.x = from.x + direction.x;
-          to.y = from.y + direction.y;
-          to.z = from.z + direction.z;
         }
       }
 
@@ -2360,12 +2575,7 @@
         const from = diagramNode(fromId);
         const to = diagramNode(toId);
         if (!from || !to) return;
-        const value = window.prompt("Optional value for this connection:", "");
-        if (value === null) {
-          connectingFromNodeId = null;
-          return;
-        }
-        const edge = { id: makeId(), from: fromId, to: toId, value: value.slice(0, 200) };
+        const edge = { id: makeId(), from: fromId, to: toId, value: project.project_type === "diagram3d" ? "1" : "" };
         ensureDiagramEdgeSpacing(from, to, edge.value);
         project.diagram_edges.push(edge);
         connectingFromNodeId = null;
@@ -2518,6 +2728,31 @@
         return sprite;
       }
 
+      function makeDiagramNodeSprite(node) {
+        const labelCanvas = document.createElement("canvas");
+        labelCanvas.width = 640;
+        labelCanvas.height = 176;
+        const context = labelCanvas.getContext("2d");
+        context.fillStyle = "#ffffff";
+        context.fillRect(2, 2, 636, 172);
+        context.strokeStyle = node.color;
+        context.lineWidth = 5;
+        context.strokeRect(2, 2, 636, 172);
+        context.fillStyle = "#242522";
+        context.font = "bold 30px sans-serif";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillText(node.name.slice(0, 48), 320, 52, 600);
+        context.fillStyle = "#64665e";
+        context.font = "20px sans-serif";
+        context.fillText(node.text.replace(/\s+/g, " ").slice(0, 72), 320, 118, 600);
+        const texture = new THREE.CanvasTexture(labelCanvas);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true }));
+        sprite.scale.set(4.2, 1.16, 1);
+        return sprite;
+      }
+
       function setupDiagram3d() {
         if (diagram3dRenderer) return;
         const graphCanvas = document.querySelector("#diagram-3d-canvas");
@@ -2542,6 +2777,40 @@
           const rect = graphCanvas.getBoundingClientRect();
           diagram3dPointer.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
           diagram3dRaycaster.setFromCamera(diagram3dPointer, diagram3dCamera);
+          const intersections = diagram3dRaycaster.intersectObjects([...diagram3dNodes.values()], false);
+          if (intersections.length) {
+            const hit = intersections[0].object;
+            const nodeId = hit.userData.nodeId;
+            if (isManager && mode === "edit" && (diagramConnectionArmed || connectingFromNodeId)) {
+              chooseDiagramNode(nodeId);
+              event.preventDefault();
+              event.stopImmediatePropagation();
+              return;
+            }
+            const node = diagramNode(nodeId);
+            if (!node) return;
+            selectedDiagramNodeId = nodeId;
+            selectedDiagramEdgeId = null;
+            updateDiagramInspector();
+            if (!isManager || mode !== "edit") {
+              drawDiagram3d();
+              return;
+            }
+            for (const [id, sphere] of diagram3dNodes) sphere.scale.setScalar(id === nodeId ? 1.14 : 1);
+            const normal = diagram3dCamera.getWorldDirection(new THREE.Vector3());
+            const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(normal, hit.position);
+            const intersection = diagram3dRaycaster.ray.intersectPlane(plane, new THREE.Vector3());
+            diagram3dDrag = {
+              nodeId, plane,
+              offset: intersection ? hit.position.clone().sub(intersection) : new THREE.Vector3(),
+              pointerId: event.pointerId
+            };
+            diagram3dControls.enabled = false;
+            graphCanvas.setPointerCapture(event.pointerId);
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            return;
+          }
           const edgeIntersections = diagram3dRaycaster.intersectObjects(diagram3dEdges.children, true);
           const edgeId = edgeIntersections.find((item) => item.object.userData.edgeId)?.object.userData.edgeId;
           if (edgeId) {
@@ -2550,35 +2819,12 @@
             updateDiagramInspector();
             drawDiagram3d();
             event.preventDefault();
+            event.stopImmediatePropagation();
             return;
           }
-          const intersections = diagram3dRaycaster.intersectObjects([...diagram3dNodes.values()], false);
-          if (!intersections.length) return;
-          const hit = intersections[0].object;
-          const nodeId = hit.userData.nodeId;
-          if (isManager && mode === "edit" && (diagramConnectionArmed || connectingFromNodeId)) {
-            chooseDiagramNode(nodeId);
-            event.preventDefault();
-            return;
-          }
-          const node = diagramNode(nodeId);
-          if (!node) return;
-          selectedDiagramNodeId = nodeId;
+          selectedDiagramNodeId = null;
           selectedDiagramEdgeId = null;
           updateDiagramInspector();
-          if (!isManager || mode !== "edit") return;
-          for (const [id, sphere] of diagram3dNodes) sphere.scale.setScalar(id === nodeId ? 1.14 : 1);
-          const normal = diagram3dCamera.getWorldDirection(new THREE.Vector3());
-          const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(normal, hit.position);
-          const intersection = diagram3dRaycaster.ray.intersectPlane(plane, new THREE.Vector3());
-          diagram3dDrag = {
-            nodeId, plane,
-            offset: intersection ? hit.position.clone().sub(intersection) : new THREE.Vector3(),
-            pointerId: event.pointerId
-          };
-          diagram3dControls.enabled = false;
-          graphCanvas.setPointerCapture(event.pointerId);
-          event.preventDefault();
         });
         graphCanvas.addEventListener("pointermove", (event) => {
           if (!diagram3dDrag || diagram3dDrag.pointerId !== event.pointerId) return;
@@ -2592,12 +2838,13 @@
           node.x = intersection.x;
           node.y = intersection.y;
           node.z = intersection.z;
-          drawDiagram3d();
+          updateDiagram3dPositions();
         });
         const finish3dDrag = (event) => {
           if (!diagram3dDrag || diagram3dDrag.pointerId !== event.pointerId) return;
           diagram3dDrag = null;
           diagram3dControls.enabled = true;
+          diagram3dVelocities.set(selectedDiagramNodeId, new THREE.Vector3());
           persist();
         };
         graphCanvas.addEventListener("pointerup", finish3dDrag);
@@ -2629,8 +2876,96 @@
           });
         }
         diagram3dNodes.clear();
+        diagram3dNodeLabels.clear();
+        diagram3dEdgeObjects.clear();
+        diagram3dEdgeLabels.clear();
         diagram3dEdges.clear();
         diagram3dLabels.clear();
+      }
+
+      function updateDiagram3dPositions() {
+        diagram3dNodes.forEach((sphere, id) => {
+          const node = diagramNode(id);
+          if (!node) return;
+          sphere.position.set(node.x, node.y, node.z);
+          diagram3dNodeLabels.get(id)?.position.set(node.x, node.y + 1.1, node.z);
+        });
+        project.diagram_edges.forEach((edge) => {
+          const from = diagramNode(edge.from);
+          const to = diagramNode(edge.to);
+          const arrow = diagram3dEdgeObjects.get(edge.id);
+          if (!from || !to || !arrow) return;
+          const origin = new THREE.Vector3(from.x, from.y, from.z);
+          const target = new THREE.Vector3(to.x, to.y, to.z);
+          const direction = target.clone().sub(origin);
+          const length = direction.length();
+          arrow.visible = length >= 0.1;
+          const label = diagram3dEdgeLabels.get(edge.id);
+          if (label) label.visible = length >= 0.1;
+          if (length < 0.1) return;
+          arrow.position.copy(origin);
+          arrow.setDirection(direction.normalize());
+          arrow.setLength(length, 0.35, 0.22);
+          label?.position.copy(origin).add(target).multiplyScalar(0.5).add(new THREE.Vector3(0, 0.22, 0));
+        });
+      }
+
+      function stepDiagram3dLayout() {
+        if (!isManager || mode !== "edit" || project?.project_type !== "diagram3d" || diagram3dDrag || project.diagram_nodes.length < 2 || project.diagram_nodes.length > 120) return false;
+        const nodes = project.diagram_nodes;
+        const forces = new Map(nodes.map((node) => [node.id, new THREE.Vector3()]));
+        for (let firstIndex = 0; firstIndex < nodes.length; firstIndex += 1) {
+          const first = nodes[firstIndex];
+          for (let secondIndex = firstIndex + 1; secondIndex < nodes.length; secondIndex += 1) {
+            const second = nodes[secondIndex];
+            const delta = new THREE.Vector3(first.x - second.x, first.y - second.y, first.z - second.z);
+            const distanceSquared = Math.max(delta.lengthSq(), 0.04);
+            if (distanceSquared < 144) {
+              if (delta.lengthSq() < 0.0001) delta.set((firstIndex + secondIndex) % 2 ? 1 : 0, (firstIndex + secondIndex) % 2 ? 0 : 1, 0);
+              delta.normalize().multiplyScalar(0.7 / distanceSquared);
+              forces.get(first.id).add(delta);
+              forces.get(second.id).sub(delta);
+            }
+          }
+        }
+        project.diagram_edges.forEach((edge) => {
+          const from = diagramNode(edge.from);
+          const to = diagramNode(edge.to);
+          if (!from || !to) return;
+          const delta = new THREE.Vector3(to.x - from.x, to.y - from.y, to.z - from.z);
+          const distance = delta.length();
+          if (distance < 0.001) delta.set(0.01, 0, 0);
+          const weight = Math.max(0.1, Math.min(10, Number(edge.value) || 1));
+          const restLength = 4 / Math.sqrt(weight);
+          delta.normalize().multiplyScalar((distance - restLength) * 0.16 * Math.sqrt(weight));
+          forces.get(from.id).add(delta);
+          forces.get(to.id).sub(delta);
+        });
+        let changed = false;
+        nodes.forEach((node) => {
+          const velocity = diagram3dVelocities.get(node.id) || new THREE.Vector3();
+          diagram3dVelocities.set(node.id, velocity);
+          const force = forces.get(node.id).add(new THREE.Vector3(-node.x, -node.y, -node.z).multiplyScalar(0.001));
+          velocity.add(force.multiplyScalar(0.015)).multiplyScalar(0.88);
+          if (velocity.length() > 0.035) velocity.setLength(0.035);
+          if (velocity.length() < 0.00015) {
+            velocity.set(0, 0, 0);
+            return;
+          }
+          node.x += velocity.x;
+          node.y += velocity.y;
+          node.z += velocity.z;
+          changed = true;
+        });
+        if (changed) {
+          updateDiagram3dPositions();
+          clearTimeout(diagram3dLayoutSaveTimer);
+          diagram3dLayoutSaveTimer = setTimeout(() => {
+            diagram3dLayoutSaveTimer = null;
+            persist();
+          }, 800);
+        }
+        return changed;
       }
 
       function drawDiagram3d(query = document.querySelector("#diagram-search").value.trim().toLocaleLowerCase()) {
@@ -2645,12 +2980,14 @@
             new THREE.MeshStandardMaterial({ color: node.color, roughness: 0.55 })
           );
           sphere.position.set(node.x, node.y, node.z);
+          if (node.id === selectedDiagramNodeId) sphere.scale.setScalar(1.14);
           sphere.userData.nodeId = node.id;
           diagram3dScene.add(sphere);
-          const label = makeDiagramSprite(node.name, "#ffffff");
-          label.position.set(node.x, node.y + 0.78, node.z);
+          const label = makeDiagramNodeSprite(node);
+          label.position.set(node.x, node.y + 1.1, node.z);
           diagram3dLabels.add(label);
           diagram3dNodes.set(node.id, sphere);
+          diagram3dNodeLabels.set(node.id, label);
         });
         project.diagram_edges.forEach((edge) => {
           const from = diagramNode(edge.from);
@@ -2665,11 +3002,13 @@
           arrow.userData.edgeId = edge.id;
           arrow.children.forEach((child) => { child.userData.edgeId = edge.id; });
           diagram3dEdges.add(arrow);
+          diagram3dEdgeObjects.set(edge.id, arrow);
           if (edge.value) {
             const label = makeDiagramSprite(edge.value, "#ffffff");
             label.position.copy(origin).add(target).multiplyScalar(0.5).add(new THREE.Vector3(0, 0.22, 0));
             label.scale.set(2.6, 0.58, 1);
             diagram3dLabels.add(label);
+            diagram3dEdgeLabels.set(edge.id, label);
           }
         });
         const empty = document.querySelector("#diagram-empty");
@@ -2684,12 +3023,12 @@
         graphCanvas.hidden = !is3d;
         world.hidden = is3d;
         document.querySelector("#diagram-help").textContent = is3d
-          ? "Drag to orbit · Scroll to zoom · Select a node to edit"
+          ? "Drag to orbit · Scroll to zoom · Select nodes · Connection values guide node grouping"
           : "Drag to pan · Scroll to zoom · Drag nodes to move them";
         document.querySelector("#connect-diagram-nodes").textContent = connectingFromNodeId ? "Choose next node…" : diagramConnectionArmed ? "Choose source node…" : "Connect nodes";
         document.querySelector("#connect-diagram-nodes").disabled = !isManager || mode !== "edit" || project.diagram_nodes.length < 2;
         document.querySelector("#add-diagram-node").disabled = !isManager || mode !== "edit";
-        document.querySelector("#diagram-empty").hidden = is3d || project.diagram_nodes.length > 0;
+        document.querySelector("#diagram-empty").hidden = project.diagram_nodes.length > 0;
         if (is3d) {
           setupDiagram3d();
           drawDiagram3d(query);
@@ -2709,6 +3048,10 @@
 
       function addDiagramNode() {
         if (!project || !isManager || mode !== "edit") return;
+        if (project.project_type === "diagram3d" && project.diagram_nodes.length >= 120) {
+          showToast("3D node layout is limited to 120 nodes to keep motion smooth.");
+          return;
+        }
         const node = {
           id: makeId(), name: `Node ${project.diagram_nodes.length + 1}`, text: "", color: "#bdff71",
           x: project.project_type === "diagram2d" ? 5000 + (project.diagram_nodes.length % 4) * 280 : (project.diagram_nodes.length % 4) * 2.7,
@@ -2741,18 +3084,105 @@
         const id = selectedDiagramNodeId;
         project.diagram_nodes = project.diagram_nodes.filter((node) => node.id !== id);
         project.diagram_edges = project.diagram_edges.filter((edge) => edge.from !== id && edge.to !== id);
+        diagram3dVelocities.delete(id);
         selectedDiagramNodeId = null;
         selectedDiagramEdgeId = null;
         renderDiagram();
         persist();
       }
 
-      function splitPythonArguments(source) {
-        const parts = [];
-        let start = 0;
+      function removeDiagramEdge() {
+        if (!isManager || !project || !selectedDiagramEdgeId) return;
+        project.diagram_edges = project.diagram_edges.filter((edge) => edge.id !== selectedDiagramEdgeId);
+        selectedDiagramEdgeId = null;
+        renderDiagram();
+        persist();
+      }
+
+      function activeCodeFileSource() {
+        return selectedCodeFile
+          ? project?.code_files.find((file) => file.name === selectedCodeFile)?.source || ""
+          : project?.code_source || "";
+      }
+
+      function renderCodeFiles() {
+        const tabs = document.querySelector("#code-file-tabs");
+        tabs.replaceChildren();
+        const mainTab = document.createElement("button");
+        mainTab.type = "button";
+        mainTab.className = "code-file-tab";
+        mainTab.role = "tab";
+        mainTab.setAttribute("aria-selected", String(!selectedCodeFile));
+        mainTab.textContent = "main.py";
+        mainTab.addEventListener("click", () => selectCodeFile(""));
+        tabs.append(mainTab);
+        project.code_files.forEach((file) => {
+          const tab = document.createElement("button");
+          tab.type = "button";
+          tab.className = "code-file-tab";
+          tab.role = "tab";
+          tab.setAttribute("aria-selected", String(selectedCodeFile === file.name));
+          tab.textContent = `${file.name}.py`;
+          tab.addEventListener("click", () => selectCodeFile(file.name));
+          tabs.append(tab);
+        });
+        const editor = document.querySelector("#python-source");
+        editor.value = activeCodeFileSource();
+        editor.readOnly = !isManager || mode !== "edit";
+        document.querySelector(".code-editor-label").textContent = `${selectedCodeFile ? `${selectedCodeFile}.py` : "main.py"} · Python code`;
+        document.querySelector("#delete-code-file").hidden = !selectedCodeFile || !isManager || mode !== "edit";
+        document.querySelector("#add-code-file").disabled = !isManager || mode !== "edit" || project.code_files.length >= 20;
+      }
+
+      function selectCodeFile(name) {
+        if (!project || !project.code_files.some((file) => file.name === name) && name) return;
+        selectedCodeFile = name;
+        renderCodeFiles();
+      }
+
+      function addCodeFile() {
+        if (!project || !isManager || mode !== "edit" || project.code_files.length >= 20) {
+          showToast("A sketch can have up to 20 reusable files.");
+          return;
+        }
+        const requested = window.prompt("File name (letters, numbers, underscores; without .py):", "helpers");
+        if (requested === null) return;
+        const name = requested.trim().replace(/\.py$/i, "");
+        if (!/^[A-Za-z_]\w{0,31}$/.test(name) || ["main", "math", "for", "while", "if", "else", "def", "return", "import", "from"].includes(name)) {
+          showToast("Use a valid file name other than main.");
+          return;
+        }
+        if (project.code_files.some((file) => file.name === name)) {
+          showToast("That file already exists.");
+          return;
+        }
+        project.code_files.push({ name, source: "" });
+        selectedCodeFile = name;
+        renderCodeFiles();
+        persist();
+        document.querySelector("#python-source").focus();
+      }
+
+      function deleteCodeFile() {
+        if (!project || !isManager || mode !== "edit" || !selectedCodeFile) return;
+        if (!window.confirm(`Delete ${selectedCodeFile}.py?`)) return;
+        project.code_files = project.code_files.filter((file) => file.name !== selectedCodeFile);
+        selectedCodeFile = "";
+        renderCodeFiles();
+        persist();
+      }
+
+      function setCodeWorkspaceTab(tab) {
+        const guideActive = tab === "guide";
+        document.querySelector("#code-editor-tab").setAttribute("aria-selected", String(!guideActive));
+        document.querySelector("#code-guide-tab").setAttribute("aria-selected", String(guideActive));
+        document.querySelector("#code-editor-panel").hidden = guideActive;
+        document.querySelector("#code-guide-panel").hidden = !guideActive;
+      }
+
+      function stripSketchComment(source) {
         let quote = "";
         let escaped = false;
-        let depth = 0;
         for (let index = 0; index < source.length; index += 1) {
           const character = source[index];
           if (quote) {
@@ -2760,130 +3190,971 @@
             else if (character === "\\") escaped = true;
             else if (character === quote) quote = "";
           } else if (character === "'" || character === '"') quote = character;
-          else if (character === "[" || character === "(") depth += 1;
-          else if (character === "]" || character === ")") depth -= 1;
-          else if (character === "," && depth === 0) {
-            parts.push(source.slice(start, index).trim());
-            start = index + 1;
+          else if (character === "#") return source.slice(0, index);
+        }
+        return source;
+      }
+
+      function tokenizeSketchExpression(source, lineNumber) {
+        const tokens = [];
+        let index = 0;
+        while (index < source.length) {
+          if (/\s/.test(source[index])) {
+            index += 1;
+            continue;
+          }
+          const rest = source.slice(index);
+          const number = rest.match(/^(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?/);
+          if (number) {
+            tokens.push({ type: "number", value: Number(number[0]) });
+            index += number[0].length;
+            continue;
+          }
+          if (source[index] === "'" || source[index] === '"') {
+            const quote = source[index];
+            let end = index + 1;
+            let escaped = false;
+            for (; end < source.length; end += 1) {
+              const character = source[end];
+              if (escaped) escaped = false;
+              else if (character === "\\") escaped = true;
+              else if (character === quote) break;
+            }
+            if (end >= source.length) throw new Error(`Line ${lineNumber}: unfinished string.`);
+            const raw = source.slice(index, end + 1);
+            let value;
+            if (quote === '"') value = JSON.parse(raw);
+            else value = raw.slice(1, -1).replace(/\\(['\\nrt])/g, (_match, escapedCharacter) => ({ "'": "'", "\\": "\\", n: "\n", r: "\r", t: "\t" })[escapedCharacter]);
+            tokens.push({ type: "string", value });
+            index = end + 1;
+            continue;
+          }
+          const identifier = rest.match(/^[A-Za-z_]\w*/);
+          if (identifier) {
+            tokens.push({ type: "identifier", value: identifier[0] });
+            index += identifier[0].length;
+            continue;
+          }
+          const operator = ["**", "//", "==", "!=", "<=", ">="].find((item) => rest.startsWith(item))
+            || (/[+\-*/%<>()\[\],.=]/.test(source[index]) ? source[index] : "");
+          if (!operator) throw new Error(`Line ${lineNumber}: unexpected character "${source[index]}".`);
+          tokens.push({ type: "operator", value: operator });
+          index += operator.length;
+          if (tokens.length > 1000) throw new Error(`Line ${lineNumber}: expression is too complex.`);
+        }
+        return tokens;
+      }
+
+      function parseSketchExpression(source, lineNumber) {
+        const tokens = tokenizeSketchExpression(source, lineNumber);
+        let cursor = 0;
+        const peek = (offset = 0) => tokens[cursor + offset];
+        const consume = (value) => {
+          const token = tokens[cursor];
+          if (!token || (value && token.value !== value)) throw new Error(`Line ${lineNumber}: expected "${value || "expression"}".`);
+          cursor += 1;
+          return token;
+        };
+        const precedence = { or: 1, and: 2, "==": 3, "!=": 3, "<": 3, ">": 3, "<=": 3, ">=": 3, "+": 4, "-": 4, "*": 5, "/": 5, "//": 5, "%": 5, "**": 6 };
+        function parsePrimary(depth = 0) {
+          if (depth > 64) throw new Error(`Line ${lineNumber}: expression nesting is too deep.`);
+          const token = consume();
+          let node;
+          if (token.type === "number" || token.type === "string") node = { type: "literal", value: token.value };
+          else if (token.type === "identifier" && ["True", "False", "None"].includes(token.value)) {
+            node = { type: "literal", value: token.value === "True" ? true : token.value === "False" ? false : null };
+          } else if (token.type === "identifier" && token.value === "not") {
+            node = { type: "unary", operator: "not", value: parsePrimary(depth + 1) };
+          } else if (token.type === "operator" && ["-", "+"].includes(token.value)) {
+            node = { type: "unary", operator: token.value, value: parsePrimary(depth + 1) };
+          } else if (token.type === "identifier") node = { type: "name", value: token.value };
+          else if (token.value === "(") {
+            node = parseExpression(0, depth + 1);
+            consume(")");
+          } else if (token.value === "[") {
+            const items = [];
+            while (peek() && peek().value !== "]") {
+              items.push(parseExpression(0, depth + 1));
+              if (peek()?.value !== ",") break;
+              consume(",");
+            }
+            consume("]");
+            node = { type: "array", items };
+          } else throw new Error(`Line ${lineNumber}: expected a value.`);
+
+          while (peek()) {
+            if (peek().value === ".") {
+              consume(".");
+              const property = consume();
+              if (property.type !== "identifier") throw new Error(`Line ${lineNumber}: expected a module function name.`);
+              node = { type: "member", object: node, property: property.value };
+            } else if (peek().value === "[") {
+              consume("[");
+              const index = parseExpression(0, depth + 1);
+              consume("]");
+              node = { type: "index", object: node, index };
+            } else if (peek().value === "(") {
+              consume("(");
+              const args = [];
+              while (peek() && peek().value !== ")") {
+                if (peek().type === "identifier" && peek(1)?.value === "=") {
+                  const name = consume().value;
+                  consume("=");
+                  args.push({ name, value: parseExpression(0, depth + 1) });
+                } else args.push({ value: parseExpression(0, depth + 1) });
+                if (peek()?.value !== ",") break;
+                consume(",");
+              }
+              consume(")");
+              node = { type: "call", callee: node, args };
+            } else break;
+          }
+          return node;
+        }
+        function parseExpression(minimum = 0, depth = 0) {
+          let left = parsePrimary(depth + 1);
+          while (peek()) {
+            const operator = peek().value;
+            const level = precedence[operator];
+            if (level === undefined || level < minimum) break;
+            consume();
+            const right = parseExpression(level + (operator === "**" ? 0 : 1), depth + 1);
+            left = { type: "binary", operator, left, right };
+          }
+          return left;
+        }
+        const expression = parseExpression();
+        if (cursor !== tokens.length) throw new Error(`Line ${lineNumber}: unexpected "${tokens[cursor].value}".`);
+        return expression;
+      }
+
+      function parseSketchProgram(source) {
+        if (source.length > 50000) throw new Error("A sketch file cannot exceed 50,000 characters.");
+        const lines = source.split(/\r?\n/);
+        if (lines.length > 500) throw new Error("A sketch file cannot exceed 500 lines.");
+        const rows = [];
+        lines.forEach((original, index) => {
+          const expanded = original.replace(/\t/g, "    ");
+          const clean = stripSketchComment(expanded).trimEnd();
+          if (!clean.trim()) return;
+          const indent = clean.length - clean.trimStart().length;
+          if (indent % 4) throw new Error(`Line ${index + 1}: indent blocks in groups of four spaces.`);
+          rows.push({ indent, text: clean.trim(), line: index + 1 });
+        });
+        let cursor = 0;
+        function parseBlock(indent) {
+          const body = [];
+          while (cursor < rows.length) {
+            const row = rows[cursor];
+            if (row.indent < indent) break;
+            if (row.indent > indent) throw new Error(`Line ${row.line}: unexpected indentation.`);
+            cursor += 1;
+            if (row.text === "else:") throw new Error(`Line ${row.line}: unexpected else.`);
+            const nested = () => {
+              if (!rows[cursor] || rows[cursor].indent <= indent) throw new Error(`Line ${row.line}: expected an indented block.`);
+              return parseBlock(rows[cursor].indent);
+            };
+            let match;
+            if ((match = row.text.match(/^def\s+([A-Za-z_]\w*)\s*\(([^()]*)\)\s*:$/))) {
+              const parameters = match[2].trim() ? match[2].split(",").map((item) => item.trim()) : [];
+              if (parameters.some((item) => !/^[A-Za-z_]\w*$/.test(item)) || new Set(parameters).size !== parameters.length) {
+                throw new Error(`Line ${row.line}: use unique, simple function parameter names.`);
+              }
+              body.push({ type: "def", name: match[1], parameters, body: nested(), line: row.line });
+            } else if ((match = row.text.match(/^for\s+([A-Za-z_]\w*)\s+in\s+(.+)\s*:$/))) {
+              body.push({ type: "for", name: match[1], iterable: parseSketchExpression(match[2], row.line), body: nested(), line: row.line });
+            } else if ((match = row.text.match(/^while\s+(.+)\s*:$/))) {
+              body.push({ type: "while", condition: parseSketchExpression(match[1], row.line), body: nested(), line: row.line });
+            } else if ((match = row.text.match(/^if\s+(.+)\s*:$/))) {
+              const thenBody = nested();
+              let elseBody = [];
+              if (rows[cursor]?.indent === indent && rows[cursor].text === "else:") {
+                const elseRow = rows[cursor];
+                cursor += 1;
+                if (!rows[cursor] || rows[cursor].indent <= indent) throw new Error(`Line ${elseRow.line}: expected an indented block.`);
+                elseBody = parseBlock(rows[cursor].indent);
+              }
+              body.push({ type: "if", condition: parseSketchExpression(match[1], row.line), thenBody, elseBody, line: row.line });
+            } else if ((match = row.text.match(/^from\s+([A-Za-z_]\w*)\s+import\s+([A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*)$/))) {
+              body.push({ type: "fromImport", module: match[1], names: match[2].split(",").map((item) => item.trim()), line: row.line });
+            } else if ((match = row.text.match(/^import\s+([A-Za-z_]\w*)$/))) {
+              body.push({ type: "import", module: match[1], line: row.line });
+            } else if ((match = row.text.match(/^return(?:\s+(.+))?$/))) {
+              body.push({ type: "return", value: match[1] ? parseSketchExpression(match[1], row.line) : { type: "literal", value: null }, line: row.line });
+            } else if ((match = row.text.match(/^([A-Za-z_]\w*(?:\s*\[[^\]]+\])+)\s*=(?!=)\s*(.+)$/))) {
+              const target = parseSketchExpression(match[1].trim(), row.line);
+              if (target.type !== "index") throw new Error(`Line ${row.line}: indexed assignment needs an array item on the left.`);
+              body.push({ type: "indexAssign", target, value: parseSketchExpression(match[2], row.line), line: row.line });
+            } else if ((match = row.text.match(/^([A-Za-z_]\w*)\s*=(?!=)\s*(.+)$/))) {
+              body.push({ type: "assign", name: match[1], value: parseSketchExpression(match[2], row.line), line: row.line });
+            } else {
+              body.push({ type: "expression", value: parseSketchExpression(row.text, row.line), line: row.line });
+            }
+          }
+          return body;
+        }
+        const body = parseBlock(0);
+        if (cursor < rows.length) throw new Error(`Line ${rows[cursor].line}: invalid indentation.`);
+        return body;
+      }
+
+      function sketchTruthy(value) {
+        return Array.isArray(value) ? value.length > 0 : Boolean(value);
+      }
+
+      function sketchNumber(value, line, label = "value") {
+        if (typeof value !== "number" || !Number.isFinite(value)) throw new Error(`Line ${line}: ${label} must be a finite number.`);
+        return value;
+      }
+
+      function isSketchColor(value) {
+        return typeof value === "string" && /^(#[0-9a-f]{3,8}|[a-z]{1,24}|rgba?\([\d\s.,%]+\))$/i.test(value);
+      }
+
+      function evaluateSketchExpression(node, environment, state, line) {
+        if (node.type === "literal") return node.value;
+        if (node.type === "array") {
+          if (node.items.length > 1000) throw new Error(`Line ${line}: arrays are limited to 1,000 values.`);
+          return node.items.map((item) => evaluateSketchExpression(item, environment, state, line));
+        }
+        if (node.type === "name") {
+          if (node.value in environment) return environment[node.value];
+          if (Object.hasOwn(state.builtins, node.value)) return state.builtins[node.value];
+          throw new Error(`Line ${line}: unknown name "${node.value}".`);
+        }
+        if (node.type === "member") {
+          const object = evaluateSketchExpression(node.object, environment, state, line);
+          if (object?.kind !== "module") throw new Error(`Line ${line}: only project modules and math can use dotted names.`);
+          const module = state.modules.get(object.name);
+          if (module && Object.hasOwn(module.environment, node.property)) return module.environment[node.property];
+          if (object.name === "math" && Object.hasOwn(state.math, node.property)) return state.math[node.property];
+          throw new Error(`Line ${line}: "${node.property}" is not exported by ${object.name}.`);
+        }
+        if (node.type === "index") {
+          const value = evaluateSketchExpression(node.object, environment, state, line);
+          const index = evaluateSketchExpression(node.index, environment, state, line);
+          if (!Array.isArray(value) || !Number.isInteger(index)) throw new Error(`Line ${line}: arrays need an integer index.`);
+          const actualIndex = index < 0 ? value.length + index : index;
+          if (actualIndex < 0 || actualIndex >= value.length) throw new Error(`Line ${line}: array index is out of range.`);
+          return value[actualIndex];
+        }
+        if (node.type === "unary") {
+          const value = evaluateSketchExpression(node.value, environment, state, line);
+          if (node.operator === "not") return !sketchTruthy(value);
+          return sketchNumber(value, line) * (node.operator === "-" ? -1 : 1);
+        }
+        if (node.type === "binary") {
+          const left = evaluateSketchExpression(node.left, environment, state, line);
+          if (node.operator === "and" && !sketchTruthy(left)) return left;
+          if (node.operator === "or" && sketchTruthy(left)) return left;
+          const right = evaluateSketchExpression(node.right, environment, state, line);
+          if (node.operator === "and") return right;
+          if (node.operator === "or") return right;
+          if (node.operator === "==") return left === right;
+          if (node.operator === "!=") return left !== right;
+          if (node.operator === "<") return left < right;
+          if (node.operator === ">") return left > right;
+          if (node.operator === "<=") return left <= right;
+          if (node.operator === ">=") return left >= right;
+          if (node.operator === "+" && (typeof left === "string" || Array.isArray(left))) {
+            const result = Array.isArray(left) && Array.isArray(right) ? left.concat(right) : String(left) + String(right);
+            if (result.length > 4000) throw new Error(`Line ${line}: result is too large.`);
+            return result;
+          }
+          if (node.operator === "*" && (typeof left === "string" || Array.isArray(left))) {
+            const count = sketchNumber(right, line, "repeat count");
+            if (!Number.isInteger(count) || count < 0 || count > 1000) throw new Error(`Line ${line}: repeat count must be between 0 and 1,000.`);
+            if (left.length * count > 4000) throw new Error(`Line ${line}: repeated result is too large.`);
+            return Array.isArray(left) ? Array.from({ length: count }, () => left).flat() : left.repeat(count);
+          }
+          const a = sketchNumber(left, line);
+          const b = sketchNumber(right, line);
+          let result;
+          switch (node.operator) {
+            case "+": result = a + b; break;
+            case "-": result = a - b; break;
+            case "*": result = a * b; break;
+            case "/": result = a / b; break;
+            case "//": result = Math.floor(a / b); break;
+            case "%": result = a % b; break;
+            case "**": result = a ** b; break;
+            default: throw new Error(`Line ${line}: unsupported operator "${node.operator}".`);
+          }
+          return sketchNumber(result, line, "result");
+        }
+        if (node.type === "call") {
+          const callable = evaluateSketchExpression(node.callee, environment, state, line);
+          const positional = [];
+          const named = Object.create(null);
+          node.args.forEach((argument) => {
+            const value = evaluateSketchExpression(argument.value, environment, state, line);
+            if (argument.name) {
+              if (Object.hasOwn(named, argument.name)) throw new Error(`Line ${line}: duplicate argument "${argument.name}".`);
+              named[argument.name] = value;
+            } else positional.push(value);
+          });
+          if (callable?.kind === "function") return callSketchFunction(callable.key, positional, named, state, line);
+          if (callable?.kind === "builtin") return callSketchBuiltin(callable.name, positional, named, state, line);
+          throw new Error(`Line ${line}: value is not callable.`);
+        }
+        throw new Error(`Line ${line}: invalid expression.`);
+      }
+
+      function callSketchBuiltin(name, args, named, state, line) {
+        const get = (position, key, fallback) => args[position] ?? named[key] ?? fallback;
+        const numeric = (position, key, fallback) => sketchNumber(get(position, key, fallback), line, key);
+        const color = (position, key, fallback) => {
+          const value = get(position, key, fallback);
+          if (!isSketchColor(value)) throw new Error(`Line ${line}: invalid color.`);
+          return value;
+        };
+        if (name === "color") {
+          const red = Math.round(Math.min(255, Math.max(0, numeric(0, "red", 0))));
+          const green = Math.round(Math.min(255, Math.max(0, numeric(1, "green", 0))));
+          const blue = Math.round(Math.min(255, Math.max(0, numeric(2, "blue", 0))));
+          const alpha = Math.min(1, Math.max(0, numeric(3, "alpha", 255) / 255));
+          return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+        }
+        if (name === "canvas_width") return state.canvas.width;
+        if (name === "canvas_height") return state.canvas.height;
+        if (name === "resize_canvas") {
+          const width = numeric(0, "width", 800);
+          const height = numeric(1, "height", 500);
+          if (!Number.isInteger(width) || !Number.isInteger(height) || width < 1 || height < 1 || width > 1600 || height > 1000 || width * height > 1500000) {
+            throw new Error(`Line ${line}: canvas dimensions must be whole numbers up to 1,600 × 1,000 (1.5 million pixels).`);
+          }
+          state.canvas.width = width;
+          state.canvas.height = height;
+          syncSketchCanvasControls();
+          return null;
+        }
+        if (name === "pixel") {
+          const x = Math.floor(numeric(0, "x", 0));
+          const y = Math.floor(numeric(1, "y", 0));
+          if (x >= 0 && y >= 0 && x < state.canvas.width && y < state.canvas.height) {
+            const pixelColor = color(2, "color", "#242522");
+            state.context.save();
+            state.context.setTransform(1, 0, 0, 1, 0, 0);
+            state.context.fillStyle = pixelColor;
+            state.context.fillRect(x, y, 1, 1);
+            state.context.restore();
+          }
+          return null;
+        }
+        if (name === "pixel_batch") {
+          const points = args[0];
+          if (!Array.isArray(points) || points.length > 1000 || points.some((point) => !Array.isArray(point) || point.length !== 3)) {
+            throw new Error(`Line ${line}: pixel_batch expects up to 1,000 [x, y, color] values.`);
+          }
+          const pixels = points.map(([rawX, rawY, rawColor]) => {
+            if (!isSketchColor(rawColor)) throw new Error(`Line ${line}: invalid pixel color.`);
+            return [Math.floor(sketchNumber(rawX, line, "x")), Math.floor(sketchNumber(rawY, line, "y")), rawColor];
+          });
+          state.context.save();
+          state.context.setTransform(1, 0, 0, 1, 0, 0);
+          pixels.forEach(([x, y, rawColor]) => {
+            if (x < 0 || y < 0 || x >= state.canvas.width || y >= state.canvas.height) return;
+            state.context.fillStyle = rawColor;
+            state.context.fillRect(x, y, 1, 1);
+          });
+          state.context.restore();
+          return null;
+        }
+        if (name === "get_pixel") {
+          const x = Math.floor(numeric(0, "x", 0));
+          const y = Math.floor(numeric(1, "y", 0));
+          if (x < 0 || y < 0 || x >= state.canvas.width || y >= state.canvas.height) throw new Error(`Line ${line}: pixel coordinates are outside the canvas.`);
+          return Array.from(state.context.getImageData(x, y, 1, 1).data);
+        }
+        if (name === "clear") {
+          state.context.clearRect(0, 0, state.canvas.width, state.canvas.height);
+          return null;
+        }
+        if (name === "save") {
+          state.context.save();
+          return null;
+        }
+        if (name === "restore") {
+          state.context.restore();
+          return null;
+        }
+        if (name === "translate") {
+          state.context.translate(numeric(0, "x", 0), numeric(1, "y", 0));
+          return null;
+        }
+        if (name === "rotate") {
+          state.context.rotate(numeric(0, "angle", 0));
+          return null;
+        }
+        if (name === "scale") {
+          state.context.scale(numeric(0, "x", 1), numeric(1, "y", numeric(0, "x", 1)));
+          return null;
+        }
+        if (name === "stroke") {
+          state.context.strokeStyle = color(0, "color", "#242522");
+          state.context.lineWidth = Math.max(0.1, numeric(1, "width", 1));
+          return null;
+        }
+        if (name === "begin_path") {
+          state.context.beginPath();
+          return null;
+        }
+        if (name === "move_to") {
+          state.context.moveTo(numeric(0, "x", 0), numeric(1, "y", 0));
+          return null;
+        }
+        if (name === "line_to") {
+          state.context.lineTo(numeric(0, "x", 0), numeric(1, "y", 0));
+          return null;
+        }
+        if (name === "quadratic_to") {
+          state.context.quadraticCurveTo(numeric(0, "control_x", 0), numeric(1, "control_y", 0), numeric(2, "x", 0), numeric(3, "y", 0));
+          return null;
+        }
+        if (name === "bezier_to") {
+          state.context.bezierCurveTo(numeric(0, "control1_x", 0), numeric(1, "control1_y", 0), numeric(2, "control2_x", 0), numeric(3, "control2_y", 0), numeric(4, "x", 0), numeric(5, "y", 0));
+          return null;
+        }
+        if (name === "close_path") {
+          state.context.closePath();
+          return null;
+        }
+        if (name === "fill_path") {
+          state.context.fillStyle = color(0, "color", "#242522");
+          state.context.fill();
+          return null;
+        }
+        if (name === "stroke_path") {
+          state.context.strokeStyle = color(0, "color", "#242522");
+          state.context.lineWidth = Math.max(0.1, numeric(1, "width", 1));
+          state.context.stroke();
+          return null;
+        }
+        if (name === "line_cap" || name === "line_join") {
+          const value = get(0, "value", "round");
+          const choices = name === "line_cap" ? ["butt", "round", "square"] : ["bevel", "round", "miter"];
+          if (!choices.includes(value)) throw new Error(`Line ${line}: ${name} expects ${choices.join(", ")}.`);
+          state.context[name === "line_cap" ? "lineCap" : "lineJoin"] = value;
+          return null;
+        }
+        if (name === "global_alpha") {
+          state.context.globalAlpha = Math.min(1, Math.max(0, numeric(0, "alpha", 1)));
+          return null;
+        }
+        if (name === "key_down") {
+          const key = get(0, "key", "");
+          if (typeof key !== "string") throw new Error(`Line ${line}: key_down expects a key name string.`);
+          return sketchKeys.has(key);
+        }
+        if (name === "range") {
+          const values = args.map((value) => sketchNumber(value, line, "range argument"));
+          const [start, stop, step] = values.length === 1 ? [0, values[0], 1] : [values[0], values[1], values[2] ?? 1];
+          if (values.length < 1 || values.length > 3 || !Number.isInteger(start) || !Number.isInteger(stop) || !Number.isInteger(step) || step === 0) {
+            throw new Error(`Line ${line}: range expects one to three integers and a nonzero step.`);
+          }
+          const length = Math.max(0, Math.ceil((stop - start) / step));
+          if (length > 1000) throw new Error(`Line ${line}: range is limited to 1,000 values.`);
+          return Array.from({ length }, (_unused, index) => start + index * step);
+        }
+        if (name === "append") {
+          if (!Array.isArray(args[0]) || args[0].length >= 1000) throw new Error(`Line ${line}: append expects an array with room for another value.`);
+          args[0].push(args[1] ?? null);
+          return null;
+        }
+        if (name === "pop") {
+          if (!Array.isArray(args[0]) || !args[0].length) throw new Error(`Line ${line}: pop expects a non-empty array.`);
+          const index = args[1] === undefined ? args[0].length - 1 : sketchNumber(args[1], line, "array index");
+          if (!Number.isInteger(index) || index < 0 || index >= args[0].length) throw new Error(`Line ${line}: array index is out of range.`);
+          return args[0].splice(index, 1)[0];
+        }
+        if (name === "contains") {
+          if (!Array.isArray(args[0]) && typeof args[0] !== "string") throw new Error(`Line ${line}: contains expects an array or string.`);
+          return args[0].includes(args[1]);
+        }
+        if (name === "dot") {
+          if (!Array.isArray(args[0]) || !Array.isArray(args[1]) || args[0].length !== args[1].length || args[0].length > 1000) {
+            throw new Error(`Line ${line}: dot expects two equally sized arrays of at most 1,000 numbers.`);
+          }
+          return args[0].reduce((total, value, index) => total + sketchNumber(value, line) * sketchNumber(args[1][index], line), 0);
+        }
+        if (name === "mean" || name === "median") {
+          if (!Array.isArray(args[0]) || !args[0].length || args[0].length > 1000) throw new Error(`Line ${line}: ${name} expects a non-empty array of at most 1,000 numbers.`);
+          const values = args[0].map((value) => sketchNumber(value, line)).sort((a, b) => a - b);
+          return name === "mean"
+            ? values.reduce((total, value) => total + value, 0) / values.length
+            : (values[Math.floor((values.length - 1) / 2)] + values[Math.floor(values.length / 2)]) / 2;
+        }
+        if (name === "gcd") {
+          let a = Math.abs(sketchNumber(args[0], line));
+          let b = Math.abs(sketchNumber(args[1], line));
+          if (!Number.isInteger(a) || !Number.isInteger(b)) throw new Error(`Line ${line}: gcd expects integers.`);
+          while (b) [a, b] = [b, a % b];
+          return a;
+        }
+        if (name === "is_prime") {
+          const value = sketchNumber(args[0], line);
+          if (!Number.isInteger(value) || value < 0 || value > 1000000000) throw new Error(`Line ${line}: is_prime expects a whole number from 0 to 1,000,000,000.`);
+          if (value < 2) return false;
+          for (let divisor = 2; divisor * divisor <= value; divisor += 1) if (value % divisor === 0) return false;
+          return true;
+        }
+        if (name === "seed_random") {
+          const seed = sketchNumber(args[0], line, "seed");
+          if (!Number.isInteger(seed)) throw new Error(`Line ${line}: seed_random expects a whole number.`);
+          state.randomSeed = seed >>> 0;
+          return null;
+        }
+        const math = {
+          abs: (value) => Math.abs(value),
+          sqrt: (value) => Math.sqrt(value),
+          sin: (value) => Math.sin(value),
+          cos: (value) => Math.cos(value),
+          tan: (value) => Math.tan(value),
+          asin: (value) => Math.asin(value),
+          acos: (value) => Math.acos(value),
+          atan2: (y, x) => Math.atan2(y, x),
+          radians: (value) => value * Math.PI / 180,
+          degrees: (value) => value * 180 / Math.PI,
+          floor: (value) => Math.floor(value),
+          ceil: (value) => Math.ceil(value),
+          round: (value, digits = 0) => Math.round(value * (10 ** digits)) / (10 ** digits),
+          pow: (a, b) => a ** b,
+          log: (value) => Math.log(value),
+          exp: (value) => Math.exp(value),
+          min: (...values) => Math.min(...(values.length === 1 && Array.isArray(values[0]) ? values[0] : values)),
+          max: (...values) => Math.max(...(values.length === 1 && Array.isArray(values[0]) ? values[0] : values)),
+          sum: (values) => values.reduce((total, value) => total + sketchNumber(value, line), 0),
+          len: (value) => value.length,
+          clamp: (value, low, high) => Math.min(high, Math.max(low, value)),
+          lerp: (a, b, amount) => a + (b - a) * amount,
+          distance: (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1),
+          hypot: (...values) => Math.hypot(...values),
+          factorial: (value) => {
+            if (!Number.isInteger(value) || value < 0 || value > 170) throw new Error(`Line ${line}: factorial expects an integer from 0 to 170.`);
+            let result = 1;
+            for (let factor = 2; factor <= value; factor += 1) result *= factor;
+            return result;
+          },
+          map_range: (value, inputStart, inputEnd, outputStart, outputEnd) => inputEnd === inputStart
+            ? outputStart
+            : outputStart + (value - inputStart) * (outputEnd - outputStart) / (inputEnd - inputStart),
+          random: (low = 0, high = 1) => {
+            state.randomSeed = (1664525 * state.randomSeed + 1013904223) >>> 0;
+            return low + state.randomSeed / 4294967296 * (high - low);
+          }
+        };
+        if (name in math) {
+          if (name === "min" || name === "max") {
+            const values = args.length === 1 && Array.isArray(args[0]) ? args[0] : args;
+            if (!values.length) throw new Error(`Line ${line}: ${name} needs at least one value.`);
+            return math[name](...values.map((value) => sketchNumber(value, line)));
+          }
+          if (name === "sum") {
+            if (!Array.isArray(args[0])) throw new Error(`Line ${line}: sum expects an array.`);
+            return math.sum(args[0]);
+          }
+          if (name === "len") {
+            if (!Array.isArray(args[0]) && typeof args[0] !== "string") throw new Error(`Line ${line}: len expects an array or string.`);
+            return args[0].length;
+          }
+          const numericArgs = args.map((value) => sketchNumber(value, line));
+          const result = math[name](...numericArgs);
+          return sketchNumber(result, line, name);
+        }
+        if (name === "print") {
+          const output = args.map((value) => Array.isArray(value) ? `[${value.map((item) => Array.isArray(item) ? `[${item.join(", ")}]` : String(item)).join(", ")}]` : String(value)).join(" ").slice(0, 2000);
+          state.printed.push(output);
+          state.printVersion += 1;
+          state.printedCharacters += output.length + 1;
+          while (state.printed.length > 500 || state.printedCharacters > 10000) {
+            state.printedCharacters -= state.printed.shift().length + 1;
+          }
+          return null;
+        }
+        if (name === "background") {
+          state.context.fillStyle = color(0, "color", "white");
+          state.context.fillRect(0, 0, state.canvas.width, state.canvas.height);
+          return null;
+        }
+        if (name === "circle") {
+          state.context.beginPath();
+          state.context.arc(numeric(0, "x", 0), numeric(1, "y", 0), Math.max(0, numeric(2, "radius", 0)), 0, Math.PI * 2);
+          state.context.fillStyle = color(3, "color", "#242522");
+          state.context.fill();
+          return null;
+        }
+        if (name === "rect") {
+          state.context.fillStyle = color(4, "color", "#242522");
+          state.context.fillRect(numeric(0, "x", 0), numeric(1, "y", 0), numeric(2, "width", 0), numeric(3, "height", 0));
+          return null;
+        }
+        if (name === "line") {
+          state.context.strokeStyle = color(4, "color", "#242522");
+          state.context.lineWidth = Math.max(1, numeric(5, "width", 2));
+          state.context.beginPath();
+          state.context.moveTo(numeric(0, "x1", 0), numeric(1, "y1", 0));
+          state.context.lineTo(numeric(2, "x2", 0), numeric(3, "y2", 0));
+          state.context.stroke();
+          return null;
+        }
+        if (name === "ellipse") {
+          state.context.beginPath();
+          state.context.ellipse(numeric(0, "x", 0), numeric(1, "y", 0), Math.max(0, numeric(2, "rx", 0)), Math.max(0, numeric(3, "ry", 0)), 0, 0, Math.PI * 2);
+          state.context.fillStyle = color(4, "color", "#242522");
+          state.context.fill();
+          return null;
+        }
+        if (name === "polygon") {
+          const points = get(0, "points", []);
+          if (!Array.isArray(points) || points.length < 3 || points.length > 1000 || points.some((point) => !Array.isArray(point) || point.length !== 2)) {
+            throw new Error(`Line ${line}: polygon expects at least 3 [x, y] points.`);
+          }
+          state.context.beginPath();
+          points.forEach((point, index) => {
+            const x = sketchNumber(point[0], line, "x");
+            const y = sketchNumber(point[1], line, "y");
+            if (index === 0) state.context.moveTo(x, y);
+            else state.context.lineTo(x, y);
+          });
+          state.context.closePath();
+          state.context.fillStyle = color(1, "color", "#242522");
+          state.context.fill();
+          return null;
+        }
+        if (name === "text") {
+          state.context.fillStyle = color(4, "color", "#242522");
+          state.context.font = `${Math.max(8, numeric(3, "size", 18))}px sans-serif`;
+          state.context.textAlign = "center";
+          state.context.fillText(String(get(2, "value", "")), numeric(0, "x", 0), numeric(1, "y", 0), state.canvas.width);
+          return null;
+        }
+        throw new Error(`Line ${line}: unknown function "${name}".`);
+      }
+
+      function executeSketchStatements(statements, environment, state, line, inFunction = false) {
+        for (const statement of statements) {
+          state.executed += 1;
+          if (state.executed > (state.statementLimit || 3000)) throw new Error(`A sketch can execute at most ${state.statementLimit || 3000} statements per run.`);
+          if (statement.type === "assign") {
+            environment[statement.name] = evaluateSketchExpression(statement.value, environment, state, statement.line);
+          } else if (statement.type === "indexAssign") {
+            const target = statement.target;
+            const array = evaluateSketchExpression(target.object, environment, state, statement.line);
+            const index = evaluateSketchExpression(target.index, environment, state, statement.line);
+            if (!Array.isArray(array) || !Number.isInteger(index)) throw new Error(`Line ${statement.line}: indexed assignment needs an integer array index.`);
+            const actualIndex = index < 0 ? array.length + index : index;
+            if (actualIndex < 0 || actualIndex >= array.length) throw new Error(`Line ${statement.line}: array index is out of range.`);
+            array[actualIndex] = evaluateSketchExpression(statement.value, environment, state, statement.line);
+          } else if (statement.type === "expression") {
+            evaluateSketchExpression(statement.value, environment, state, statement.line);
+          } else if (statement.type === "return") {
+            if (!inFunction) throw new Error(`Line ${statement.line}: return can only be used inside a function.`);
+            return { returned: true, value: evaluateSketchExpression(statement.value, environment, state, statement.line) };
+          } else if (statement.type === "def") {
+            continue;
+          } else if (statement.type === "if") {
+            const body = sketchTruthy(evaluateSketchExpression(statement.condition, environment, state, statement.line)) ? statement.thenBody : statement.elseBody;
+            const result = executeSketchStatements(body, environment, state, statement.line, inFunction);
+            if (result?.returned) return result;
+          } else if (statement.type === "for") {
+            const values = evaluateSketchExpression(statement.iterable, environment, state, statement.line);
+            if (!Array.isArray(values) || values.length > 1000) throw new Error(`Line ${statement.line}: for loops need an array or range of at most 1,000 values.`);
+            for (const value of values) {
+              environment[statement.name] = value;
+              const result = executeSketchStatements(statement.body, environment, state, statement.line, inFunction);
+              if (result?.returned) return result;
+            }
+          } else if (statement.type === "while") {
+            let iterations = 0;
+            while (sketchTruthy(evaluateSketchExpression(statement.condition, environment, state, statement.line))) {
+              iterations += 1;
+              if (iterations > 1000) throw new Error(`Line ${statement.line}: while loop exceeded 1,000 iterations.`);
+              const result = executeSketchStatements(statement.body, environment, state, statement.line, inFunction);
+              if (result?.returned) return result;
+            }
+          } else if (statement.type === "import" || statement.type === "fromImport") {
+            loadSketchModule(statement.module, state, statement.line);
+            const module = state.modules.get(statement.module);
+            if (statement.type === "import") {
+              environment[statement.module] = { kind: "module", name: statement.module };
+            } else {
+              statement.names.forEach((name) => {
+                const value = statement.module === "math" ? state.math[name] : module.environment[name];
+                if (value === undefined) throw new Error(`Line ${statement.line}: ${name} is not available in ${statement.module}.`);
+                environment[name] = value;
+              });
+            }
           }
         }
-        if (source.slice(start).trim()) parts.push(source.slice(start).trim());
-        return parts;
+        return null;
       }
 
-      function parsePythonLiteral(source) {
-        const value = source.trim();
-        if (/^-?(?:\d+\.?\d*|\.\d+)$/.test(value)) return Number(value);
-        if (value === "True") return true;
-        if (value === "False") return false;
-        if (value === "None") return null;
-        if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-          if (value.startsWith('"')) return JSON.parse(value);
-          return value.slice(1, -1).replace(/\\(['\\nrt])/g, (_match, escaped) => ({ "'": "'", "\\": "\\", n: "\n", r: "\r", t: "\t" })[escaped]);
+      function callSketchFunction(key, args, named, state, line) {
+        if (state.callDepth >= 32) throw new Error(`Line ${line}: function call depth exceeded 32.`);
+        const callable = state.functions.get(key);
+        if (!callable) throw new Error(`Line ${line}: function is not available.`);
+        if (args.length > callable.parameters.length) throw new Error(`Line ${line}: too many function arguments.`);
+        const local = Object.create(state.modules.get(callable.module).environment);
+        callable.parameters.forEach((parameter, index) => {
+          if (index < args.length && Object.hasOwn(named, parameter)) throw new Error(`Line ${line}: "${parameter}" was provided twice.`);
+          if (index < args.length) local[parameter] = args[index];
+          else if (Object.hasOwn(named, parameter)) local[parameter] = named[parameter];
+          else throw new Error(`Line ${line}: missing function argument "${parameter}".`);
+        });
+        Object.keys(named).forEach((name) => {
+          if (!callable.parameters.includes(name)) throw new Error(`Line ${line}: unknown function argument "${name}".`);
+        });
+        state.callDepth += 1;
+        try {
+          return executeSketchStatements(callable.body, local, state, line, true)?.value ?? null;
+        } finally {
+          state.callDepth -= 1;
         }
-        throw new Error(`Unsupported value: ${value}`);
       }
 
-      function runPythonSketch() {
+      function loadSketchModule(name, state, line) {
+        if (name === "math") return;
+        const module = state.modules.get(name);
+        if (!module) throw new Error(`Line ${line}: no sketch file named "${name}.py".`);
+        if (module.loaded) return;
+        if (module.loading) throw new Error(`Line ${line}: circular file imports are not supported.`);
+        module.loading = true;
+        try {
+          executeSketchStatements(module.body, module.environment, state, line);
+          module.loaded = true;
+        } finally {
+          module.loading = false;
+        }
+      }
+
+      function stopSketchRunner(status = "Stopped") {
+        if (activeSketchRun?.requestId) cancelAnimationFrame(activeSketchRun.requestId);
+        activeSketchRun = null;
+        sketchKeys.clear();
         const canvas = document.querySelector("#python-canvas");
-        const context = canvas.getContext("2d");
+        document.querySelector("#pause-python").hidden = true;
+        document.querySelector("#pause-python").textContent = "Pause";
+        document.querySelector("#stop-python").hidden = true;
+        document.querySelector("#run-python").disabled = false;
+        document.querySelector("#run-python-continuous").disabled = false;
+        document.querySelector("#python-runtime-status").textContent = `${status} · ${canvas.width} × ${canvas.height}`;
+      }
+
+      function syncSketchCanvasControls() {
+        const canvas = document.querySelector("#python-canvas");
+        const width = document.querySelector("#python-canvas-width");
+        const height = document.querySelector("#python-canvas-height");
+        if (width.value !== String(canvas.width)) width.value = String(canvas.width);
+        if (height.value !== String(canvas.height)) height.value = String(canvas.height);
+        canvas.style.aspectRatio = `${canvas.width} / ${canvas.height}`;
+      }
+
+      function drawSketchFrame(run, timestamp) {
+        if (activeSketchRun !== run || run.paused) return;
+        if (run.lastFrameAt !== null && timestamp - run.lastFrameAt < 1000 / run.fps - 1) {
+          run.requestId = requestAnimationFrame((nextTimestamp) => drawSketchFrame(run, nextTimestamp));
+          return;
+        }
+        run.lastFrameAt = timestamp;
+        run.frame += 1;
+        if (run.startedAt === null) run.startedAt = timestamp;
+        const delta = run.lastTimestamp === null ? 0 : Math.min(0.1, Math.max(0, (timestamp - run.lastTimestamp) / 1000));
+        run.lastTimestamp = timestamp;
+        Object.assign(run.environment, {
+          width: run.state.canvas.width,
+          height: run.state.canvas.height,
+          frame: run.frame,
+          time: (timestamp - run.startedAt) / 1000,
+          delta,
+          mouse_x: sketchPointer.x,
+          mouse_y: sketchPointer.y,
+          mouse_down: sketchPointer.down
+        });
+        run.state.executed = 0;
+        run.state.statementLimit = 1000;
+        try {
+          executeSketchStatements(run.body, run.environment, run.state, 1);
+          if (run.state.printVersion !== run.printVersion) {
+            const output = document.querySelector("#python-print-output");
+            output.textContent = run.state.printed.join("\n");
+            output.scrollTop = output.scrollHeight;
+            run.printVersion = run.state.printVersion;
+          }
+          syncSketchCanvasControls();
+          document.querySelector("#python-runtime-status").textContent = `Running · frame ${run.frame} · ${run.state.canvas.width} × ${run.state.canvas.height}`;
+          run.requestId = requestAnimationFrame((nextTimestamp) => drawSketchFrame(run, nextTimestamp));
+        } catch (error) {
+          document.querySelector("#python-error").textContent = error.message || "Could not continue sketch.";
+          stopSketchRunner("Stopped after error");
+        }
+      }
+
+      function toggleSketchPause() {
+        const run = activeSketchRun;
+        if (!run) return;
+        const pauseButton = document.querySelector("#pause-python");
+        if (run.paused) {
+          run.paused = false;
+          run.startedAt += performance.now() - run.pausedAt;
+          run.lastTimestamp = null;
+          run.lastFrameAt = null;
+          pauseButton.textContent = "Pause";
+          document.querySelector("#python-runtime-status").textContent = `Running · frame ${run.frame} · ${run.state.canvas.width} × ${run.state.canvas.height}`;
+          run.requestId = requestAnimationFrame((timestamp) => drawSketchFrame(run, timestamp));
+        } else {
+          run.paused = true;
+          run.pausedAt = performance.now();
+          if (run.requestId) cancelAnimationFrame(run.requestId);
+          run.requestId = null;
+          pauseButton.textContent = "Resume";
+          document.querySelector("#python-runtime-status").textContent = `Paused · frame ${run.frame} · ${run.state.canvas.width} × ${run.state.canvas.height}`;
+        }
+      }
+
+      function runPythonSketch(continuous = false) {
+        stopSketchRunner("Ready");
+        const canvas = document.querySelector("#python-canvas");
+        const context = canvas.getContext("2d", { willReadFrequently: true });
         const output = document.querySelector("#python-print-output");
         const errorOutput = document.querySelector("#python-error");
         output.textContent = "";
         errorOutput.textContent = "";
-        const source = document.querySelector("#python-source").value;
-        if (source.length > 50000) {
-          errorOutput.textContent = "Sketch is too long (maximum 50,000 characters).";
-          return;
-        }
+        document.querySelector("#python-runtime-status").textContent = `Preparing · ${canvas.width} × ${canvas.height}`;
+        canvas.width = canvas.width;
+        syncSketchCanvasControls();
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.fillStyle = "white";
         context.fillRect(0, 0, canvas.width, canvas.height);
-        const printed = [];
-        const lines = source.split(/\r?\n/);
-        if (lines.length > 500) {
-          errorOutput.textContent = "Sketch is too long (maximum 500 lines).";
-          return;
-        }
-        let commands = 0;
+        const sources = [{ name: "main", source: project?.code_source || "" }, ...(project?.code_files || [])];
         try {
-          lines.forEach((original, index) => {
-            let quote = "";
-            let escaped = false;
-            let commentIndex = original.length;
-            for (let position = 0; position < original.length; position += 1) {
-              const character = original[position];
-              if (quote) {
-                if (escaped) escaped = false;
-                else if (character === "\\") escaped = true;
-                else if (character === quote) quote = "";
-              } else if (character === "'" || character === '"') quote = character;
-              else if (character === "#") { commentIndex = position; break; }
-            }
-            const line = original.slice(0, commentIndex).trim();
-            if (!line) return;
-            const call = line.match(/^([A-Za-z_]\w*)\s*\((.*)\)\s*$/);
-            if (!call) throw new Error(`Line ${index + 1}: use a supported function call.`);
-            commands += 1;
-            if (commands > 300) throw new Error("A sketch can contain at most 300 drawing commands.");
-            const args = [];
-            const named = {};
-            splitPythonArguments(call[2]).forEach((part) => {
-              const namedMatch = part.match(/^([A-Za-z_]\w*)\s*=\s*(.+)$/);
-              if (namedMatch) named[namedMatch[1]] = parsePythonLiteral(namedMatch[2]);
-              else args.push(parsePythonLiteral(part));
+          const totalCharacters = sources.reduce((sum, file) => sum + file.source.length, 0);
+          if (totalCharacters > 50000) throw new Error("A project’s sketch files cannot exceed 50,000 characters combined.");
+          if (sources.reduce((sum, file) => sum + file.source.split(/\r?\n/).length, 0) > 500) throw new Error("A project's sketch files cannot exceed 500 lines combined.");
+          const modules = new Map(sources.map((file) => [file.name, {
+            body: parseSketchProgram(file.source),
+            environment: Object.create(null),
+            loaded: file.name === "main",
+            loading: false
+          }]));
+          const mathNames = {
+            pi: Math.PI, e: Math.E,
+            abs: { kind: "builtin", name: "abs" }, sqrt: { kind: "builtin", name: "sqrt" },
+            sin: { kind: "builtin", name: "sin" }, cos: { kind: "builtin", name: "cos" },
+            tan: { kind: "builtin", name: "tan" }, asin: { kind: "builtin", name: "asin" },
+            acos: { kind: "builtin", name: "acos" }, atan2: { kind: "builtin", name: "atan2" },
+            radians: { kind: "builtin", name: "radians" }, degrees: { kind: "builtin", name: "degrees" },
+            floor: { kind: "builtin", name: "floor" }, ceil: { kind: "builtin", name: "ceil" },
+            round: { kind: "builtin", name: "round" }, pow: { kind: "builtin", name: "pow" },
+            log: { kind: "builtin", name: "log" }, exp: { kind: "builtin", name: "exp" },
+            min: { kind: "builtin", name: "min" }, max: { kind: "builtin", name: "max" },
+            sum: { kind: "builtin", name: "sum" }, len: { kind: "builtin", name: "len" },
+            range: { kind: "builtin", name: "range" }, clamp: { kind: "builtin", name: "clamp" },
+            lerp: { kind: "builtin", name: "lerp" }, distance: { kind: "builtin", name: "distance" },
+            hypot: { kind: "builtin", name: "hypot" }, factorial: { kind: "builtin", name: "factorial" },
+            map_range: { kind: "builtin", name: "map_range" }, random: { kind: "builtin", name: "random" },
+            seed_random: { kind: "builtin", name: "seed_random" },
+            mean: { kind: "builtin", name: "mean" }, median: { kind: "builtin", name: "median" },
+            dot: { kind: "builtin", name: "dot" }, gcd: { kind: "builtin", name: "gcd" },
+            is_prime: { kind: "builtin", name: "is_prime" }
+          };
+          const builtins = Object.fromEntries([
+            "print", "background", "circle", "rect", "line", "ellipse", "polygon", "text", "pixel", "pixel_batch", "get_pixel",
+            "color", "clear", "resize_canvas", "canvas_width", "canvas_height", "save", "restore", "translate", "rotate", "scale", "stroke",
+            "begin_path", "move_to", "line_to", "quadratic_to", "bezier_to", "close_path", "fill_path", "stroke_path", "line_cap", "line_join", "global_alpha", "key_down", "seed_random",
+            "abs", "sqrt", "sin", "cos", "tan",
+            "asin", "acos", "atan2", "radians", "degrees", "floor", "ceil", "round", "pow", "log", "exp",
+            "min", "max", "sum", "len", "range", "append", "pop", "contains", "clamp", "lerp",
+            "distance", "hypot", "factorial", "map_range", "random", "mean", "median", "dot", "gcd", "is_prime"
+          ].map((name) => [name, { kind: "builtin", name }]));
+          const state = {
+            canvas, context, modules, math: mathNames, builtins,
+            functions: new Map(), printed: [], printedCharacters: 0, printVersion: 0,
+            executed: 0, statementLimit: 3000, callDepth: 0, randomSeed: 0x6d2b79f5
+          };
+          modules.forEach((module, moduleName) => {
+            module.environment.math = { kind: "module", name: "math" };
+            Object.assign(module.environment, builtins, { pi: Math.PI, e: Math.E });
+            module.body.filter((statement) => statement.type === "def").forEach((statement) => {
+              const key = `${moduleName}.${statement.name}`;
+              state.functions.set(key, { ...statement, module: moduleName });
+              module.environment[statement.name] = { kind: "function", key };
             });
-            const get = (position, name, fallback) => args[position] ?? named[name] ?? fallback;
-            const number = (position, name, fallback) => {
-              const value = Number(get(position, name, fallback));
-              if (!Number.isFinite(value)) throw new Error(`Line ${index + 1}: ${name} must be a number.`);
-              return value;
-            };
-            const color = (position, fallback = "#242522") => {
-              const value = get(position, "color", fallback);
-              if (typeof value !== "string" || !/^(#[0-9a-f]{3,8}|[a-z]{1,24})$/i.test(value)) throw new Error(`Line ${index + 1}: invalid color.`);
-              return value;
-            };
-            switch (call[1]) {
-              case "print":
-                printed.push(args.map(String).join(" "));
-                break;
-              case "background":
-                context.fillStyle = color(0, "white");
-                context.fillRect(0, 0, canvas.width, canvas.height);
-                break;
-              case "circle":
-                context.beginPath();
-                context.arc(number(0, "x", 0), number(1, "y", 0), Math.max(0, number(2, "radius", 0)), 0, Math.PI * 2);
-                context.fillStyle = color(3);
-                context.fill();
-                break;
-              case "rect":
-                context.fillStyle = color(4);
-                context.fillRect(number(0, "x", 0), number(1, "y", 0), number(2, "width", 0), number(3, "height", 0));
-                break;
-              case "line":
-                context.strokeStyle = color(4);
-                context.lineWidth = Math.max(1, number(5, "width", 2));
-                context.beginPath();
-                context.moveTo(number(0, "x1", 0), number(1, "y1", 0));
-                context.lineTo(number(2, "x2", 0), number(3, "y2", 0));
-                context.stroke();
-                break;
-              case "text":
-                context.fillStyle = color(4);
-                context.font = `${Math.max(8, number(3, "size", 18))}px sans-serif`;
-                context.textAlign = "center";
-                context.fillText(String(get(2, "value", "")), number(0, "x", 0), number(1, "y", 0), canvas.width);
-                break;
-              default:
-                throw new Error(`Line ${index + 1}: unknown function "${call[1]}".`);
-            }
           });
-          output.textContent = printed.join("\n");
+          const main = modules.get("main");
+          const environment = main.environment;
+          state.environment = environment;
+          Object.assign(environment, {
+            width: canvas.width, height: canvas.height, frame: 0, time: 0, delta: 0,
+            mouse_x: sketchPointer.x, mouse_y: sketchPointer.y, mouse_down: sketchPointer.down
+          });
+          const finalStatement = main.body.at(-1);
+          const continuousLoop = finalStatement?.type === "while"
+            && finalStatement.condition.type === "literal"
+            && finalStatement.condition.value === true;
+          if (continuous && !continuousLoop) {
+            throw new Error("For continuous mode, end main.py with a top-level `while True:` loop.");
+          }
+          if (!continuous && continuousLoop) {
+            throw new Error("This sketch has a `while True:` loop. Choose Run continuously so it can be paused or stopped safely.");
+          }
+          executeSketchStatements(continuousLoop ? main.body.slice(0, -1) : main.body, environment, state, 1);
+          if (continuous) {
+            state.statementLimit = 1000;
+            activeSketchRun = {
+              state, environment, body: finalStatement.body,
+              frame: 0, fps: Number(document.querySelector("#python-frame-rate").value),
+              startedAt: null, lastTimestamp: null, lastFrameAt: null, pausedAt: null,
+              requestId: null, paused: false, printVersion: state.printVersion
+            };
+            document.querySelector("#pause-python").hidden = false;
+            document.querySelector("#stop-python").hidden = false;
+            document.querySelector("#run-python").disabled = true;
+            document.querySelector("#run-python-continuous").disabled = true;
+            document.querySelector("#python-canvas").focus({ preventScroll: true });
+            drawSketchFrame(activeSketchRun, performance.now());
+          } else {
+            document.querySelector("#python-runtime-status").textContent = `Finished · ${canvas.width} × ${canvas.height}`;
+          }
+          output.textContent = state.printed.join("\n").slice(0, 10000);
+          output.scrollTop = output.scrollHeight;
         } catch (error) {
           errorOutput.textContent = error.message || "Could not run sketch.";
+          document.querySelector("#python-runtime-status").textContent = `Error · ${canvas.width} × ${canvas.height}`;
         }
+      }
+
+      function resizeSketchCanvasFromControls() {
+        const canvas = document.querySelector("#python-canvas");
+        const width = Number(document.querySelector("#python-canvas-width").value);
+        const height = Number(document.querySelector("#python-canvas-height").value);
+        if (!Number.isInteger(width) || !Number.isInteger(height) || width < 1 || height < 1 || width > 1600 || height > 1000 || width * height > 1500000) {
+          showToast("Canvas dimensions must be whole numbers within the 1.5 million pixel limit.");
+          syncSketchCanvasControls();
+          return;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext("2d", { willReadFrequently: true });
+        context.fillStyle = "white";
+        context.fillRect(0, 0, width, height);
+        syncSketchCanvasControls();
+        if (!activeSketchRun) document.querySelector("#python-runtime-status").textContent = `Ready · ${width} × ${height}`;
+      }
+
+      function saveSketchCanvas() {
+        const canvas = document.querySelector("#python-canvas");
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            showToast("Could not export this canvas.");
+            return;
+          }
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = `${(project?.title || "sketch").replace(/[^a-z0-9_-]+/gi, "-")}.png`;
+          link.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }, "image/png");
       }
 
       function saveCurrentDocument() {
@@ -3255,8 +4526,7 @@
           document.querySelector("#code-pane").hidden = !codeProject;
           document.querySelector("#inspector").hidden = true;
           document.querySelector("#project-no-steps").hidden = true;
-          document.querySelector("#python-source").value = project.code_source || "";
-          document.querySelector("#python-source").readOnly = !isManager || mode !== "edit";
+          renderCodeFiles();
           document.querySelector("#run-python").disabled = false;
           if (diagramProject) renderDiagram();
           else runPythonSketch();
@@ -3483,7 +4753,7 @@
         renderStageShapes(getCurrentStep());
         if (["diagram2d", "diagram3d"].includes(project?.project_type)) renderDiagram();
         if (project?.project_type === "code") {
-          document.querySelector("#python-source").readOnly = !isManager || mode !== "edit";
+          renderCodeFiles();
           runPythonSketch();
         }
       }
@@ -3774,6 +5044,8 @@
         renderer.render(scene, camera);
         if (diagram3dRenderer && project?.project_type === "diagram3d") {
           diagram3dControls.update();
+          diagram3dLayoutFrame += 1;
+          if (diagram3dLayoutFrame % 2 === 0) stepDiagram3dLayout();
           diagram3dRenderer.render(diagram3dScene, diagram3dCamera);
         }
         updateHotspotPositions();
@@ -3924,6 +5196,7 @@
           button.addEventListener("mousedown", (event) => event.preventDefault());
           button.addEventListener("click", () => {
             if (!isManager) return;
+            restoreDocumentSelection();
             document.execCommand(button.dataset.documentFormat, false, null);
             documentEditor.focus();
             saveDocumentFormatting();
@@ -3932,24 +5205,31 @@
         document.querySelector("#document-code-block").addEventListener("mousedown", (event) => event.preventDefault());
         document.querySelector("#document-code-block").addEventListener("click", toggleDocumentCodeBlock);
         document.querySelector("#document-block").addEventListener("change", (event) => {
+          restoreDocumentSelection();
           document.execCommand("formatBlock", false, event.target.value);
           documentEditor.focus();
           saveDocumentFormatting();
         });
         document.querySelector("#document-color").addEventListener("input", (event) => {
+          restoreDocumentSelection();
           document.execCommand("foreColor", false, event.target.value);
           documentEditor.focus();
           saveDocumentFormatting();
         });
         document.querySelector("#document-size").addEventListener("change", (event) => {
-          document.execCommand("fontSize", false, event.target.value);
-          documentEditor.focus();
-          saveDocumentFormatting();
+          applyDocumentFontSize(Number(event.target.value));
         });
         document.querySelector("#document-font").addEventListener("change", (event) => {
+          restoreDocumentSelection();
           document.execCommand("fontName", false, event.target.value);
           documentEditor.focus();
           saveDocumentFormatting();
+        });
+        document.addEventListener("selectionchange", () => {
+          const selection = document.getSelection();
+          if (selection?.rangeCount && selection.anchorNode && documentEditor.contains(selection.anchorNode)) {
+            savedDocumentSelection = selection.getRangeAt(0).cloneRange();
+          }
         });
         document.querySelector("#document-spacing").addEventListener("change", (event) => {
           if (!project || !isManager) return;
@@ -4048,13 +5328,23 @@
         document.querySelector("#diagram-edge-value").addEventListener("change", (event) => {
           const edge = project?.diagram_edges.find((item) => item.id === selectedDiagramEdgeId);
           if (!edge) return;
-          edge.value = event.currentTarget.value.slice(0, 200);
+          if (project.project_type === "diagram3d") {
+            const value = Number(event.currentTarget.value);
+            if (!Number.isFinite(value)) {
+              event.currentTarget.value = String(Number(edge.value) || 1);
+              return;
+            }
+            edge.value = String(Math.max(0.1, Math.min(10, value)));
+          } else {
+            edge.value = event.currentTarget.value.slice(0, 200);
+          }
           const from = diagramNode(edge.from);
           const to = diagramNode(edge.to);
           if (from && to) ensureDiagramEdgeSpacing(from, to, edge.value);
           persist();
           renderDiagram();
         });
+        document.querySelector("#remove-diagram-edge").addEventListener("click", removeDiagramEdge);
         const diagramContent = document.querySelector("#diagram-content");
         diagramContent.addEventListener("pointerdown", (event) => {
           if (project?.project_type !== "diagram2d" || event.button !== 0 || event.target.closest(".diagram-node, .diagram-edge")) return;
@@ -4087,9 +5377,19 @@
         }, { passive: false });
         document.querySelector("#python-source").addEventListener("input", (event) => {
           if (!project || project.project_type !== "code" || !isManager || mode !== "edit") return;
-          project.code_source = event.currentTarget.value.slice(0, 50000);
+          const source = event.currentTarget.value.slice(0, 50000);
+          if (selectedCodeFile) {
+            const file = project.code_files.find((item) => item.name === selectedCodeFile);
+            if (file) file.source = source;
+          } else {
+            project.code_source = source;
+          }
           persist();
         });
+        document.querySelector("#add-code-file").addEventListener("click", addCodeFile);
+        document.querySelector("#delete-code-file").addEventListener("click", deleteCodeFile);
+        document.querySelector("#code-editor-tab").addEventListener("click", () => setCodeWorkspaceTab("editor"));
+        document.querySelector("#code-guide-tab").addEventListener("click", () => setCodeWorkspaceTab("guide"));
         document.querySelector("#python-source").addEventListener("keydown", (event) => {
           if (event.key === "Tab" && !event.ctrlKey && !event.metaKey) {
             event.preventDefault();
@@ -4103,7 +5403,60 @@
             runPythonSketch();
           }
         });
-        document.querySelector("#run-python").addEventListener("click", runPythonSketch);
+        document.querySelector("#run-python").addEventListener("click", () => runPythonSketch(false));
+        document.querySelector("#run-python-continuous").addEventListener("click", () => runPythonSketch(true));
+        document.querySelector("#pause-python").addEventListener("click", toggleSketchPause);
+        document.querySelector("#stop-python").addEventListener("click", () => stopSketchRunner("Stopped"));
+        document.querySelector("#python-frame-rate").addEventListener("change", (event) => {
+          if (activeSketchRun) {
+            activeSketchRun.fps = Number(event.currentTarget.value);
+            activeSketchRun.lastFrameAt = null;
+          }
+        });
+        document.querySelector("#resize-python-canvas").addEventListener("click", resizeSketchCanvasFromControls);
+        document.querySelector("#save-python-canvas").addEventListener("click", saveSketchCanvas);
+        document.querySelector("#clear-python-canvas").addEventListener("click", () => {
+          const canvas = document.querySelector("#python-canvas");
+          const context = canvas.getContext("2d", { willReadFrequently: true });
+          context.save();
+          context.setTransform(1, 0, 0, 1, 0, 0);
+          context.clearRect(0, 0, canvas.width, canvas.height);
+          context.restore();
+        });
+        document.querySelector("#clear-python-console").addEventListener("click", () => {
+          document.querySelector("#python-print-output").textContent = "";
+          document.querySelector("#python-error").textContent = "";
+          if (activeSketchRun) {
+            activeSketchRun.state.printed = [];
+            activeSketchRun.state.printedCharacters = 0;
+            activeSketchRun.state.printVersion = 0;
+            activeSketchRun.printVersion = 0;
+          }
+        });
+        const sketchCanvas = document.querySelector("#python-canvas");
+        const updateSketchPointer = (event) => {
+          const rect = sketchCanvas.getBoundingClientRect();
+          sketchPointer.x = Math.max(0, Math.min(sketchCanvas.width - 1, (event.clientX - rect.left) / rect.width * sketchCanvas.width));
+          sketchPointer.y = Math.max(0, Math.min(sketchCanvas.height - 1, (event.clientY - rect.top) / rect.height * sketchCanvas.height));
+        };
+        sketchCanvas.addEventListener("pointermove", updateSketchPointer);
+        sketchCanvas.addEventListener("pointerdown", (event) => {
+          updateSketchPointer(event);
+          sketchPointer.down = true;
+          sketchCanvas.setPointerCapture(event.pointerId);
+        });
+        sketchCanvas.addEventListener("pointerup", (event) => {
+          updateSketchPointer(event);
+          sketchPointer.down = false;
+        });
+        sketchCanvas.addEventListener("pointercancel", () => { sketchPointer.down = false; });
+        window.addEventListener("keydown", (event) => {
+          if (!activeSketchRun || document.activeElement !== sketchCanvas || event.ctrlKey || event.metaKey || event.altKey) return;
+          sketchKeys.add(event.key);
+          if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(event.key)) event.preventDefault();
+        });
+        window.addEventListener("keyup", (event) => { sketchKeys.delete(event.key); });
+        window.addEventListener("blur", () => { sketchPointer.down = false; sketchKeys.clear(); });
         document.querySelector("#project-search").addEventListener("input", renderGallery);
         document.querySelector("#section-filter").addEventListener("change", renderGallery);
         document.querySelector("#collection-filter").addEventListener("change", renderGallery);
@@ -4595,7 +5948,7 @@
         const requestedProject = new URLSearchParams(location.search).get("project");
         if (requestedProject) {
           const { data: row, error: projectError } = await supabase.from("projects")
-            .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,is_private,diagram_nodes,diagram_edges,code_source,created_at,updated_at")
+            .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,is_private,diagram_nodes,diagram_edges,code_source,code_files,created_at,updated_at")
             .eq("id", requestedProject)
             .maybeSingle();
           if (projectError) {
