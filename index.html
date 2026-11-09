@@ -191,6 +191,9 @@
       .marker-editor { margin-top: 12px; padding: 11px; border: 1px solid #e7e8e1; border-radius: 8px; background: #fafaf7; }
       .marker-editor-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; font-size: 10px; font-weight: 700; }
       .close-marker { border: 0; background: transparent; color: #898b85; font-size: 16px; cursor: pointer; }
+      .rotation-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+      .rotation-field { color: var(--muted); font-size: 10px; }
+      .rotation-field input { margin-top: 5px; }
       .delete-step { margin: auto 19px 20px; padding: 10px 0 0; border: 0; background: transparent; color: #a36a62; font-size: 10px; text-align: left; cursor: pointer; }
       .delete-step:hover { color: #8f4b42; }
       .toast { position: fixed; z-index: 10; bottom: 24px; left: 50%; transform: translate(-50%, 12px); padding: 10px 14px; border-radius: 8px; background: var(--deep); color: white; font-size: 11px; opacity: 0; pointer-events: none; transition: .2s ease; }
@@ -291,14 +294,13 @@
       .mixed-mode .workspace { grid-template-columns: 46px 206px minmax(0, 1fr) 294px; }
       .mixed-mode.mixed-document-step .stage-column { display: none; }
       .mixed-mode.mixed-document-step .document-pane { grid-column: 3; grid-row: 1; min-height: calc(100vh - 200px); margin: 24px auto; width: min(860px, calc(100% - 48px)); border: 0; border-radius: 2px; }
-      .mixed-mode.mixed-document-step .inspector #model-section, .mixed-mode.mixed-document-step .inspector #video-section, .mixed-mode.mixed-document-step .inspector #text-section, .mixed-mode.mixed-document-step .inspector #images-upload-section, .mixed-mode.mixed-document-step .inspector #hotspots-section, .mixed-mode.mixed-document-step .inspector #step-settings, .mixed-mode.mixed-document-step .inspector #delete-step { display: none; }
+      .mixed-mode.mixed-document-step .inspector #model-section, .mixed-mode.mixed-document-step .inspector #video-section, .mixed-mode.mixed-document-step .inspector #text-section, .mixed-mode.mixed-document-step .inspector #images-upload-section, .mixed-mode.mixed-document-step .inspector #hotspots-section, .mixed-mode.mixed-document-step .inspector #step-settings { display: none; }
       .mixed-mode.mixed-any-step .workspace { grid-template-columns: 46px 190px minmax(280px, 1fr) minmax(300px, .9fr) 294px; }
       .mixed-mode.mixed-any-step .document-pane { grid-column: 4; grid-row: 1; min-height: calc(100vh - 200px); margin: 16px 8px; width: auto; }
       .mixed-mode.mixed-any-step .inspector { grid-column: 5; grid-row: 1; }
       .mixed-mode.mixed-any-step #inspector #step-settings { display: none; }
       .mixed-mode .document-page { padding: 12px; }
       .mixed-mode .document-editor { min-height: 700px; }
-      .mixed-mode.mixed-document-step #inspector #delete-step, .mixed-mode.mixed-any-step #inspector #delete-step { display: none; }
       .step-type-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .step-type-actions button { min-height: 40px; }
       .document-editor:empty::before { color: #a0a19b; content: "Start writing your document…"; }
@@ -721,6 +723,19 @@
               <button type="button" class="text-button" id="choose-model">Upload</button>
             </div>
             <p class="format-note">Supported: GLB, GLTF, OBJ and STL. GLTF files need embedded assets.</p>
+            <div class="section-title"><h2>Base rotation</h2><span>Optional</span></div>
+            <p class="format-note">Set the model's starting orientation in degrees. This is used in edit and view modes.</p>
+            <div class="rotation-fields" aria-label="Model base rotation">
+              <label class="rotation-field" for="model-rotation-x">X°
+                <input class="text-field" id="model-rotation-x" type="number" min="-180" max="180" step="1" value="0" />
+              </label>
+              <label class="rotation-field" for="model-rotation-y">Y°
+                <input class="text-field" id="model-rotation-y" type="number" min="-180" max="180" step="1" value="0" />
+              </label>
+              <label class="rotation-field" for="model-rotation-z">Z°
+                <input class="text-field" id="model-rotation-z" type="number" min="-180" max="180" step="1" value="0" />
+              </label>
+            </div>
           </section>
           <section class="inspector-section" id="video-section">
             <div class="section-title"><h2>Video</h2><span>Optional</span></div>
@@ -879,7 +894,14 @@
 
       function newStep(title = "New step", kind = "model") {
         const pageSize = kind === "document" ? { page_width: 10, page_height: 20 } : { page_width: 15, page_height: 7 };
-        return { id: makeId(), title, kind, ...pageSize, document_html: "<h1></h1>", description: "", modelPath: null, modelName: "", videoPath: null, videoUrl: null, videoName: "", images: [], hotspots: [], texts: [], shapes: [] };
+        return { id: makeId(), title, kind, ...pageSize, document_html: "<h1></h1>", description: "", modelPath: null, modelName: "", baseRotation: { x: 0, y: 0, z: 0 }, videoPath: null, videoUrl: null, videoName: "", images: [], hotspots: [], texts: [], shapes: [] };
+      }
+
+      function normalizeBaseRotation(rotation) {
+        return Object.fromEntries(["x", "y", "z"].map((axis) => {
+          const value = Number(rotation?.[axis]);
+          return [axis, Number.isFinite(value) ? Math.min(180, Math.max(-180, value)) : 0];
+        }));
       }
 
       function normalizeProject(row) {
@@ -930,6 +952,7 @@
             })) : [],
             modelPath: step.modelPath || null,
             modelName: step.modelName || "",
+            baseRotation: normalizeBaseRotation(step.baseRotation),
             videoPath: step.videoPath || null,
             videoUrl: step.videoUrl || null,
             videoName: step.videoName || ""
@@ -1637,7 +1660,8 @@
         currentStepId = step.id;
         selectedHotspotId = null;
         selectedImageId = null;
-        document.querySelector("#step-type-dialog").close();
+        const typeDialog = document.querySelector("#step-type-dialog");
+        if (typeDialog.open) typeDialog.close();
         app.classList.remove("empty-project");
         renderSteps();
         renderInspector();
@@ -1647,17 +1671,13 @@
 
       async function deleteCurrentItem() {
         if (!project || !isManager || mode !== "edit") return;
-        if (project.steps.length === 1 && project.project_type !== "mixed") {
-          showToast(project.project_type === "document" ? "A document needs at least one page." : "A process needs at least one step.");
-          return;
-        }
         const step = getCurrentStep();
         if (!step) return;
-        if ((project.project_type === "document" || project.project_type === "mixed") && !window.confirm(`Delete "${step.title || (project.project_type === "document" ? "this page" : "this step")}"?`)) return;
+        if (!window.confirm(`Delete "${step.title || (project.project_type === "document" ? "this page" : "this step")}"?`)) return;
         if (!await flushPendingSave()) return;
         const index = project.steps.indexOf(step);
         project.steps = project.steps.filter((item) => item.id !== step.id);
-        if (project.project_type === "document") project.document_html = project.steps[0].document_html || "<h1></h1>";
+        if (project.project_type === "document") project.document_html = project.steps[0]?.document_html || "<h1></h1>";
         const paths = [step.modelPath, step.videoPath, ...step.images.map((image) => image.path), ...step.hotspots.map((marker) => marker.imagePath)];
         currentStepId = project.steps[Math.max(0, index - 1)]?.id || null;
         selectedHotspotId = null;
@@ -2285,11 +2305,12 @@
         if (!step) {
           document.querySelector("#page-size-section").hidden = true;
           document.querySelector("#project-no-steps h2").textContent = isManager
-            ? "This project is ready for its first step"
+            ? project.project_type === "document" ? "This document is ready for its first page" : "This project is ready for its first step"
             : "No steps have been added to this project yet";
           document.querySelector("#project-no-steps p").textContent = isManager
-            ? "Choose an image gallery, model, presentation, or document step."
+            ? project.project_type === "document" ? "Add a page to get started." : "Choose an image gallery, model, presentation, or document step."
             : "";
+          document.querySelector("#empty-add-step").textContent = project.project_type === "document" ? "＋ Add first page" : "＋ Add first step";
           document.querySelector("#document-pane").hidden = true;
           documentEditor.contentEditable = "false";
           document.querySelector("#inspector").hidden = true;
@@ -2319,6 +2340,12 @@
         document.querySelector("#page-height-input").value = String(step.page_height);
         document.querySelector("#page-height-input").disabled = !isManager || mode !== "edit";
         document.querySelector("#model-section").hidden = !isModelStep();
+        step.baseRotation = normalizeBaseRotation(step.baseRotation);
+        for (const axis of ["x", "y", "z"]) {
+          const input = document.querySelector(`#model-rotation-${axis}`);
+          input.value = String(step.baseRotation[axis]);
+          input.disabled = !isManager || mode !== "edit";
+        }
         document.querySelector("#video-section").hidden = isDocumentOnlyStep();
         document.querySelector("#text-section").hidden = isDocumentOnlyStep();
         document.querySelector("#hotspots-section").hidden = isDocumentOnlyStep() || isGalleryStep();
@@ -2331,7 +2358,8 @@
         document.querySelector("#add-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
         document.querySelector("#delete-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
         document.querySelector("#delete-document-page").textContent = "Delete page";
-        document.querySelector("#delete-document-page").disabled = project.steps.length <= 1 && !mixedProject;
+        document.querySelector("#delete-document-page").disabled = !isManager || mode !== "edit";
+        document.querySelector("#delete-step").textContent = mixedProject && stepKind === "document" ? "Delete this page" : "Delete this step";
         document.querySelector("#previous-document-page").disabled = index <= 0;
         document.querySelector("#next-document-page").disabled = index >= project.steps.length - 1;
         document.querySelector("#document-page-position").textContent = `${String(index + 1).padStart(2, "0")} / ${String(project.steps.length).padStart(2, "0")}`;
@@ -2492,6 +2520,12 @@
       function fitModel(object) {
         modelRoot.position.set(0, 0, 0);
         modelRoot.scale.setScalar(1);
+        const baseRotation = normalizeBaseRotation(getCurrentStep()?.baseRotation);
+        modelRoot.rotation.set(
+          THREE.MathUtils.degToRad(baseRotation.x),
+          THREE.MathUtils.degToRad(baseRotation.y),
+          THREE.MathUtils.degToRad(baseRotation.z)
+        );
         modelRoot.updateMatrixWorld(true);
         const bounds = new THREE.Box3().setFromObject(object);
         if (bounds.isEmpty()) return;
@@ -3134,6 +3168,23 @@
           renderStepCopy();
           persist();
         });
+        for (const axis of ["x", "y", "z"]) {
+          document.querySelector(`#model-rotation-${axis}`).addEventListener("change", (event) => {
+            const step = getCurrentStep();
+            if (!step || !isManager || mode !== "edit") return;
+            const input = event.currentTarget;
+            const value = input.valueAsNumber;
+            if (!Number.isFinite(value)) {
+              input.value = String(step.baseRotation?.[axis] || 0);
+              return;
+            }
+            step.baseRotation = normalizeBaseRotation(step.baseRotation);
+            step.baseRotation[axis] = Math.min(180, Math.max(-180, value));
+            input.value = String(step.baseRotation[axis]);
+            if (modelObject) fitModel(modelObject);
+            persist();
+          });
+        }
         document.querySelector("#choose-model").addEventListener("click", () => fileInput.click());
         document.querySelector("#empty-upload").addEventListener("click", () => {
           if (isModelStep()) fileInput.click();
