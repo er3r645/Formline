@@ -268,10 +268,10 @@
       .comment-form textarea { min-height: 40px; max-height: 140px; padding: 10px; resize: vertical; }
       .comment-empty { color: var(--muted); font-size: 12px; }
       .document-pane { display: flex; min-height: 60vh; flex-direction: column; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: #f5f5f1; }
-      .document-page { display: flex; flex: 1; justify-content: center; padding: 22px 12px 24px; overflow: auto; }
+      .document-page { display: flex; flex: 1; justify-content: center; padding: 12px; overflow: auto; }
       .document-mode .workspace { grid-template-columns: 46px minmax(0, 1fr) 294px; }
       .document-mode .sidebar, .document-mode .stage-column { display: none; }
-      .document-mode .document-pane { grid-column: 2; grid-row: 1; min-height: calc(100vh - 200px); margin: 24px auto; width: min(860px, calc(100% - 48px)); background: #f7f7f4; border: 0; border-radius: 2px; box-shadow: 0 5px 22px #20231d12; }
+      .document-mode .document-pane { grid-column: 2; grid-row: 1; min-height: calc(100vh - 200px); margin: 8px; width: auto; background: #f7f7f4; border: 0; border-radius: 2px; box-shadow: 0 5px 22px #20231d12; }
       .document-mode .inspector { grid-column: 3; grid-row: 1; }
       .document-mode .inspector #step-settings, .document-mode .inspector #model-section, .document-mode .inspector #video-section, .document-mode .inspector #text-section, .document-mode .inspector #images-upload-section, .document-mode .inspector #hotspots-section, .document-mode .inspector #delete-step { display: none; }
       .collection-heading { grid-column: 1 / -1; margin: 14px 0 0; padding: 10px 0 4px; border-bottom: 1px solid var(--line); font: 700 14px Manrope, sans-serif; }
@@ -282,11 +282,70 @@
       .document-toolbar, .drawing-toolbar, .text-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 9px; border-bottom: 1px solid var(--line); background: #fcfcfa; }
       .document-toolbar button, .drawing-toolbar button, .text-tools button { min-width: 32px; height: 30px; border: 1px solid var(--line); border-radius: 6px; background: white; cursor: pointer; }
       .document-toolbar select, .text-tools select { height: 30px; border: 1px solid var(--line); border-radius: 6px; background: white; font-size: 11px; }
-      .document-editor { width: min(100%, 760px); min-height: 900px; height: auto; padding: clamp(24px, 4vw, 52px) clamp(20px, 4vw, 58px); border: 1px solid var(--line); border-radius: 18px; background: white; box-shadow: 0 6px 18px rgba(28, 31, 25, 0.04); outline: none; font-size: 16px; line-height: 1.65; cursor: text; }
+      .document-editor { width: 100%; min-height: max(78vh, 760px); height: auto; padding: 26px clamp(22px, 3vw, 44px); border: 1px solid var(--line); border-radius: 12px; background: white; box-shadow: 0 6px 18px rgba(28, 31, 25, 0.04); outline: none; font-size: 14px; line-height: 1.65; cursor: text; }
+      .document-editor h1 { font-size: 1.8em; }
+      .document-editor h2 { font-size: 1.45em; }
+      .document-editor h3 { font-size: 1.2em; }
+      .document-editor pre { overflow-x: auto; padding: 14px; border-radius: 8px; background: #f3f4f0; font: 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .document-editor code { padding: 1px 4px; border-radius: 4px; background: #f0f1ed; font: .92em ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .document-editor hr { margin: 20px 0; border: 0; border-top: 1px solid #dfe1da; }
+      .document-editor font[size="1"] { font-size: 10px; }
+      .document-editor font[size="2"] { font-size: 11px; }
+      .document-editor font[size="3"] { font-size: 13px; }
+      .document-editor font[size="4"] { font-size: 14px; }
+      .document-editor font[size="5"] { font-size: 18px; }
+      .document-editor font[size="6"] { font-size: 24px; }
+      .document-editor font[size="7"] { font-size: 32px; }
+      .document-status { display: flex; justify-content: flex-end; gap: 12px; padding: 7px 4px; color: var(--muted); font-size: 10px; }
       .document-page-navigation { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 24px; border-top: 1px solid var(--line); background: #fff; }
       .document-page-actions { display: flex; align-items: center; gap: 10px; }
+      .document-mode .document-page { justify-content: stretch; }
+      .document-mode .document-page-navigation { width: 100%; }
       .document-page-delete { border: 0; background: transparent; color: #a36a62; font-size: 11px; cursor: pointer; }
       .document-page-delete:hover { color: #8f4b42; }
+      .private-project-toggle { display: flex; align-items: center; gap: 8px; margin-top: 16px; padding: 11px; border: 1px solid #e8e8e3; border-radius: 7px; color: #55574f; font-size: 12px; }
+      .diagram-pane, .code-pane { position: relative; display: flex; flex-direction: column; grid-column: 2 / -1; grid-row: 1; min-width: 0; min-height: 60vh; }
+      .diagram-mode .workspace, .code-mode .workspace { grid-template-columns: 46px minmax(0, 1fr); }
+      .diagram-mode .sidebar, .diagram-mode .stage-column, .diagram-mode .inspector,
+      .code-mode .sidebar, .code-mode .stage-column, .code-mode .inspector { display: none; }
+      .diagram-mode .project-no-steps, .code-mode .project-no-steps { display: none !important; }
+      .diagram-toolbar, .code-toolbar { min-height: 54px; display: flex; align-items: center; gap: 10px; padding: 9px 16px; border-bottom: 1px solid var(--line); background: white; }
+      .diagram-toolbar label, .code-editor-label { color: var(--muted); font-size: 11px; font-weight: 600; }
+      .diagram-toolbar input[type="search"] { width: min(320px, 30vw); height: 34px; padding: 0 10px; border: 1px solid var(--line); border-radius: 6px; font-size: 12px; }
+      .diagram-help { margin-left: auto; color: var(--muted); font-size: 10px; }
+      .diagram-content { position: relative; flex: 1; height: calc(100vh - 190px); min-height: 460px; overflow: hidden; background-color: #fafbf8; background-image: radial-gradient(#d7dad1 1px, transparent 1px); background-size: 24px 24px; }
+      .diagram-world { position: absolute; top: 0; left: 0; width: 10000px; height: 10000px; transform-origin: 0 0; }
+      .diagram-edges { position: absolute; top: 0; left: 0; width: 10000px; height: 10000px; overflow: visible; pointer-events: none; }
+      .diagram-edge { fill: none; stroke: #8e9584; stroke-width: 2; pointer-events: stroke; cursor: pointer; }
+      .diagram-edge.selected { stroke: #738d50; stroke-width: 3; }
+      .diagram-edge-label { fill: #62685a; font: 13px "DM Sans", sans-serif; text-anchor: middle; }
+      .diagram-node { position: absolute; width: 220px; min-height: 100px; padding: 12px; border: 2px solid #b5c29e; border-radius: 12px; background: #fff; box-shadow: 0 5px 18px #22231b18; cursor: grab; }
+      .diagram-node.selected { outline: 3px solid #bdff7177; }
+      .diagram-node h3 { margin: 0 0 7px; font-size: 13px; }
+      .diagram-node p { margin: 0; color: #64665e; font-size: 11px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+      .diagram-node-link { display: inline-block; margin-top: 9px; color: #637a45; font-size: 10px; font-weight: 700; }
+      .diagram-inspector { position: absolute; z-index: 3; top: 68px; right: 12px; width: 270px; max-height: calc(100% - 80px); overflow: auto; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; box-shadow: 0 5px 20px #20231d18; }
+      .diagram-inspector label { display: block; margin: 12px 0 5px; color: var(--muted); font-size: 10px; font-weight: 600; }
+      .diagram-inspector label:first-child { margin-top: 0; }
+      .diagram-inspector textarea { height: 120px; padding: 9px; resize: vertical; }
+      .diagram-inspector input[type="color"] { width: 100%; height: 32px; border: 0; background: transparent; }
+      .diagram-inspector hr { margin: 15px 0; border: 0; border-top: 1px solid var(--line); }
+      .diagram-inspector .text-button { display: block; margin-top: 10px; }
+      #diagram-3d-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+      .diagram-empty { position: absolute; top: 50%; left: 50%; padding: 14px 18px; border: 1px solid var(--line); border-radius: 9px; background: white; color: var(--muted); font-size: 12px; transform: translate(-50%, -50%); pointer-events: none; }
+      .code-mode .workspace { grid-template-columns: 46px minmax(0, 1fr); }
+      .code-toolbar { justify-content: space-between; }
+      .code-toolbar strong { font-size: 13px; }
+      .code-toolbar span { margin-left: 8px; color: var(--muted); font-size: 11px; }
+      .code-workspace { display: grid; grid-template-columns: minmax(280px, .8fr) minmax(350px, 1fr); grid-template-rows: auto minmax(420px, 1fr); gap: 8px 14px; height: calc(100vh - 190px); min-height: 500px; padding: 16px; background: #f7f8f5; }
+      .code-editor-label { grid-column: 1; }
+      #python-source { grid-column: 1; grid-row: 2; width: 100%; height: 100%; min-height: 400px; padding: 16px; resize: none; border: 1px solid #353932; border-radius: 8px; background: #20231d; color: #e6eadf; font: 13px/1.65 ui-monospace, SFMono-Regular, Menlo, monospace; tab-size: 4; }
+      .code-reference { grid-column: 1; grid-row: 3; display: flex; flex-wrap: wrap; gap: 7px; align-content: start; color: #777972; font-size: 10px; }
+      .code-reference code { padding: 4px 6px; border-radius: 4px; background: #eee; font: 10px ui-monospace, monospace; }
+      .sketch-output { grid-column: 2; grid-row: 2 / 4; display: flex; flex-direction: column; min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+      #python-canvas { width: 100%; height: min(65vh, 500px); border: 1px solid #e4e6df; background: white; }
+      #python-print-output { min-height: 40px; margin: 10px 0 0; color: #55574f; font: 12px/1.5 ui-monospace, monospace; white-space: pre-wrap; }
+      #python-error { margin: 8px 0 0; color: #a0443c; font-size: 11px; white-space: pre-wrap; }
       .project-no-steps { position: absolute; z-index: 3; inset: 0 0 0 clamp(226px, 22vw, 252px); display: grid; place-items: center; padding: 24px; background: #f5f5f2; }
       .project-no-steps-card { max-width: 420px; padding: 32px; border: 1px solid var(--line); border-radius: 14px; background: white; text-align: center; }
       .project-no-steps-card h2 { margin: 0; font: 700 20px Manrope, sans-serif; }
@@ -386,7 +445,19 @@
         .document-mode .document-pane, .document-mode .inspector { grid-column: 2; }
         .document-mode .document-pane { grid-row: 1; width: calc(100% - 20px); margin: 10px; }
         .document-mode .inspector { grid-row: 2; }
-        .document-editor { min-height: 50vh; }
+        .document-editor { min-height: 70vh; padding: 18px; font-size: 13px; }
+        .diagram-mode .workspace, .code-mode .workspace { grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: minmax(640px, 1fr); }
+        .diagram-mode .diagram-pane, .code-mode .code-pane { grid-column: 2; grid-row: 1; }
+        .diagram-toolbar { flex-wrap: wrap; }
+        .diagram-toolbar input[type="search"] { flex: 1; width: 100%; }
+        .diagram-help { display: none; }
+        .diagram-inspector { top: 74px; right: 7px; width: min(250px, calc(100% - 14px)); max-height: 55%; }
+        .code-workspace { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(280px, 42vh) auto auto; height: auto; }
+        .code-editor-label, #python-source, .code-reference, .sketch-output { grid-column: 1; }
+        #python-source { grid-row: 2; min-height: 280px; }
+        .code-reference { grid-row: 3; }
+        .sketch-output { grid-row: 4; }
+        #python-canvas { height: min(55vh, 400px); }
         .mixed-mode .workspace, .mixed-mode.mixed-document-step .workspace, .mixed-mode.mixed-any-step .workspace { grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: auto auto auto auto; }
         .mixed-mode .sidebar { grid-column: 2; grid-row: 1; }
         .mixed-mode .stage-column, .mixed-mode.mixed-document-step .stage-column { grid-column: 2; grid-row: 2; }
@@ -434,10 +505,21 @@
         <p>Create an empty project, then add steps in any combination of formats.</p>
         <label class="field-label" for="new-project-title">Project name</label>
         <input class="field-control" id="new-project-title" maxlength="100" value="Untitled project" required />
-        <label class="field-label" for="new-project-section">Section</label>
-        <input class="field-control" id="new-project-section" maxlength="50" list="known-sections" value="Engineering" />
-        <label class="field-label" for="new-project-collection">Collection (optional)</label>
-        <input class="field-control" id="new-project-collection" maxlength="60" list="known-collections" placeholder="e.g. Minihouse" />
+        <label class="field-label" for="new-project-type">Project format</label>
+        <select class="field-control" id="new-project-type">
+          <option value="mixed">Process project</option>
+          <option value="document">Document</option>
+          <option value="diagram2d">Infinite diagram</option>
+          <option value="diagram3d">3D node space</option>
+          <option value="code">Python sketch</option>
+        </select>
+        <label class="private-project-toggle"><input type="checkbox" id="new-project-private" /> Save in my private library</label>
+        <div id="project-location-fields">
+          <label class="field-label" for="new-project-section">Section</label>
+          <input class="field-control" id="new-project-section" maxlength="50" list="known-sections" value="Engineering" />
+          <label class="field-label" for="new-project-collection">Collection (optional)</label>
+          <input class="field-control" id="new-project-collection" maxlength="60" list="known-collections" placeholder="e.g. Minihouse" />
+        </div>
         <datalist id="known-sections"></datalist>
         <datalist id="known-collections"></datalist>
         <div class="dialog-actions">
@@ -480,7 +562,7 @@
     <dialog class="shortcut-dialog" id="shortcut-dialog">
       <form class="dialog-body" id="shortcut-form">
         <h2>Editor shortcuts</h2>
-        <p>Use a key or modifier combo such as Ctrl+S. Shortcuts pause while you type in a field.</p>
+        <p>Use Ctrl/⌘+B/I/U for text, Ctrl/⌘+Shift+C for a code block, Ctrl/⌘+Shift+H for a divider, and Ctrl+Enter to run a sketch. Shortcuts pause while you type outside the document or code editor.</p>
         <label class="shortcut-row">Save project<input id="shortcut-save" value="Ctrl+S" /></label>
         <label class="shortcut-row">Add text<input id="shortcut-text" value="T" /></label>
         <label class="shortcut-row">Add item<input id="shortcut-item" value="N" /></label>
@@ -555,17 +637,20 @@
               <button type="button" data-document-format="bold" title="Bold"><strong>B</strong></button>
               <button type="button" data-document-format="italic" title="Italic"><em>I</em></button>
               <button type="button" data-document-format="underline" title="Underline"><u>U</u></button>
+              <button type="button" data-document-format="strikeThrough" title="Strikethrough">S̶</button>
               <button type="button" data-document-format="justifyLeft" title="Align left">Left</button>
               <button type="button" data-document-format="justifyCenter" title="Align center">Center</button>
               <button type="button" data-document-format="justifyRight" title="Align right">Right</button>
               <button type="button" data-document-format="indent" title="Indent">Indent</button>
               <button type="button" data-document-format="outdent" title="Outdent">Outdent</button>
-              <select id="document-block" aria-label="Text style"><option value="p">Paragraph</option><option value="h1">Heading 1</option><option value="h2">Heading 2</option><option value="h3">Heading 3</option></select>
+              <select id="document-block" aria-label="Text style"><option value="p">Paragraph</option><option value="h1">Heading 1</option><option value="h2">Heading 2</option><option value="h3">Heading 3</option><option value="blockquote">Quote</option></select>
+              <button type="button" id="document-code-block" title="Insert code block (Ctrl+Shift+C)">Code block</button>
+              <button type="button" data-document-format="insertHorizontalRule" title="Insert divider (---)">— Divider</button>
               <button type="button" data-document-format="insertUnorderedList" title="Bulleted list">• List</button>
               <button type="button" data-document-format="insertOrderedList" title="Numbered list">1. List</button>
               <input type="color" id="document-color" value="#242522" aria-label="Text color" />
               <select id="document-font" aria-label="Font"><option value="DM Sans">DM Sans</option><option value="Manrope">Manrope</option><option value="Georgia">Georgia</option></select>
-              <select id="document-size" aria-label="Text size"><option value="3">Small</option><option value="4" selected>Normal</option><option value="5">Large</option><option value="6">Title</option></select>
+              <select id="document-size" aria-label="Text size"><option value="1">10 px</option><option value="2">11 px</option><option value="3">13 px</option><option value="4" selected>14 px</option><option value="5">18 px</option><option value="6">24 px</option><option value="7">32 px</option></select>
               <select id="document-spacing" aria-label="Line spacing"><option value="1.4">Tight spacing</option><option value="1.65" selected>Normal spacing</option><option value="1.9">Loose spacing</option></select>
             </div>
           </div>
@@ -668,6 +753,7 @@
           <div class="document-page">
             <div id="document-editor" class="document-editor" contenteditable="false" role="textbox" aria-label="Document content" aria-multiline="true" spellcheck="true" tabindex="0"></div>
           </div>
+          <div class="document-status"><span id="document-word-count">0 words</span><span id="document-character-count">0 characters</span></div>
           <div class="document-page-navigation">
             <div class="document-page-actions">
               <button type="button" class="auth-button" id="add-document-page" hidden>＋ Add page</button>
@@ -681,6 +767,51 @@
               <button type="button" class="nav-button" id="next-document-page" aria-label="Next page" title="Next page">
                 <svg viewBox="0 0 24 24" fill="none"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
+            </div>
+          </div>
+        </section>
+        <section class="diagram-pane" id="diagram-pane" hidden>
+          <div class="diagram-toolbar">
+            <label for="diagram-search">Find a node</label>
+            <input id="diagram-search" type="search" placeholder="Search node names or notes" />
+            <button type="button" class="auth-button" id="add-diagram-node">＋ Add node</button>
+            <button type="button" class="auth-button" id="connect-diagram-nodes">Connect nodes</button>
+            <span class="diagram-help" id="diagram-help">Drag to pan · Scroll to zoom · Select a node to edit</span>
+          </div>
+          <div class="diagram-content" id="diagram-content">
+            <div class="diagram-world" id="diagram-world"></div>
+            <canvas id="diagram-3d-canvas" aria-label="Interactive 3D node space" hidden></canvas>
+            <div class="diagram-empty" id="diagram-empty">Add a node to start your diagram.</div>
+          </div>
+          <aside class="diagram-inspector" id="diagram-inspector" hidden>
+            <label for="diagram-node-name">Node name</label>
+            <input id="diagram-node-name" class="field-control" maxlength="80" />
+            <label for="diagram-node-text">Notes</label>
+            <textarea id="diagram-node-text" class="field-control" rows="6" maxlength="4000" placeholder="Write notes, like a hotspot"></textarea>
+            <label for="diagram-node-color">Node color</label>
+            <input id="diagram-node-color" type="color" value="#bdff71" />
+            <label for="diagram-node-link">Link to a project step</label>
+            <select id="diagram-node-link" class="field-control"><option value="">No linked step</option></select>
+            <button type="button" class="auth-button" id="open-diagram-link" hidden>Open linked step</button>
+            <button type="button" class="text-button" id="remove-diagram-node">Remove node</button>
+            <hr />
+            <label for="diagram-edge-value">Selected connection value</label>
+            <input id="diagram-edge-value" class="field-control" maxlength="200" placeholder="Optional label or value" disabled />
+          </aside>
+        </section>
+        <section class="code-pane" id="code-pane" hidden>
+          <div class="code-toolbar">
+            <div><strong>Python sketches</strong><span> Simple drawing functions, no setup needed.</span></div>
+            <button type="button" class="upload-button" id="run-python">Run sketch</button>
+          </div>
+          <div class="code-workspace">
+            <label class="code-editor-label" for="python-source">Python code</label>
+            <textarea id="python-source" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+            <div class="code-reference"><strong>Functions</strong><code>circle(x, y, radius, color)</code><code>rect(x, y, width, height, color)</code><code>line(x1, y1, x2, y2, color, width)</code><code>text(x, y, "words", size, color)</code><code>print("message")</code><code>background("color")</code></div>
+            <div class="sketch-output">
+              <canvas id="python-canvas" width="800" height="500" aria-label="Python sketch output"></canvas>
+              <pre id="python-print-output" aria-live="polite"></pre>
+              <p id="python-error" role="alert"></p>
             </div>
           </div>
         </section>
@@ -809,6 +940,7 @@
       import { createClient } from "@supabase/supabase-js";
       import DOMPurify from "dompurify";
       import { MANAGER_EMAIL, MEDIA_BUCKET, SUPABASE_ANON_KEY, SUPABASE_URL } from "./supabase-config.js";
+      const PRIVATE_MEDIA_BUCKET = "formline-private-media";
 
       const supabase = SUPABASE_URL.includes("YOUR_PROJECT_ID") || SUPABASE_ANON_KEY.includes("YOUR_SUPABASE")
         ? null
@@ -887,6 +1019,22 @@
       let selectedShapeId = null;
       let textDrag = null;
       let saveInProgress = Promise.resolve();
+      let selectedDiagramNodeId = null;
+      let selectedDiagramEdgeId = null;
+      let connectingFromNodeId = null;
+      let diagramConnectionArmed = false;
+      let diagramViewport = { x: 0, y: 0, scale: 1 };
+      let diagram3dRenderer = null;
+      let diagram3dScene = null;
+      let diagram3dCamera = null;
+      let diagram3dControls = null;
+      let diagram3dNodes = new Map();
+      let diagram3dEdges = new THREE.Group();
+      let diagram3dLabels = new THREE.Group();
+      const diagram3dRaycaster = new THREE.Raycaster();
+      const diagram3dPointer = new THREE.Vector2();
+      let diagram3dDrag = null;
+      let diagramPan = null;
 
       function makeId() {
         return globalThis.crypto?.randomUUID?.() ?? `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -909,11 +1057,27 @@
         return {
           id: row.id,
           title: typeof row.title === "string" ? row.title : "Untitled process",
-          project_type: ["model", "presentation", "gallery", "document", "mixed"].includes(row.project_type) ? row.project_type : "model",
+          project_type: ["model", "presentation", "gallery", "document", "mixed", "diagram2d", "diagram3d", "code"].includes(row.project_type) ? row.project_type : "model",
+          is_private: row.is_private === true,
           section: typeof row.section === "string" && row.section.trim() ? row.section.trim() : "Engineering",
           collection: typeof row.collection === "string" ? row.collection : "",
           document_html: typeof row.document_html === "string" ? DOMPurify.sanitize(row.document_html) : "<h1></h1>",
           document_line_height: ["1.4", "1.65", "1.9"].includes(row.document_line_height) ? row.document_line_height : "1.65",
+          diagram_nodes: Array.isArray(row.diagram_nodes) ? row.diagram_nodes.filter((node) => node && typeof node.id === "string").map((node) => ({
+            id: node.id, name: typeof node.name === "string" ? node.name.slice(0, 80) : "Node",
+            text: typeof node.text === "string" ? node.text.slice(0, 4000) : "",
+            color: /^#[0-9a-f]{6}$/i.test(node.color) ? node.color : "#bdff71",
+            x: Number.isFinite(node.x) ? Math.max(-100000, Math.min(100000, node.x)) : 5000,
+            y: Number.isFinite(node.y) ? Math.max(-100000, Math.min(100000, node.y)) : 5000,
+            z: Number.isFinite(node.z) ? Math.max(-100000, Math.min(100000, node.z)) : 0,
+            projectId: typeof node.projectId === "string" ? node.projectId : "",
+            stepId: typeof node.stepId === "string" ? node.stepId : ""
+          })) : [],
+          diagram_edges: Array.isArray(row.diagram_edges) ? row.diagram_edges.filter((edge) => edge && typeof edge.from === "string" && typeof edge.to === "string").map((edge) => ({
+            id: typeof edge.id === "string" ? edge.id : makeId(), from: edge.from, to: edge.to,
+            value: typeof edge.value === "string" ? edge.value.slice(0, 200) : ""
+          })) : [],
+          code_source: typeof row.code_source === "string" ? row.code_source.slice(0, 50000) : "",
           theme: {
             accent: /^#[0-9a-f]{6}$/i.test(row.theme?.accent) ? row.theme.accent : "#bdff71",
             background: /^#[0-9a-f]{6}$/i.test(row.theme?.background) ? row.theme.background : "#fbfbf9"
@@ -968,23 +1132,52 @@
         return project?.steps?.find((step) => step.id === currentStepId) || project?.steps?.[0] || null;
       }
 
+      function projectMediaBucket(isPrivate = project?.is_private) {
+        return isPrivate ? PRIVATE_MEDIA_BUCKET : MEDIA_BUCKET;
+      }
+
       async function uploadMedia(file, projectId, stepId, prefix) {
         const extension = file.name.split(".").pop().toLowerCase().replace(/[^a-z0-9]/g, "") || "bin";
         const path = `${projectId}/${stepId}/${prefix}-${makeId()}.${extension}`;
-        const { error } = await supabase.storage.from(MEDIA_BUCKET).upload(path, file, {
+        const bucket = project?.id === projectId && project.is_private ? PRIVATE_MEDIA_BUCKET : MEDIA_BUCKET;
+        const storage = supabase.storage.from(bucket);
+        const { error } = await storage.upload(path, file, {
           contentType: file.type || "application/octet-stream",
           upsert: false
         });
         if (error) throw error;
-        const { data } = supabase.storage.from(MEDIA_BUCKET).getPublicUrl(path);
+        if (bucket === PRIVATE_MEDIA_BUCKET) {
+          const { data, error: signedUrlError } = await storage.createSignedUrl(path, 3600);
+          if (signedUrlError) throw signedUrlError;
+          return { path, url: data.signedUrl };
+        }
+        const { data } = storage.getPublicUrl(path);
         return { path, url: data.publicUrl };
       }
 
-      async function deleteMedia(paths) {
+      async function deleteMedia(paths, isPrivate = project?.is_private) {
         const uniquePaths = [...new Set(paths.filter(Boolean))];
         if (!uniquePaths.length || !supabase) return;
-        const { error } = await supabase.storage.from(MEDIA_BUCKET).remove(uniquePaths);
+        const { error } = await supabase.storage.from(isPrivate ? PRIVATE_MEDIA_BUCKET : MEDIA_BUCKET).remove(uniquePaths);
         if (error) throw error;
+      }
+
+      async function refreshPrivateMediaUrls(step) {
+        if (!project?.is_private || !step) return;
+        const storage = supabase.storage.from(PRIVATE_MEDIA_BUCKET);
+        const sign = async (path) => {
+          if (!path) return null;
+          const { data, error } = await storage.createSignedUrl(path, 3600);
+          if (error) throw error;
+          return data.signedUrl;
+        };
+        const media = [
+          ...(step.modelPath ? [{ path: step.modelPath, set: (url) => { step.modelUrl = url; } }] : []),
+          ...(step.videoPath ? [{ path: step.videoPath, set: (url) => { step.videoUrl = url; } }] : []),
+          ...step.images.map((image) => ({ path: image.path, set: (url) => { image.url = url; } })),
+          ...step.hotspots.filter((item) => item.imagePath).map((item) => ({ path: item.imagePath, set: (url) => { item.imageUrl = url; } }))
+        ];
+        await Promise.all(media.map(async (item) => item.set(await sign(item.path))));
       }
 
       async function deleteProject(row) {
@@ -1006,7 +1199,7 @@
         projectList = projectList.filter((item) => item.id !== row.id);
         renderGallery();
         try {
-          await deleteMedia(mediaPaths);
+          await deleteMedia(mediaPaths, row.is_private);
         } catch (mediaError) {
           console.error("Could not remove deleted project media.", mediaError);
           showToast("Project deleted, but some stored media could not be removed.");
@@ -1058,6 +1251,10 @@
           section: project.section,
           collection: project.collection,
           theme: project.theme,
+          is_private: project.is_private,
+          diagram_nodes: project.diagram_nodes,
+          diagram_edges: project.diagram_edges,
+          code_source: project.code_source,
           steps: project.steps
         });
       }
@@ -1073,6 +1270,10 @@
           document_html: DOMPurify.sanitize(project.document_html),
           document_line_height: project.document_line_height,
           theme: structuredClone(project.theme),
+          is_private: project.is_private,
+          diagram_nodes: structuredClone(project.diagram_nodes),
+          diagram_edges: structuredClone(project.diagram_edges),
+          code_source: project.code_source,
           steps: structuredClone(project.steps),
           updated_at: new Date().toISOString()
         };
@@ -1096,6 +1297,10 @@
               document_html: snapshot.document_html,
               document_line_height: snapshot.document_line_height,
               theme: snapshot.theme,
+              is_private: snapshot.is_private,
+              diagram_nodes: snapshot.diagram_nodes,
+              diagram_edges: snapshot.diagram_edges,
+              code_source: snapshot.code_source,
               steps: snapshot.steps,
               updated_at: snapshot.updated_at
             }).eq("id", snapshot.id).select("id").single();
@@ -1143,7 +1348,7 @@
         const selectedCollection = document.querySelector("#collection-filter").value;
         const filteredProjects = projectList.filter((item) =>
           (!query || item.title.toLocaleLowerCase().includes(query))
-          && (!selectedSection || item.section === selectedSection)
+          && (selectedSection === "Private" ? isManager && item.is_private : !item.is_private && (!selectedSection || item.section === selectedSection))
           && (!selectedCollection || item.collection === selectedCollection)
         ).sort((left, right) => (left.section || "").localeCompare(right.section || "")
           || (left.collection || "").localeCompare(right.collection || "")
@@ -1160,7 +1365,8 @@
           grid.append(empty);
           return;
         }
-        status.textContent = `${formatCount(filteredProjects.length, "project")} · ${projectList.length} total`;
+        const visibleCount = projectList.filter((item) => selectedSection === "Private" ? isManager && item.is_private : !item.is_private).length;
+        status.textContent = `${formatCount(filteredProjects.length, "project")} · ${visibleCount} total`;
         let lastGroup = null;
         filteredProjects.forEach((item) => {
           const groupLabel = selectedSection
@@ -1186,7 +1392,7 @@
           title.textContent = item.title || "Untitled process";
           const typeTag = document.createElement("span");
           typeTag.className = "project-tag";
-          typeTag.textContent = `${projectTypeName(item.project_type)}${item.collection ? ` · ${item.collection}` : ""}`;
+          typeTag.textContent = `${item.is_private ? "Private · " : ""}${projectTypeName(item.project_type)}${item.collection ? ` · ${item.collection}` : ""}`;
           const date = document.createElement("span");
           date.className = "project-card-date";
           date.textContent = `Created ${new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(item.created_at))}`;
@@ -1212,18 +1418,18 @@
       }
 
       function projectTypeName(type) {
-        return ({ model: "Model", presentation: "Presentation", gallery: "Gallery", document: "Document", mixed: "Project" })[type] || "Model";
+        return ({ model: "Model", presentation: "Presentation", gallery: "Gallery", document: "Document", mixed: "Process project", diagram2d: "Infinite diagram", diagram3d: "3D node space", code: "Python sketch" })[type] || "Model";
       }
 
       function projectItemName(type) {
-        return ({ model: "step", presentation: "slide", gallery: "image", document: "page", mixed: "step" })[type] || "step";
+        return ({ model: "step", presentation: "slide", gallery: "image", document: "page", mixed: "step", diagram2d: "node", diagram3d: "node", code: "sketch" })[type] || "step";
       }
 
       function updateSectionChoices() {
-        const sections = [...new Set([...sectionList, ...projectList.map((item) => item.section || "Engineering")])].sort((a, b) => a.localeCompare(b));
+        const sections = [...new Set([...sectionList.filter((section) => section.toLocaleLowerCase() !== "private"), ...projectList.filter((item) => !item.is_private).map((item) => item.section || "Engineering"), ...(isManager ? ["Private"] : [])])].sort((a, b) => a.localeCompare(b));
         const filter = document.querySelector("#section-filter");
         const selected = filter.value;
-        filter.replaceChildren(new Option("All sections", ""));
+        filter.replaceChildren(new Option(isManager ? "All sections" : "All sections", ""));
         sections.forEach((section) => filter.add(new Option(section, section)));
         if (sections.includes(selected)) filter.value = selected;
         const datalist = document.querySelector("#known-sections");
@@ -1240,9 +1446,10 @@
         if (collections.includes(selectedCollection)) collectionFilter.value = selectedCollection;
         document.querySelector("#known-collections").replaceChildren(...collections.map((collection) => Object.assign(document.createElement("option"), { value: collection })));
         document.querySelector("#create-section").hidden = !isManager;
-        document.querySelector("#delete-section").hidden = !isManager || !selected;
-        document.querySelector("#create-collection").hidden = !isManager || !selected;
-        document.querySelector("#delete-collection").hidden = !isManager || !selected || !document.querySelector("#collection-filter").value;
+        const privateSection = selected === "Private";
+        document.querySelector("#delete-section").hidden = !isManager || !selected || privateSection;
+        document.querySelector("#create-collection").hidden = !isManager || !selected || privateSection;
+        document.querySelector("#delete-collection").hidden = !isManager || !selected || privateSection || !document.querySelector("#collection-filter").value;
         document.querySelector("#create-project").hidden = !isManager;
       }
 
@@ -1267,7 +1474,7 @@
         }
         document.querySelector("#gallery-status").textContent = "Loading projects…";
         const { data, error } = await supabase.from("projects")
-          .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,created_at,updated_at")
+          .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,is_private,diagram_nodes,diagram_edges,code_source,created_at,updated_at")
           .order("created_at", { ascending: false });
         if (error) {
           console.error("Could not load the project gallery.", error);
@@ -1283,6 +1490,10 @@
         if (!isManager || !supabase) return;
         const name = document.querySelector("#section-name").value.trim();
         if (!name) return;
+        if (name.toLocaleLowerCase() === "private") {
+          showToast("Private is a reserved manager-only section.");
+          return;
+        }
         const { error } = await supabase.from("project_sections").upsert({ name }, { onConflict: "name", ignoreDuplicates: true });
         if (error) {
           console.error("Could not create section.", error);
@@ -1493,6 +1704,12 @@
           await supabase.auth.signOut();
           managerSession = null;
         }
+        if (project?.is_private && !allowed) {
+          clearTimeout(saveTimer);
+          pendingProjectSave = null;
+          projectList = projectList.filter((item) => !item.is_private);
+          await showGallery();
+        }
         if (project) {
           if (!allowed) setMode("view");
           else if (!new URLSearchParams(location.search).has("present")) setMode("edit");
@@ -1506,7 +1723,12 @@
       async function openProject(row) {
         if (!await flushPendingSave()) return;
         project = normalizeProject(row);
-        if (!project.steps.length && project.project_type !== "mixed") {
+        if (project.is_private && !isManager) {
+          project = null;
+          showToast("This project is in the manager's private library.");
+          return;
+        }
+        if (!project.steps.length && !["mixed", "diagram2d", "diagram3d", "code"].includes(project.project_type)) {
           const step = newStep(project.project_type === "document" ? "Page 1" : "First step", project.project_type);
           if (project.project_type === "document") step.document_html = project.document_html;
           project.steps.push(step);
@@ -1516,12 +1738,36 @@
         galleryImageIndex = 0;
         selectedHotspotId = null;
         selectedImageId = null;
+        selectedDiagramNodeId = null;
+        selectedDiagramEdgeId = null;
+        if (project.is_private && project.steps[0]) {
+          try {
+            await refreshPrivateMediaUrls(project.steps[0]);
+          } catch (error) {
+            console.error("Could not load private project media.", error);
+            showToast("Could not load private files. Check the latest storage setup SQL.");
+            project = null;
+            currentProjectId = null;
+            return;
+          }
+        }
         gallery.hidden = true;
         app.classList.add("open");
         app.classList.toggle("mixed-mode", project.project_type === "mixed");
         app.classList.toggle("document-mode", project.project_type === "document");
+        app.classList.toggle("diagram-mode", ["diagram2d", "diagram3d"].includes(project.project_type));
+        app.classList.toggle("code-mode", project.project_type === "code");
         app.classList.toggle("empty-project", !project.steps.length);
-        document.querySelector("#document-pane").hidden = project.project_type !== "document";
+        document.querySelector("#document-pane").hidden = !["document", "mixed"].includes(project.project_type) || !stepHasDocument();
+        document.querySelector("#diagram-pane").hidden = !["diagram2d", "diagram3d"].includes(project.project_type);
+        document.querySelector("#code-pane").hidden = project.project_type !== "code";
+        if (project.project_type === "diagram2d") {
+          diagramViewport = {
+            x: document.querySelector("#diagram-content").clientWidth / 2 - 5000,
+            y: document.querySelector("#diagram-content").clientHeight / 2 - 5000,
+            scale: 1
+          };
+        }
         documentEditor.innerHTML = DOMPurify.sanitize(project.steps[0]?.document_html || project.document_html);
         documentEditor.style.lineHeight = project.document_line_height;
         documentEditor.contentEditable = String(isManager && mode === "edit" && stepHasDocument());
@@ -1531,7 +1777,7 @@
         document.querySelector("#document-spacing").value = project.document_line_height;
         app.style.setProperty("--accent", project.theme.accent);
         app.style.setProperty("--project-background", project.theme.background);
-        document.querySelector("#comments-section").hidden = false;
+        document.querySelector("#comments-section").hidden = project.is_private;
         app.classList.toggle("dedicated-viewer", !isManager || new URLSearchParams(location.search).has("present"));
         setMode(isManager && !new URLSearchParams(location.search).has("present") ? "edit" : "view");
         history.replaceState({}, "", `${location.pathname}?project=${encodeURIComponent(project.id)}${mode === "view" ? "&present=1" : ""}`);
@@ -1547,11 +1793,28 @@
         currentProjectId = null;
         currentStepId = null;
         selectedImageId = null;
+        selectedDiagramNodeId = null;
+        selectedDiagramEdgeId = null;
+        documentEditor.replaceChildren();
+        document.querySelector("#python-source").value = "";
+        document.querySelector("#diagram-world").replaceChildren();
+        document.querySelector("#python-print-output").textContent = "";
+        document.querySelector("#python-error").textContent = "";
+        document.querySelector("#diagram-node-name").value = "";
+        document.querySelector("#diagram-node-text").value = "";
+        document.querySelector("#diagram-edge-value").value = "";
+        document.querySelector("#comment-list").replaceChildren();
+        const pythonCanvas = document.querySelector("#python-canvas");
+        pythonCanvas.getContext("2d").clearRect(0, 0, pythonCanvas.width, pythonCanvas.height);
+        if (diagram3dScene) clearDiagram3d();
+        if (!isManager) projectList = projectList.filter((item) => !item.is_private);
         syncGalleryImagePlanes(null);
         app.classList.remove("open");
         app.classList.remove("document-mode");
-        app.classList.remove("mixed-mode", "mixed-document-step", "mixed-any-step", "mixed-media-step", "empty-project");
+        app.classList.remove("mixed-mode", "mixed-document-step", "mixed-any-step", "mixed-media-step", "empty-project", "diagram-mode", "code-mode");
         document.querySelector("#document-pane").hidden = true;
+        document.querySelector("#diagram-pane").hidden = true;
+        document.querySelector("#code-pane").hidden = true;
         document.querySelector("#comments-section").hidden = true;
         gallery.hidden = false;
         history.replaceState({}, "", location.pathname);
@@ -1562,14 +1825,22 @@
       async function createProject() {
         if (!isManager || !supabase) return;
         const title = document.querySelector("#new-project-title").value.trim() || "Untitled project";
-        const section = document.querySelector("#new-project-section").value.trim() || "Engineering";
-        const collection = document.querySelector("#new-project-collection").value.trim();
-        const sectionResult = await supabase.from("project_sections").upsert({ name: section }, { onConflict: "name", ignoreDuplicates: true });
-        if (sectionResult.error) {
-          showToast("Create the section before adding a project.");
+        const isPrivate = document.querySelector("#new-project-private").checked;
+        const projectType = document.querySelector("#new-project-type").value;
+        const section = isPrivate ? "Private" : document.querySelector("#new-project-section").value.trim() || "Engineering";
+        const collection = isPrivate ? "" : document.querySelector("#new-project-collection").value.trim();
+        if (!isPrivate && section.toLocaleLowerCase() === "private") {
+          showToast("Choose the private-library option for private projects.");
           return;
         }
-        if (collection) {
+        if (!isPrivate) {
+          const sectionResult = await supabase.from("project_sections").upsert({ name: section }, { onConflict: "name", ignoreDuplicates: true });
+          if (sectionResult.error) {
+            showToast("Create the section before adding a project.");
+            return;
+          }
+        }
+        if (collection && !isPrivate) {
           const collectionResult = await supabase.from("project_collections").upsert({ section_name: section, name: collection }, { onConflict: "section_name,name", ignoreDuplicates: true });
           if (collectionResult.error) {
             showToast("Could not add project to that collection.");
@@ -1577,8 +1848,8 @@
           }
         }
         const { data, error } = await supabase.from("projects")
-          .insert({ title, project_type: "mixed", section, collection, document_html: "<h1></h1>", document_line_height: "1.65", theme: { accent: "#bdff71", background: "#fbfbf9" }, steps: [] })
-          .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,created_at,updated_at")
+          .insert({ title, project_type: projectType, section, collection, is_private: isPrivate, document_html: "<h1></h1>", document_line_height: "1.65", theme: { accent: "#bdff71", background: "#fbfbf9" }, steps: [], diagram_nodes: [], diagram_edges: [], code_source: projectType === "code" ? 'background("white")\ncircle(400, 250, 80, color="#bdff71")\ntext(400, 250, "Hello, canvas!", 24)\nprint("Sketch is ready")' : "" })
+          .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,is_private,diagram_nodes,diagram_edges,code_source,created_at,updated_at")
           .single();
         if (error) {
           console.error("Could not create the project.", error);
@@ -1587,8 +1858,11 @@
         }
         projectList.unshift(data);
         document.querySelector("#project-dialog").close();
+        document.querySelector("#new-project-private").checked = false;
+        document.querySelector("#project-location-fields").hidden = false;
         await refreshSections();
-        document.querySelector("#section-filter").value = section;
+        updateSectionChoices();
+        document.querySelector("#section-filter").value = isPrivate ? "Private" : section;
         document.querySelector("#collection-filter").value = collection;
         renderGallery();
         await openProject(data);
@@ -1611,8 +1885,9 @@
           return;
         }
         const itemLabel = projectItemName(project.project_type);
-        document.querySelector("#add-step").hidden = !isManager || mode !== "edit" || (project.project_type === "document");
-        document.querySelector("#delete-step").hidden = !isManager || mode !== "edit" || project.project_type === "document";
+        const standaloneCanvas = ["diagram2d", "diagram3d", "code"].includes(project.project_type);
+        document.querySelector("#add-step").hidden = !isManager || mode !== "edit" || (project.project_type === "document") || standaloneCanvas;
+        document.querySelector("#delete-step").hidden = !isManager || mode !== "edit" || project.project_type === "document" || standaloneCanvas;
         document.querySelector("#add-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
         document.querySelector("#delete-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
         document.querySelector("#add-step").innerHTML = `<span>+</span> Add ${itemLabel === "step" ? "a step" : itemLabel === "slide" ? "a slide" : itemLabel === "page" ? "a page" : "an image"}`;
@@ -1924,6 +2199,16 @@
         const pageStep = !!step && (isPresentationStep() || isDocumentOnlyStep());
         const stageColumn = document.querySelector("#stage-column");
         const documentPane = document.querySelector("#document-pane");
+        if (isDocumentOnlyStep()) {
+          documentPane.style.removeProperty("width");
+          documentPane.style.removeProperty("height");
+          documentPane.style.minHeight = "0";
+          documentEditor.style.removeProperty("width");
+          documentEditor.style.removeProperty("height");
+          documentEditor.style.minHeight = "max(78vh, 760px)";
+          documentEditor.style.removeProperty("overflow-y");
+          return;
+        }
         if (!pageStep) {
           stage.style.removeProperty("width");
           stage.style.removeProperty("height");
@@ -1971,6 +2256,677 @@
         applyPageDimensions();
         resizeRenderer();
         persist();
+      }
+
+      function updateDocumentStats() {
+        const text = documentEditor.innerText.replace(/\u00a0/g, " ").trim();
+        const words = text ? text.split(/\s+/).length : 0;
+        document.querySelector("#document-word-count").textContent = `${words} ${words === 1 ? "word" : "words"}`;
+        document.querySelector("#document-character-count").textContent = `${text.length} ${text.length === 1 ? "character" : "characters"}`;
+      }
+
+      function diagramNode(id) {
+        return project?.diagram_nodes.find((node) => node.id === id) || null;
+      }
+
+      function applyDiagramTransform() {
+        const world = document.querySelector("#diagram-world");
+        world.style.transform = `translate(${diagramViewport.x}px, ${diagramViewport.y}px) scale(${diagramViewport.scale})`;
+      }
+
+      function centerDiagramOnNode(node) {
+        const content = document.querySelector("#diagram-content");
+        if (project.project_type === "diagram2d") {
+          diagramViewport.x = content.clientWidth / 2 - node.x * diagramViewport.scale;
+          diagramViewport.y = content.clientHeight / 2 - node.y * diagramViewport.scale;
+          applyDiagramTransform();
+          return;
+        }
+        if (diagram3dControls && diagram3dCamera) {
+          const target = new THREE.Vector3(node.x, node.y, node.z);
+          diagram3dControls.target.copy(target);
+          diagram3dCamera.position.copy(target).add(new THREE.Vector3(6, 4, 8));
+          diagram3dControls.update();
+          drawDiagram3d();
+        }
+      }
+
+      function diagramStepChoices() {
+        const rows = [...projectList.filter((item) => item.id !== project.id && (project.is_private || !item.is_private)), project];
+        return rows.flatMap((row) => (row.steps || []).map((step) => ({
+          value: `${row.id}:${step.id}`,
+          label: `${row.title || "Untitled project"} · ${step.title || "Untitled step"}`
+        })));
+      }
+
+      function updateDiagramInspector() {
+        const panel = document.querySelector("#diagram-inspector");
+        const node = diagramNode(selectedDiagramNodeId);
+        const edge = project?.diagram_edges.find((item) => item.id === selectedDiagramEdgeId);
+        panel.hidden = !node && !edge;
+        const linkSelect = document.querySelector("#diagram-node-link");
+        const currentLink = node?.projectId && node?.stepId ? `${node.projectId}:${node.stepId}` : "";
+        linkSelect.replaceChildren(new Option("No linked step", ""));
+        diagramStepChoices().forEach((choice) => linkSelect.add(new Option(choice.label, choice.value)));
+        if ([...linkSelect.options].some((option) => option.value === currentLink)) linkSelect.value = currentLink;
+        for (const [selector, value] of [
+          ["#diagram-node-name", node?.name || ""],
+          ["#diagram-node-text", node?.text || ""],
+          ["#diagram-node-color", node?.color || "#bdff71"],
+          ["#diagram-edge-value", edge?.value || ""]
+        ]) {
+          const input = document.querySelector(selector);
+          input.value = value;
+          input.disabled = !isManager || mode !== "edit" || (selector === "#diagram-edge-value" && !edge);
+          if (selector.startsWith("#diagram-node-")) input.disabled ||= !node;
+        }
+        document.querySelector("#open-diagram-link").hidden = !node?.projectId || !node?.stepId;
+        document.querySelector("#remove-diagram-node").hidden = !node || !isManager || mode !== "edit";
+        document.querySelector("#diagram-node-link").disabled = !node || !isManager || mode !== "edit";
+      }
+
+      function selectDiagramNode(id) {
+        selectedDiagramNodeId = id;
+        selectedDiagramEdgeId = null;
+        updateDiagramInspector();
+        renderDiagram();
+      }
+
+      function ensureDiagramEdgeSpacing(from, to, value) {
+        if (project.project_type === "diagram2d") {
+          const minimum = 300 + Math.min(300, value.length * 2);
+          const distance = Math.hypot(to.x - from.x, to.y - from.y);
+          if (distance < minimum) {
+            const angle = Math.atan2(to.y - from.y, to.x - from.x) || 0;
+            to.x = from.x + Math.cos(angle) * minimum;
+            to.y = from.y + Math.sin(angle) * minimum;
+          }
+          return;
+        }
+        const minimum = 2.5 + Math.min(8, value.length * 0.06);
+        const distance = Math.hypot(to.x - from.x, to.y - from.y, to.z - from.z);
+        if (distance < minimum) {
+          const direction = new THREE.Vector3(to.x - from.x, to.y - from.y, to.z - from.z);
+          if (direction.lengthSq() < 0.0001) direction.set(1, 0, 0);
+          direction.normalize().multiplyScalar(minimum);
+          to.x = from.x + direction.x;
+          to.y = from.y + direction.y;
+          to.z = from.z + direction.z;
+        }
+      }
+
+      function connectDiagramNodes(fromId, toId) {
+        if (!isManager || mode !== "edit" || fromId === toId) return;
+        const from = diagramNode(fromId);
+        const to = diagramNode(toId);
+        if (!from || !to) return;
+        const value = window.prompt("Optional value for this connection:", "");
+        if (value === null) {
+          connectingFromNodeId = null;
+          return;
+        }
+        const edge = { id: makeId(), from: fromId, to: toId, value: value.slice(0, 200) };
+        ensureDiagramEdgeSpacing(from, to, edge.value);
+        project.diagram_edges.push(edge);
+        connectingFromNodeId = null;
+        diagramConnectionArmed = false;
+        selectedDiagramNodeId = null;
+        selectedDiagramEdgeId = edge.id;
+        updateDiagramInspector();
+        renderDiagram();
+        persist();
+      }
+
+      function chooseDiagramNode(id) {
+        if (diagramConnectionArmed && !connectingFromNodeId) {
+          connectingFromNodeId = id;
+          document.querySelector("#connect-diagram-nodes").textContent = "Choose next node…";
+          return;
+        }
+        if (connectingFromNodeId) {
+          connectDiagramNodes(connectingFromNodeId, id);
+          return;
+        }
+        selectDiagramNode(id);
+      }
+
+      function makeDiagramNodeCard(node, query) {
+        const card = document.createElement("article");
+        card.className = `diagram-node${node.id === selectedDiagramNodeId ? " selected" : ""}`;
+        card.dataset.nodeId = node.id;
+        card.style.left = `${node.x - 110}px`;
+        card.style.top = `${node.y - 50}px`;
+        card.style.borderColor = node.color;
+        card.tabIndex = 0;
+        card.setAttribute("role", "button");
+        card.setAttribute("aria-label", `${node.name}: ${node.text}`);
+        const title = document.createElement("h3");
+        title.textContent = node.name;
+        const text = document.createElement("p");
+        text.textContent = node.text;
+        card.append(title, text);
+        if (node.projectId && node.stepId) {
+          const linked = document.createElement("span");
+          linked.className = "diagram-node-link";
+          linked.textContent = "↗ Open linked step";
+          linked.addEventListener("click", (event) => {
+            event.stopPropagation();
+            void openDiagramLink(node);
+          });
+          card.append(linked);
+        }
+        card.addEventListener("click", () => chooseDiagramNode(node.id));
+        card.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            chooseDiagramNode(node.id);
+          }
+        });
+        if (isManager && mode === "edit" && project.project_type === "diagram2d") {
+          card.addEventListener("pointerdown", (event) => {
+            if (event.target.closest(".diagram-node-link") || event.button !== 0 || connectingFromNodeId || diagramConnectionArmed) return;
+            event.preventDefault();
+            event.stopPropagation();
+            selectedDiagramNodeId = node.id;
+            selectedDiagramEdgeId = null;
+            document.querySelectorAll(".diagram-node").forEach((item) => item.classList.toggle("selected", item.dataset.nodeId === node.id));
+            updateDiagramInspector();
+            diagram3dDrag = { nodeId: node.id, x: event.clientX, y: event.clientY, originX: node.x, originY: node.y, pointerId: event.pointerId };
+            card.setPointerCapture(event.pointerId);
+          });
+          card.addEventListener("pointermove", (event) => {
+            if (diagram3dDrag?.nodeId !== node.id || diagram3dDrag.pointerId !== event.pointerId) return;
+            node.x = diagram3dDrag.originX + (event.clientX - diagram3dDrag.x) / diagramViewport.scale;
+            node.y = diagram3dDrag.originY + (event.clientY - diagram3dDrag.y) / diagramViewport.scale;
+            card.style.left = `${node.x - 110}px`;
+            card.style.top = `${node.y - 50}px`;
+            renderDiagramEdges();
+          });
+          const finishDrag = (event) => {
+            if (diagram3dDrag?.nodeId !== node.id || diagram3dDrag.pointerId !== event.pointerId) return;
+            diagram3dDrag = null;
+            persist();
+          };
+          card.addEventListener("pointerup", finishDrag);
+          card.addEventListener("pointercancel", finishDrag);
+        }
+        if (query && !`${node.name} ${node.text}`.toLocaleLowerCase().includes(query)) card.hidden = true;
+        return card;
+      }
+
+      function renderDiagramEdges() {
+        const world = document.querySelector("#diagram-world");
+        let svg = world.querySelector(".diagram-edges");
+        if (!svg) {
+          svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          svg.classList.add("diagram-edges");
+          svg.setAttribute("viewBox", "0 0 10000 10000");
+          svg.innerHTML = '<defs><marker id="diagram-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8e9584"></path></marker></defs>';
+          world.prepend(svg);
+        }
+        svg.querySelectorAll(".diagram-edge, .diagram-edge-label").forEach((item) => item.remove());
+        project.diagram_edges.forEach((edge) => {
+          const from = diagramNode(edge.from);
+          const to = diagramNode(edge.to);
+          if (!from || !to) return;
+          const fromCard = world.querySelector(`[data-node-id="${CSS.escape(from.id)}"]`);
+          const toCard = world.querySelector(`[data-node-id="${CSS.escape(to.id)}"]`);
+          if (fromCard?.hidden || toCard?.hidden) return;
+          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          line.setAttribute("x1", String(from.x));
+          line.setAttribute("y1", String(from.y));
+          line.setAttribute("x2", String(to.x));
+          line.setAttribute("y2", String(to.y));
+          line.setAttribute("marker-end", "url(#diagram-arrow)");
+          line.classList.add("diagram-edge");
+          if (edge.id === selectedDiagramEdgeId) line.classList.add("selected");
+          line.addEventListener("click", (event) => {
+            event.stopPropagation();
+            selectedDiagramNodeId = null;
+            selectedDiagramEdgeId = edge.id;
+            updateDiagramInspector();
+            renderDiagramEdges();
+          });
+          svg.append(line);
+          if (edge.value) {
+            const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            label.classList.add("diagram-edge-label");
+            label.setAttribute("x", String((from.x + to.x) / 2));
+            label.setAttribute("y", String((from.y + to.y) / 2 - 9));
+            label.textContent = edge.value;
+            svg.append(label);
+          }
+        });
+      }
+
+      function makeDiagramSprite(text, color = "#ffffff") {
+        const labelCanvas = document.createElement("canvas");
+        labelCanvas.width = 512;
+        labelCanvas.height = 112;
+        const context = labelCanvas.getContext("2d");
+        context.fillStyle = color;
+        context.fillRect(0, 0, labelCanvas.width, labelCanvas.height);
+        context.fillStyle = "#242522";
+        context.font = "bold 30px sans-serif";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillText(text.slice(0, 48), labelCanvas.width / 2, labelCanvas.height / 2, 480);
+        const texture = new THREE.CanvasTexture(labelCanvas);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true }));
+        sprite.scale.set(3.1, 0.68, 1);
+        return sprite;
+      }
+
+      function setupDiagram3d() {
+        if (diagram3dRenderer) return;
+        const graphCanvas = document.querySelector("#diagram-3d-canvas");
+        diagram3dRenderer = new THREE.WebGLRenderer({ canvas: graphCanvas, antialias: true, alpha: false });
+        diagram3dRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        diagram3dScene = new THREE.Scene();
+        diagram3dScene.background = new THREE.Color("#fafbf8");
+        diagram3dCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 2000);
+        diagram3dCamera.position.set(6, 4, 8);
+        diagram3dControls = new OrbitControls(diagram3dCamera, graphCanvas);
+        diagram3dControls.enableDamping = true;
+        diagram3dControls.target.set(0, 0, 0);
+        diagram3dScene.add(new THREE.HemisphereLight(0xffffff, 0x92968d, 2));
+        const light = new THREE.DirectionalLight(0xffffff, 2.3);
+        light.position.set(4, 8, 6);
+        diagram3dScene.add(light);
+        diagram3dScene.add(new THREE.GridHelper(100, 100, 0xd4d8cf, 0xe7e9e3));
+        diagram3dScene.add(diagram3dEdges);
+        diagram3dScene.add(diagram3dLabels);
+        graphCanvas.addEventListener("pointerdown", (event) => {
+          if (project?.project_type !== "diagram3d" || event.button !== 0) return;
+          const rect = graphCanvas.getBoundingClientRect();
+          diagram3dPointer.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
+          diagram3dRaycaster.setFromCamera(diagram3dPointer, diagram3dCamera);
+          const edgeIntersections = diagram3dRaycaster.intersectObjects(diagram3dEdges.children, true);
+          const edgeId = edgeIntersections.find((item) => item.object.userData.edgeId)?.object.userData.edgeId;
+          if (edgeId) {
+            selectedDiagramNodeId = null;
+            selectedDiagramEdgeId = edgeId;
+            updateDiagramInspector();
+            drawDiagram3d();
+            event.preventDefault();
+            return;
+          }
+          const intersections = diagram3dRaycaster.intersectObjects([...diagram3dNodes.values()], false);
+          if (!intersections.length) return;
+          const hit = intersections[0].object;
+          const nodeId = hit.userData.nodeId;
+          if (isManager && mode === "edit" && (diagramConnectionArmed || connectingFromNodeId)) {
+            chooseDiagramNode(nodeId);
+            event.preventDefault();
+            return;
+          }
+          const node = diagramNode(nodeId);
+          if (!node) return;
+          selectedDiagramNodeId = nodeId;
+          selectedDiagramEdgeId = null;
+          updateDiagramInspector();
+          if (!isManager || mode !== "edit") return;
+          for (const [id, sphere] of diagram3dNodes) sphere.scale.setScalar(id === nodeId ? 1.14 : 1);
+          const normal = diagram3dCamera.getWorldDirection(new THREE.Vector3());
+          const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(normal, hit.position);
+          const intersection = diagram3dRaycaster.ray.intersectPlane(plane, new THREE.Vector3());
+          diagram3dDrag = {
+            nodeId, plane,
+            offset: intersection ? hit.position.clone().sub(intersection) : new THREE.Vector3(),
+            pointerId: event.pointerId
+          };
+          diagram3dControls.enabled = false;
+          graphCanvas.setPointerCapture(event.pointerId);
+          event.preventDefault();
+        });
+        graphCanvas.addEventListener("pointermove", (event) => {
+          if (!diagram3dDrag || diagram3dDrag.pointerId !== event.pointerId) return;
+          const rect = graphCanvas.getBoundingClientRect();
+          diagram3dPointer.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
+          diagram3dRaycaster.setFromCamera(diagram3dPointer, diagram3dCamera);
+          const intersection = diagram3dRaycaster.ray.intersectPlane(diagram3dDrag.plane, new THREE.Vector3());
+          const node = diagramNode(diagram3dDrag.nodeId);
+          if (!intersection || !node) return;
+          intersection.add(diagram3dDrag.offset);
+          node.x = intersection.x;
+          node.y = intersection.y;
+          node.z = intersection.z;
+          drawDiagram3d();
+        });
+        const finish3dDrag = (event) => {
+          if (!diagram3dDrag || diagram3dDrag.pointerId !== event.pointerId) return;
+          diagram3dDrag = null;
+          diagram3dControls.enabled = true;
+          persist();
+        };
+        graphCanvas.addEventListener("pointerup", finish3dDrag);
+        graphCanvas.addEventListener("pointercancel", finish3dDrag);
+        resizeDiagram3d();
+      }
+
+      function resizeDiagram3d() {
+        if (!diagram3dRenderer || !diagram3dCamera) return;
+        const rect = document.querySelector("#diagram-content").getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        diagram3dRenderer.setSize(rect.width, rect.height, false);
+        diagram3dCamera.aspect = rect.width / rect.height;
+        diagram3dCamera.updateProjectionMatrix();
+      }
+
+      function clearDiagram3d() {
+        for (const object of [...diagram3dNodes.values(), ...diagram3dEdges.children, ...diagram3dLabels.children]) {
+          object.parent?.remove(object);
+          object.traverse?.((item) => {
+            item.geometry?.dispose();
+            if (item.material) {
+              const materials = Array.isArray(item.material) ? item.material : [item.material];
+              materials.forEach((material) => {
+                material.map?.dispose();
+                material.dispose();
+              });
+            }
+          });
+        }
+        diagram3dNodes.clear();
+        diagram3dEdges.clear();
+        diagram3dLabels.clear();
+      }
+
+      function drawDiagram3d(query = document.querySelector("#diagram-search").value.trim().toLocaleLowerCase()) {
+        if (!diagram3dRenderer || project?.project_type !== "diagram3d") return;
+        clearDiagram3d();
+        const visible = new Set();
+        project.diagram_nodes.forEach((node) => {
+          if (query && !`${node.name} ${node.text}`.toLocaleLowerCase().includes(query)) return;
+          visible.add(node.id);
+          const sphere = new THREE.Mesh(
+            new THREE.SphereGeometry(0.48, 24, 16),
+            new THREE.MeshStandardMaterial({ color: node.color, roughness: 0.55 })
+          );
+          sphere.position.set(node.x, node.y, node.z);
+          sphere.userData.nodeId = node.id;
+          diagram3dScene.add(sphere);
+          const label = makeDiagramSprite(node.name, "#ffffff");
+          label.position.set(node.x, node.y + 0.78, node.z);
+          diagram3dLabels.add(label);
+          diagram3dNodes.set(node.id, sphere);
+        });
+        project.diagram_edges.forEach((edge) => {
+          const from = diagramNode(edge.from);
+          const to = diagramNode(edge.to);
+          if (!from || !to || !visible.has(from.id) || !visible.has(to.id)) return;
+          const origin = new THREE.Vector3(from.x, from.y, from.z);
+          const target = new THREE.Vector3(to.x, to.y, to.z);
+          const direction = target.clone().sub(origin);
+          const length = direction.length();
+          if (length < 0.1) return;
+          const arrow = new THREE.ArrowHelper(direction.normalize(), origin, length, edge.id === selectedDiagramEdgeId ? 0x738d50 : 0x8e9584, 0.35, 0.22);
+          arrow.userData.edgeId = edge.id;
+          arrow.children.forEach((child) => { child.userData.edgeId = edge.id; });
+          diagram3dEdges.add(arrow);
+          if (edge.value) {
+            const label = makeDiagramSprite(edge.value, "#ffffff");
+            label.position.copy(origin).add(target).multiplyScalar(0.5).add(new THREE.Vector3(0, 0.22, 0));
+            label.scale.set(2.6, 0.58, 1);
+            diagram3dLabels.add(label);
+          }
+        });
+        const empty = document.querySelector("#diagram-empty");
+        empty.hidden = project.diagram_nodes.length > 0;
+      }
+
+      function renderDiagram(query = document.querySelector("#diagram-search").value.trim().toLocaleLowerCase()) {
+        if (!project || !["diagram2d", "diagram3d"].includes(project.project_type)) return;
+        const is3d = project.project_type === "diagram3d";
+        const world = document.querySelector("#diagram-world");
+        const graphCanvas = document.querySelector("#diagram-3d-canvas");
+        graphCanvas.hidden = !is3d;
+        world.hidden = is3d;
+        document.querySelector("#diagram-help").textContent = is3d
+          ? "Drag to orbit · Scroll to zoom · Select a node to edit"
+          : "Drag to pan · Scroll to zoom · Drag nodes to move them";
+        document.querySelector("#connect-diagram-nodes").textContent = connectingFromNodeId ? "Choose next node…" : diagramConnectionArmed ? "Choose source node…" : "Connect nodes";
+        document.querySelector("#connect-diagram-nodes").disabled = !isManager || mode !== "edit" || project.diagram_nodes.length < 2;
+        document.querySelector("#add-diagram-node").disabled = !isManager || mode !== "edit";
+        document.querySelector("#diagram-empty").hidden = is3d || project.diagram_nodes.length > 0;
+        if (is3d) {
+          setupDiagram3d();
+          drawDiagram3d(query);
+        } else {
+          world.replaceChildren();
+          const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          svg.classList.add("diagram-edges");
+          svg.setAttribute("viewBox", "0 0 10000 10000");
+          svg.innerHTML = '<defs><marker id="diagram-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8e9584"></path></marker></defs>';
+          world.append(svg);
+          project.diagram_nodes.forEach((node) => world.append(makeDiagramNodeCard(node, query)));
+          renderDiagramEdges();
+          applyDiagramTransform();
+        }
+        updateDiagramInspector();
+      }
+
+      function addDiagramNode() {
+        if (!project || !isManager || mode !== "edit") return;
+        const node = {
+          id: makeId(), name: `Node ${project.diagram_nodes.length + 1}`, text: "", color: "#bdff71",
+          x: project.project_type === "diagram2d" ? 5000 + (project.diagram_nodes.length % 4) * 280 : (project.diagram_nodes.length % 4) * 2.7,
+          y: project.project_type === "diagram2d" ? 5000 + Math.floor(project.diagram_nodes.length / 4) * 170 : 0,
+          z: project.project_type === "diagram2d" ? 0 : Math.floor(project.diagram_nodes.length / 4) * 2.7
+        };
+        project.diagram_nodes.push(node);
+        selectedDiagramNodeId = node.id;
+        selectedDiagramEdgeId = null;
+        if (project.project_type === "diagram2d") centerDiagramOnNode(node);
+        renderDiagram();
+        persist();
+        document.querySelector("#diagram-node-name").focus();
+      }
+
+      async function openDiagramLink(node) {
+        const row = projectList.find((item) => item.id === node.projectId) || (project?.id === node.projectId ? project : null);
+        if (!row) {
+          showToast("The linked project is not available in this library.");
+          return;
+        }
+        await openProject(row);
+        if (project?.id === row.id && project.steps.some((step) => step.id === node.stepId)) {
+          await selectStep(node.stepId);
+        }
+      }
+
+      function removeDiagramNode() {
+        if (!isManager || !project || !selectedDiagramNodeId) return;
+        const id = selectedDiagramNodeId;
+        project.diagram_nodes = project.diagram_nodes.filter((node) => node.id !== id);
+        project.diagram_edges = project.diagram_edges.filter((edge) => edge.from !== id && edge.to !== id);
+        selectedDiagramNodeId = null;
+        selectedDiagramEdgeId = null;
+        renderDiagram();
+        persist();
+      }
+
+      function splitPythonArguments(source) {
+        const parts = [];
+        let start = 0;
+        let quote = "";
+        let escaped = false;
+        let depth = 0;
+        for (let index = 0; index < source.length; index += 1) {
+          const character = source[index];
+          if (quote) {
+            if (escaped) escaped = false;
+            else if (character === "\\") escaped = true;
+            else if (character === quote) quote = "";
+          } else if (character === "'" || character === '"') quote = character;
+          else if (character === "[" || character === "(") depth += 1;
+          else if (character === "]" || character === ")") depth -= 1;
+          else if (character === "," && depth === 0) {
+            parts.push(source.slice(start, index).trim());
+            start = index + 1;
+          }
+        }
+        if (source.slice(start).trim()) parts.push(source.slice(start).trim());
+        return parts;
+      }
+
+      function parsePythonLiteral(source) {
+        const value = source.trim();
+        if (/^-?(?:\d+\.?\d*|\.\d+)$/.test(value)) return Number(value);
+        if (value === "True") return true;
+        if (value === "False") return false;
+        if (value === "None") return null;
+        if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+          if (value.startsWith('"')) return JSON.parse(value);
+          return value.slice(1, -1).replace(/\\(['\\nrt])/g, (_match, escaped) => ({ "'": "'", "\\": "\\", n: "\n", r: "\r", t: "\t" })[escaped]);
+        }
+        throw new Error(`Unsupported value: ${value}`);
+      }
+
+      function runPythonSketch() {
+        const canvas = document.querySelector("#python-canvas");
+        const context = canvas.getContext("2d");
+        const output = document.querySelector("#python-print-output");
+        const errorOutput = document.querySelector("#python-error");
+        output.textContent = "";
+        errorOutput.textContent = "";
+        const source = document.querySelector("#python-source").value;
+        if (source.length > 50000) {
+          errorOutput.textContent = "Sketch is too long (maximum 50,000 characters).";
+          return;
+        }
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = "white";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        const printed = [];
+        const lines = source.split(/\r?\n/);
+        if (lines.length > 500) {
+          errorOutput.textContent = "Sketch is too long (maximum 500 lines).";
+          return;
+        }
+        let commands = 0;
+        try {
+          lines.forEach((original, index) => {
+            let quote = "";
+            let escaped = false;
+            let commentIndex = original.length;
+            for (let position = 0; position < original.length; position += 1) {
+              const character = original[position];
+              if (quote) {
+                if (escaped) escaped = false;
+                else if (character === "\\") escaped = true;
+                else if (character === quote) quote = "";
+              } else if (character === "'" || character === '"') quote = character;
+              else if (character === "#") { commentIndex = position; break; }
+            }
+            const line = original.slice(0, commentIndex).trim();
+            if (!line) return;
+            const call = line.match(/^([A-Za-z_]\w*)\s*\((.*)\)\s*$/);
+            if (!call) throw new Error(`Line ${index + 1}: use a supported function call.`);
+            commands += 1;
+            if (commands > 300) throw new Error("A sketch can contain at most 300 drawing commands.");
+            const args = [];
+            const named = {};
+            splitPythonArguments(call[2]).forEach((part) => {
+              const namedMatch = part.match(/^([A-Za-z_]\w*)\s*=\s*(.+)$/);
+              if (namedMatch) named[namedMatch[1]] = parsePythonLiteral(namedMatch[2]);
+              else args.push(parsePythonLiteral(part));
+            });
+            const get = (position, name, fallback) => args[position] ?? named[name] ?? fallback;
+            const number = (position, name, fallback) => {
+              const value = Number(get(position, name, fallback));
+              if (!Number.isFinite(value)) throw new Error(`Line ${index + 1}: ${name} must be a number.`);
+              return value;
+            };
+            const color = (position, fallback = "#242522") => {
+              const value = get(position, "color", fallback);
+              if (typeof value !== "string" || !/^(#[0-9a-f]{3,8}|[a-z]{1,24})$/i.test(value)) throw new Error(`Line ${index + 1}: invalid color.`);
+              return value;
+            };
+            switch (call[1]) {
+              case "print":
+                printed.push(args.map(String).join(" "));
+                break;
+              case "background":
+                context.fillStyle = color(0, "white");
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                break;
+              case "circle":
+                context.beginPath();
+                context.arc(number(0, "x", 0), number(1, "y", 0), Math.max(0, number(2, "radius", 0)), 0, Math.PI * 2);
+                context.fillStyle = color(3);
+                context.fill();
+                break;
+              case "rect":
+                context.fillStyle = color(4);
+                context.fillRect(number(0, "x", 0), number(1, "y", 0), number(2, "width", 0), number(3, "height", 0));
+                break;
+              case "line":
+                context.strokeStyle = color(4);
+                context.lineWidth = Math.max(1, number(5, "width", 2));
+                context.beginPath();
+                context.moveTo(number(0, "x1", 0), number(1, "y1", 0));
+                context.lineTo(number(2, "x2", 0), number(3, "y2", 0));
+                context.stroke();
+                break;
+              case "text":
+                context.fillStyle = color(4);
+                context.font = `${Math.max(8, number(3, "size", 18))}px sans-serif`;
+                context.textAlign = "center";
+                context.fillText(String(get(2, "value", "")), number(0, "x", 0), number(1, "y", 0), canvas.width);
+                break;
+              default:
+                throw new Error(`Line ${index + 1}: unknown function "${call[1]}".`);
+            }
+          });
+          output.textContent = printed.join("\n");
+        } catch (error) {
+          errorOutput.textContent = error.message || "Could not run sketch.";
+        }
+      }
+
+      function saveCurrentDocument() {
+        if (!project || !isManager) return;
+        const step = getCurrentStep();
+        if (!step) return;
+        step.document_html = DOMPurify.sanitize(documentEditor.innerHTML);
+        if (step === project.steps[0]) project.document_html = step.document_html;
+        updateDocumentStats();
+        persist();
+      }
+
+      function toggleDocumentCodeBlock() {
+        if (!isManager || !stepHasDocument()) return;
+        document.execCommand("formatBlock", false, "pre");
+        documentEditor.focus();
+        saveCurrentDocument();
+      }
+
+      function insertDocumentRule() {
+        if (!isManager || !stepHasDocument()) return;
+        document.execCommand("insertHorizontalRule", false, null);
+        documentEditor.focus();
+        saveCurrentDocument();
+      }
+
+      function replaceMarkdownRule() {
+        const selection = document.getSelection();
+        if (!selection?.rangeCount || !selection.isCollapsed) return false;
+        let block = selection.anchorNode instanceof Element
+          ? selection.anchorNode.closest("p, div")
+          : selection.anchorNode?.parentElement?.closest("p, div");
+        if (!block || block.closest("pre") || block.textContent.trim() !== "---") return false;
+        const rule = document.createElement("hr");
+        const paragraph = document.createElement("p");
+        paragraph.append(document.createElement("br"));
+        block.replaceWith(rule, paragraph);
+        const range = document.createRange();
+        range.selectNodeContents(paragraph);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        return true;
       }
 
       function renderStageTexts(step) {
@@ -2288,6 +3244,25 @@
       function renderInspector() {
         const step = getCurrentStep();
         if (!project) return;
+        const diagramProject = ["diagram2d", "diagram3d"].includes(project.project_type);
+        const codeProject = project.project_type === "code";
+        if (diagramProject || codeProject) {
+          app.classList.toggle("diagram-mode", diagramProject);
+          app.classList.toggle("code-mode", codeProject);
+          app.classList.remove("document-mode", "mixed-document-step", "mixed-any-step");
+          document.querySelector("#document-pane").hidden = true;
+          document.querySelector("#diagram-pane").hidden = !diagramProject;
+          document.querySelector("#code-pane").hidden = !codeProject;
+          document.querySelector("#inspector").hidden = true;
+          document.querySelector("#project-no-steps").hidden = true;
+          document.querySelector("#python-source").value = project.code_source || "";
+          document.querySelector("#python-source").readOnly = !isManager || mode !== "edit";
+          document.querySelector("#run-python").disabled = false;
+          if (diagramProject) renderDiagram();
+          else runPythonSketch();
+          updateEditorChrome();
+          return;
+        }
         const mixedProject = project.project_type === "mixed";
         const stepKind = currentStepKind();
         const hasStep = !!step;
@@ -2355,6 +3330,7 @@
         }
         document.querySelector("#document-pane").hidden = !stepHasDocument();
         documentEditor.innerHTML = DOMPurify.sanitize(step.document_html || "<h1></h1>");
+        updateDocumentStats();
         document.querySelector("#add-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
         document.querySelector("#delete-document-page").hidden = !isManager || mode !== "edit" || project.project_type !== "document";
         document.querySelector("#delete-document-page").textContent = "Delete page";
@@ -2464,10 +3440,11 @@
       function updateEditorChrome() {
         const editing = isManager && mode === "edit" && !!project;
         const type = project?.project_type;
+        const standaloneCanvas = ["diagram2d", "diagram3d", "code"].includes(type);
         const documentStep = stepHasDocument();
         const modelStep = isModelStep();
-        const mediaStep = !!project && !isDocumentOnlyStep();
-        document.querySelector("#editor-ribbon").hidden = !editing;
+        const mediaStep = !!project && !isDocumentOnlyStep() && !standaloneCanvas;
+        document.querySelector("#editor-ribbon").hidden = !editing || standaloneCanvas;
         document.querySelector("#document-toolbar").hidden = !editing || !documentStep;
         document.querySelector("#text-tools").hidden = !editing || !mediaStep;
         document.querySelector("#drawing-toolbar").hidden = !editing || !mediaStep;
@@ -2475,7 +3452,7 @@
         const cameraAvailable = modelStep;
         document.querySelector("#ribbon-camera").hidden = !cameraAvailable || !getCurrentStep()?.modelPath;
         document.querySelector("#empty-upload").hidden = !editing;
-        document.querySelector("#inspector").hidden = !editing || !getCurrentStep();
+        document.querySelector("#inspector").hidden = !editing || !getCurrentStep() || standaloneCanvas;
         document.querySelector("#stage-column").classList.toggle("page-mode", isPresentationStep() || (!!type && type !== "model" && type !== "mixed"));
         if (editing) setRibbonTab(documentStep && !modelStep ? "Format" : "Insert");
       }
@@ -2504,11 +3481,27 @@
         syncGalleryImagePlanes(getCurrentStep());
         renderStageTexts(getCurrentStep());
         renderStageShapes(getCurrentStep());
+        if (["diagram2d", "diagram3d"].includes(project?.project_type)) renderDiagram();
+        if (project?.project_type === "code") {
+          document.querySelector("#python-source").readOnly = !isManager || mode !== "edit";
+          runPythonSketch();
+        }
       }
 
       async function selectStep(id) {
         if (id === currentStepId) return;
+        const previousStepId = currentStepId;
         currentStepId = id;
+        if (project?.is_private) {
+          try {
+            await refreshPrivateMediaUrls(getCurrentStep());
+          } catch (error) {
+            console.error("Could not refresh private step media.", error);
+            currentStepId = previousStepId;
+            showToast("Could not open private files. Check the storage setup.");
+            return;
+          }
+        }
         selectedHotspotId = null;
         selectedImageId = null;
         galleryImageIndex = 0;
@@ -2765,6 +3758,7 @@
 
       function resizeRenderer() {
         applyPageDimensions();
+        resizeDiagram3d();
         const rect = stage.getBoundingClientRect();
         if (!rect.width || !rect.height) return;
         renderer.setSize(rect.width, rect.height, false);
@@ -2778,6 +3772,10 @@
         requestAnimationFrame(animate);
         controls.update();
         renderer.render(scene, camera);
+        if (diagram3dRenderer && project?.project_type === "diagram3d") {
+          diagram3dControls.update();
+          diagram3dRenderer.render(diagram3dScene, diagram3dCamera);
+        }
         updateHotspotPositions();
       }
 
@@ -2890,7 +3888,10 @@
         document.querySelector("#manager-session").addEventListener("click", showGallery);
         document.querySelector("#back-to-projects").addEventListener("click", showGallery);
         document.querySelector("#create-project").addEventListener("click", () => {
-          document.querySelector("#new-project-section").value = document.querySelector("#section-filter").value || "Engineering";
+          const privateLibrary = document.querySelector("#section-filter").value === "Private";
+          document.querySelector("#new-project-private").checked = privateLibrary;
+          document.querySelector("#project-location-fields").hidden = privateLibrary;
+          document.querySelector("#new-project-section").value = privateLibrary ? "Engineering" : document.querySelector("#section-filter").value || "Engineering";
           document.querySelector("#new-project-collection").value = document.querySelector("#collection-filter").value;
           document.querySelector("#project-dialog").showModal();
         });
@@ -2898,6 +3899,9 @@
         document.querySelector("#project-form").addEventListener("submit", (event) => {
           event.preventDefault();
           createProject();
+        });
+        document.querySelector("#new-project-private").addEventListener("change", (event) => {
+          document.querySelector("#project-location-fields").hidden = event.currentTarget.checked;
         });
         document.querySelector("#editor-settings").addEventListener("click", () => {
           const shortcuts = currentShortcuts();
@@ -2913,18 +3917,9 @@
         });
         document.querySelector("#document-editor").addEventListener("input", () => {
           if (!project || !isManager) return;
-          const step = getCurrentStep();
-          step.document_html = DOMPurify.sanitize(documentEditor.innerHTML);
-          if (step === project.steps[0]) project.document_html = step.document_html;
-          persist();
+          saveCurrentDocument();
         });
-        const saveDocumentFormatting = () => {
-          if (!project || !isManager) return;
-          const step = getCurrentStep();
-          step.document_html = DOMPurify.sanitize(documentEditor.innerHTML);
-          if (step === project.steps[0]) project.document_html = step.document_html;
-          persist();
-        };
+        const saveDocumentFormatting = saveCurrentDocument;
         document.querySelectorAll("[data-document-format]").forEach((button) => {
           button.addEventListener("mousedown", (event) => event.preventDefault());
           button.addEventListener("click", () => {
@@ -2934,6 +3929,8 @@
             saveDocumentFormatting();
           });
         });
+        document.querySelector("#document-code-block").addEventListener("mousedown", (event) => event.preventDefault());
+        document.querySelector("#document-code-block").addEventListener("click", toggleDocumentCodeBlock);
         document.querySelector("#document-block").addEventListener("change", (event) => {
           document.execCommand("formatBlock", false, event.target.value);
           documentEditor.focus();
@@ -2960,6 +3957,153 @@
           documentEditor.style.lineHeight = project.document_line_height;
           persist();
         });
+        documentEditor.addEventListener("keydown", (event) => {
+          if (!isManager || !stepHasDocument()) return;
+          if ((event.ctrlKey || event.metaKey) && !event.altKey) {
+            const key = event.key.toLowerCase();
+            if (key === "b" || key === "i" || key === "u") {
+              event.preventDefault();
+              document.execCommand(({ b: "bold", i: "italic", u: "underline" })[key], false, null);
+              saveCurrentDocument();
+            } else if (event.shiftKey && key === "c") {
+              event.preventDefault();
+              toggleDocumentCodeBlock();
+            } else if (event.shiftKey && key === "h") {
+              event.preventDefault();
+              insertDocumentRule();
+            } else if (event.shiftKey && key === "7") {
+              event.preventDefault();
+              document.execCommand("insertOrderedList", false, null);
+              saveCurrentDocument();
+            } else if (event.shiftKey && key === "8") {
+              event.preventDefault();
+              document.execCommand("insertUnorderedList", false, null);
+              saveCurrentDocument();
+            }
+          }
+          if (event.key === "Enter" && replaceMarkdownRule()) {
+            event.preventDefault();
+            saveCurrentDocument();
+          }
+        });
+        document.querySelector("#diagram-search").addEventListener("input", () => renderDiagram());
+        document.querySelector("#diagram-search").addEventListener("keydown", (event) => {
+          if (event.key !== "Enter") return;
+          const query = event.currentTarget.value.trim().toLocaleLowerCase();
+          const match = project?.diagram_nodes.find((node) => `${node.name} ${node.text}`.toLocaleLowerCase().includes(query));
+          if (match) {
+            selectedDiagramNodeId = match.id;
+            centerDiagramOnNode(match);
+            renderDiagram(query);
+          }
+        });
+        document.querySelector("#add-diagram-node").addEventListener("click", addDiagramNode);
+        document.querySelector("#connect-diagram-nodes").addEventListener("click", () => {
+          if (diagramConnectionArmed || connectingFromNodeId) {
+            diagramConnectionArmed = false;
+            connectingFromNodeId = null;
+            renderDiagram();
+            return;
+          }
+          diagramConnectionArmed = true;
+          selectedDiagramNodeId = null;
+          updateDiagramInspector();
+          renderDiagram();
+        });
+        document.querySelector("#diagram-node-name").addEventListener("change", (event) => {
+          const node = diagramNode(selectedDiagramNodeId);
+          if (!node) return;
+          node.name = event.currentTarget.value.trim().slice(0, 80) || "Node";
+          persist();
+          renderDiagram();
+        });
+        document.querySelector("#diagram-node-text").addEventListener("change", (event) => {
+          const node = diagramNode(selectedDiagramNodeId);
+          if (!node) return;
+          node.text = event.currentTarget.value.slice(0, 4000);
+          persist();
+          renderDiagram();
+        });
+        document.querySelector("#diagram-node-color").addEventListener("change", (event) => {
+          const node = diagramNode(selectedDiagramNodeId);
+          if (!node) return;
+          node.color = event.currentTarget.value;
+          persist();
+          renderDiagram();
+        });
+        document.querySelector("#diagram-node-link").addEventListener("change", (event) => {
+          const node = diagramNode(selectedDiagramNodeId);
+          if (!node) return;
+          const [projectId, stepId] = event.currentTarget.value.split(":");
+          node.projectId = projectId || "";
+          node.stepId = stepId || "";
+          persist();
+          renderDiagram();
+        });
+        document.querySelector("#open-diagram-link").addEventListener("click", () => {
+          const node = diagramNode(selectedDiagramNodeId);
+          if (node) void openDiagramLink(node);
+        });
+        document.querySelector("#remove-diagram-node").addEventListener("click", removeDiagramNode);
+        document.querySelector("#diagram-edge-value").addEventListener("change", (event) => {
+          const edge = project?.diagram_edges.find((item) => item.id === selectedDiagramEdgeId);
+          if (!edge) return;
+          edge.value = event.currentTarget.value.slice(0, 200);
+          const from = diagramNode(edge.from);
+          const to = diagramNode(edge.to);
+          if (from && to) ensureDiagramEdgeSpacing(from, to, edge.value);
+          persist();
+          renderDiagram();
+        });
+        const diagramContent = document.querySelector("#diagram-content");
+        diagramContent.addEventListener("pointerdown", (event) => {
+          if (project?.project_type !== "diagram2d" || event.button !== 0 || event.target.closest(".diagram-node, .diagram-edge")) return;
+          diagramPan = { x: event.clientX, y: event.clientY, originX: diagramViewport.x, originY: diagramViewport.y, pointerId: event.pointerId };
+          diagramContent.setPointerCapture(event.pointerId);
+        });
+        diagramContent.addEventListener("pointermove", (event) => {
+          if (!diagramPan || diagramPan.pointerId !== event.pointerId) return;
+          diagramViewport.x = diagramPan.originX + event.clientX - diagramPan.x;
+          diagramViewport.y = diagramPan.originY + event.clientY - diagramPan.y;
+          applyDiagramTransform();
+        });
+        const endDiagramPan = (event) => {
+          if (diagramPan?.pointerId === event.pointerId) diagramPan = null;
+        };
+        diagramContent.addEventListener("pointerup", endDiagramPan);
+        diagramContent.addEventListener("pointercancel", endDiagramPan);
+        diagramContent.addEventListener("wheel", (event) => {
+          if (project?.project_type !== "diagram2d") return;
+          event.preventDefault();
+          const rect = diagramContent.getBoundingClientRect();
+          const localX = event.clientX - rect.left;
+          const localY = event.clientY - rect.top;
+          const worldX = (localX - diagramViewport.x) / diagramViewport.scale;
+          const worldY = (localY - diagramViewport.y) / diagramViewport.scale;
+          diagramViewport.scale = Math.min(2.5, Math.max(0.25, diagramViewport.scale * (event.deltaY < 0 ? 1.1 : 0.9)));
+          diagramViewport.x = localX - worldX * diagramViewport.scale;
+          diagramViewport.y = localY - worldY * diagramViewport.scale;
+          applyDiagramTransform();
+        }, { passive: false });
+        document.querySelector("#python-source").addEventListener("input", (event) => {
+          if (!project || project.project_type !== "code" || !isManager || mode !== "edit") return;
+          project.code_source = event.currentTarget.value.slice(0, 50000);
+          persist();
+        });
+        document.querySelector("#python-source").addEventListener("keydown", (event) => {
+          if (event.key === "Tab" && !event.ctrlKey && !event.metaKey) {
+            event.preventDefault();
+            const editor = event.currentTarget;
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            editor.setRangeText("    ", start, end, "end");
+            editor.dispatchEvent(new Event("input", { bubbles: true }));
+          } else if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+            event.preventDefault();
+            runPythonSketch();
+          }
+        });
+        document.querySelector("#run-python").addEventListener("click", runPythonSketch);
         document.querySelector("#project-search").addEventListener("input", renderGallery);
         document.querySelector("#section-filter").addEventListener("change", renderGallery);
         document.querySelector("#collection-filter").addEventListener("change", renderGallery);
@@ -3428,6 +4572,7 @@
           }
         });
         new ResizeObserver(resizeRenderer).observe(stage);
+        new ResizeObserver(resizeDiagram3d).observe(document.querySelector("#diagram-content"));
         window.addEventListener("resize", resizeRenderer);
       }
 
@@ -3450,7 +4595,7 @@
         const requestedProject = new URLSearchParams(location.search).get("project");
         if (requestedProject) {
           const { data: row, error: projectError } = await supabase.from("projects")
-            .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,created_at,updated_at")
+            .select("id,title,project_type,section,collection,document_html,document_line_height,theme,steps,is_private,diagram_nodes,diagram_edges,code_source,created_at,updated_at")
             .eq("id", requestedProject)
             .maybeSingle();
           if (projectError) {

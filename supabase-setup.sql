@@ -12,11 +12,15 @@ alter table public.projects
   add column if not exists collection text not null default '',
   add column if not exists document_html text not null default '<h1></h1>',
   add column if not exists document_line_height text not null default '1.65' check (document_line_height in ('1.4', '1.65', '1.9')),
-  add column if not exists theme jsonb not null default '{"accent":"#bdff71","background":"#fbfbf9"}'::jsonb;
+  add column if not exists theme jsonb not null default '{"accent":"#bdff71","background":"#fbfbf9"}'::jsonb,
+  add column if not exists is_private boolean not null default false,
+  add column if not exists diagram_nodes jsonb not null default '[]'::jsonb,
+  add column if not exists diagram_edges jsonb not null default '[]'::jsonb,
+  add column if not exists code_source text not null default '';
 
 alter table public.projects drop constraint if exists projects_project_type_check;
 alter table public.projects add constraint projects_project_type_check
-  check (project_type in ('model', 'presentation', 'gallery', 'document', 'mixed'));
+  check (project_type in ('model', 'presentation', 'gallery', 'document', 'mixed', 'diagram2d', 'diagram3d', 'code'));
 
 create table if not exists public.project_sections (
   id uuid primary key default gen_random_uuid(),
@@ -62,6 +66,48 @@ create policy "Only the verified manager can add project sections"
   on public.project_sections for insert to authenticated
   with check (
     lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
+    and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
+  );
+
+drop policy if exists "Only the verified manager can access private project media" on storage.objects;
+drop policy if exists "Only the verified manager can upload private project media" on storage.objects;
+drop policy if exists "Only the verified manager can update private project media" on storage.objects;
+drop policy if exists "Only the verified manager can delete private project media" on storage.objects;
+
+create policy "Only the verified manager can access private project media"
+  on storage.objects for select to authenticated
+  using (
+    bucket_id = 'formline-private-media'
+    and lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
+    and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
+  );
+
+create policy "Only the verified manager can upload private project media"
+  on storage.objects for insert to authenticated
+  with check (
+    bucket_id = 'formline-private-media'
+    and lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
+    and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
+  );
+
+create policy "Only the verified manager can update private project media"
+  on storage.objects for update to authenticated
+  using (
+    bucket_id = 'formline-private-media'
+    and lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
+    and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
+  )
+  with check (
+    bucket_id = 'formline-private-media'
+    and lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
+    and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
+  );
+
+create policy "Only the verified manager can delete private project media"
+  on storage.objects for delete to authenticated
+  using (
+    bucket_id = 'formline-private-media'
+    and lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
     and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
   );
 create policy "Only the verified manager can delete empty project sections"
@@ -115,18 +161,39 @@ grant select, insert on public.project_comments to anon, authenticated;
 grant delete on public.project_comments to authenticated;
 
 drop policy if exists "Anyone can read project comments" on public.project_comments;
+drop policy if exists "Only the verified manager can read private project comments" on public.project_comments;
 drop policy if exists "Anyone can post project comments" on public.project_comments;
 drop policy if exists "Only the verified manager can delete comments" on public.project_comments;
 
 create policy "Anyone can read project comments"
   on public.project_comments for select
-  using (true);
+  using (
+    exists (
+      select 1 from public.projects
+      where projects.id = project_comments.project_id and not projects.is_private
+    )
+  );
+
+create policy "Only the verified manager can read private project comments"
+  on public.project_comments for select to authenticated
+  using (
+    exists (
+      select 1 from public.projects
+      where projects.id = project_comments.project_id and projects.is_private
+    )
+    and lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
+    and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
+  );
 
 create policy "Anyone can post project comments"
   on public.project_comments for insert to anon, authenticated
   with check (
     char_length(btrim(name)) between 1 and 40
     and char_length(btrim(body)) between 1 and 1000
+    and exists (
+      select 1 from public.projects
+      where projects.id = project_comments.project_id and not projects.is_private
+    )
   );
 
 create policy "Only the verified manager can delete comments"
@@ -137,13 +204,22 @@ create policy "Only the verified manager can delete comments"
   );
 
 drop policy if exists "Anyone can review projects" on public.projects;
+drop policy if exists "Only the verified manager can read private projects" on public.projects;
 drop policy if exists "Only the verified manager can create projects" on public.projects;
 drop policy if exists "Only the verified manager can update projects" on public.projects;
 drop policy if exists "Only the verified manager can delete projects" on public.projects;
 
 create policy "Anyone can review projects"
   on public.projects for select
-  using (true);
+  using (not is_private);
+
+create policy "Only the verified manager can read private projects"
+  on public.projects for select to authenticated
+  using (
+    is_private
+    and lower(auth.jwt() ->> 'email') = 'er275050@gmail.com'
+    and auth.jwt() -> 'app_metadata' ->> 'provider' = 'google'
+  );
 
 create policy "Only the verified manager can create projects"
   on public.projects for insert to authenticated
@@ -173,6 +249,10 @@ create policy "Only the verified manager can delete projects"
 insert into storage.buckets (id, name, public)
 values ('formline-media', 'formline-media', true)
 on conflict (id) do update set public = true, file_size_limit = 104857600;
+
+insert into storage.buckets (id, name, public)
+values ('formline-private-media', 'formline-private-media', false)
+on conflict (id) do update set public = false, file_size_limit = 104857600;
 
 drop policy if exists "Anyone can view project media" on storage.objects;
 drop policy if exists "Only the verified manager can upload project media" on storage.objects;
